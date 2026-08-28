@@ -5,7 +5,13 @@ import {
   type DocsContainerProps,
 } from "@storybook/addon-docs/blocks";
 
-import { applyPreviewGlobals } from "./previewGlobals";
+import {
+  applyDocsGlobalsUpdate,
+  type GlobalsUpdatedPayload,
+} from "./docsGlobals";
+import {
+  applyPreviewGlobals,
+} from "./previewGlobals";
 import "./PulmuDocsContainer.css";
 
 const GLOBALS_UPDATED = "globalsUpdated";
@@ -20,19 +26,14 @@ type DocsContextWithStore = DocsContainerProps["context"] & {
   };
 };
 
-type GlobalsUpdatedPayload = {
-  globals?: GlobalValues;
-};
-
 function readDocsGlobals(context: DocsContainerProps["context"]): GlobalValues {
   const contextWithStore = context as DocsContextWithStore;
 
-  return (
-    contextWithStore.store?.userGlobals?.globals ??
-    contextWithStore.store?.globals ??
-    context.projectAnnotations.initialGlobals ??
-    {}
-  );
+  return {
+    ...context.projectAnnotations.initialGlobals,
+    ...contextWithStore.store?.globals,
+    ...contextWithStore.store?.userGlobals?.globals,
+  };
 }
 
 export function PulmuDocsContainer({
@@ -42,11 +43,11 @@ export function PulmuDocsContainer({
 }: PropsWithChildren<DocsContainerProps>) {
   const [globals, setGlobals] = useState(() => readDocsGlobals(context));
 
-  applyPreviewGlobals(globals);
+  applyPreviewGlobals(globals, { persistTheme: false });
 
   useEffect(() => {
-    const handleGlobalsUpdated = ({ globals: updatedGlobals }: GlobalsUpdatedPayload) => {
-      setGlobals(updatedGlobals ?? readDocsGlobals(context));
+    const handleGlobalsUpdated = (update: GlobalsUpdatedPayload) => {
+      setGlobals(applyDocsGlobalsUpdate(update, readDocsGlobals(context)));
     };
 
     context.channel.on(GLOBALS_UPDATED, handleGlobalsUpdated);
