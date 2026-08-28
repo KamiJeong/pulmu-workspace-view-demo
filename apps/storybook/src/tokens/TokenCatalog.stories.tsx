@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 import { PULMU_STAGES } from "@pulmu/model";
 
@@ -66,13 +66,59 @@ export const DarkFoundations: Story = {
     await expect(getComputedStyle(preview("--pulmu-z-sticky")).zIndex).toBe("auto");
     await expect(getComputedStyle(preview("--pulmu-z-sticky").firstElementChild!).zIndex).toBe("100");
     await expect(getComputedStyle(preview("--pulmu-breakpoint-mobile")).maxWidth).toBe("390px");
-    await expect(getComputedStyle(preview("--pulmu-duration-fast")).transitionDuration).toBe("0.12s");
+    const durationPreview = getComputedStyle(preview("--pulmu-duration-fast")).transitionDuration;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      await expect(Number.parseFloat(durationPreview)).toBeLessThanOrEqual(0.00001);
+    } else {
+      await expect(durationPreview).toBe("0.12s");
+    }
     await expect(getComputedStyle(preview("--pulmu-easing-standard")).transitionTimingFunction).toContain("cubic-bezier");
 
     const firstLink = canvas.getByRole("link", { name: "Semantic" });
     firstLink.focus();
     await expect(firstLink).toHaveFocus();
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
+  },
+};
+
+export const ReducedMotionAndFocus: Story = {
+  globals: { motion: "reduced" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const root = document.documentElement;
+    const rootStyles = getComputedStyle(root);
+
+    await expect(root).toHaveAttribute("data-motion", "reduced");
+    for (const duration of ["fast", "normal", "slow"]) {
+      await expect(rootStyles.getPropertyValue(`--pulmu-motion-duration-${duration}`).trim()).toBe("0ms");
+    }
+
+    const motionPreview = canvasElement.querySelector<HTMLElement>(
+      '[data-token-preview="--pulmu-motion-duration-fast"]',
+    )!;
+    const motionStyles = getComputedStyle(motionPreview);
+    await expect(Number.parseFloat(motionStyles.transitionDuration)).toBeLessThanOrEqual(0.00001);
+    await expect(Number.parseFloat(motionStyles.animationDuration)).toBeLessThanOrEqual(0.00001);
+
+    const firstLink = canvas.getByRole("link", { name: "Semantic" });
+    await userEvent.tab();
+    const hasFocus = document.activeElement === firstLink;
+    const isFocusVisible = firstLink.matches(":focus-visible");
+    const { outlineColor, outlineOffset, outlineStyle, outlineWidth } = getComputedStyle(firstLink);
+    const focusPreview = canvasElement.querySelector<HTMLElement>(
+      '[data-token-preview="--pulmu-focus-ring-color"]',
+    )!;
+    const focusTokenColor = getComputedStyle(focusPreview).backgroundColor;
+    await expect(hasFocus).toBe(true);
+    await expect(isFocusVisible).toBe(true);
+    await expect(outlineWidth).toBe("3px");
+    await expect(outlineStyle).toBe("solid");
+    if (window.matchMedia("(forced-colors: active)").matches) {
+      await expect(outlineColor).not.toBe("");
+    } else {
+      await expect(outlineColor).toBe(focusTokenColor);
+    }
+    await expect(outlineOffset).toBe("3px");
   },
 };
 

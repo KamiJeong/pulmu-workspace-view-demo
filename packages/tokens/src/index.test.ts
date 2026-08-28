@@ -16,6 +16,24 @@ import {
 
 const css = readFileSync(new URL("./global.css", import.meta.url), "utf8");
 
+const rootBlock = css.match(/^:root\s*\{([\s\S]*?)^\}/m)?.[1] ?? "";
+const readDeclarations = (source: string) =>
+  new Map(
+    [...source.matchAll(/(^|\s)(--pulmu-[\w-]+):\s*([^;]+);/gm)]
+      .map(([, , name, value]) => [name, value.trim()] as const),
+  );
+const rootDeclarations = readDeclarations(rootBlock);
+
+const resolveCssVariable = (name: string, seen = new Set<string>()): string => {
+  if (seen.has(name)) throw new Error(`Circular CSS variable reference: ${name}`);
+  const value = rootDeclarations.get(name);
+  if (!value) throw new Error(`Missing CSS variable: ${name}`);
+  const nextSeen = new Set(seen).add(name);
+  return value.replace(/var\((--pulmu-[^)]+)\)/g, (_, reference: string) =>
+    resolveCssVariable(reference, nextSeen),
+  );
+};
+
 const hexToRgb = (hex: string) => {
   const value = hex.replace("#", "");
   return [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
@@ -36,16 +54,17 @@ const contrast = (foreground: string, background: string) => {
 
 describe("token registries", () => {
   it("keeps every TypeScript token synchronized with the CSS contract", () => {
-    const cssValues = new Map<string, string>();
-    for (const [, , name, value] of css.matchAll(/(^|\s)(--pulmu-[\w-]+):\s*([^;]+);/gm)) {
-      if (!cssValues.has(name)) cssValues.set(name, value.trim());
-    }
-
-    expect(new Set(tokenCatalog.map(({ cssVar }) => cssVar)).size).toBe(tokenCatalog.length);
+    const catalogNames = tokenCatalog.map(({ cssVar }) => cssVar);
+    expect(new Set(catalogNames).size).toBe(tokenCatalog.length);
+    expect([...rootDeclarations.keys()].sort()).toEqual([...catalogNames].sort());
     for (const definition of tokenCatalog) {
-      expect(cssValues.get(definition.cssVar)?.replaceAll('"', "'")).toBe(
+      expect(rootDeclarations.get(definition.cssVar)?.replaceAll('"', "'")).toBe(
         definition.value.replaceAll('"', "'"),
       );
+    }
+
+    for (const name of readDeclarations(css).keys()) {
+      expect(rootDeclarations.has(name), `Scoped override must redeclare a base token: ${name}`).toBe(true);
     }
     expect(css.indexOf("Primitive tokens")).toBeLessThan(css.indexOf("Semantic tokens"));
     expect(css.indexOf("Semantic tokens")).toBeLessThan(css.indexOf("Component tokens"));
@@ -79,19 +98,20 @@ describe("token registries", () => {
 });
 
 describe("dark theme accessibility contracts", () => {
-  const canvas = primitiveTokens.color.neutral950.value;
-  const surface = primitiveTokens.color.neutral900.value;
-  const elevated = primitiveTokens.color.neutral850.value;
+  const resolve = ({ cssVar }: { cssVar: string }) => resolveCssVariable(cssVar);
+  const canvas = resolve(semanticTokens.color.canvas);
+  const surface = resolve(semanticTokens.color.surface);
+  const elevated = resolve(semanticTokens.color.surfaceElevated);
 
   it("meets documented text and UI-boundary contrast thresholds", () => {
-    expect(contrast(primitiveTokens.color.neutral100.value, canvas)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(primitiveTokens.color.neutral400.value, surface)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(primitiveTokens.color.neutral700.value, elevated)).toBeGreaterThanOrEqual(3);
-    expect(contrast(primitiveTokens.color.orange400.value, primitiveTokens.color.neutral950.value)).toBeGreaterThanOrEqual(3);
+    expect(contrast(resolve(semanticTokens.color.text), canvas)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(resolve(semanticTokens.color.textMuted), surface)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(resolve(semanticTokens.color.border), elevated)).toBeGreaterThanOrEqual(3);
+    expect(contrast(resolve(semanticTokens.color.action), canvas)).toBeGreaterThanOrEqual(3);
   });
 
   it("keeps the focus ring identifiable on every dark surface", () => {
-    const focus = primitiveTokens.color.orange300.value;
+    const focus = resolve(semanticTokens.color.focus);
     for (const background of [canvas, surface, elevated]) {
       expect(contrast(focus, background)).toBeGreaterThanOrEqual(3);
     }
@@ -118,5 +138,11 @@ describe("dark theme accessibility contracts", () => {
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
     expect(css).toContain(':root[data-motion="reduced"]');
     expect(css).toContain("--pulmu-motion-duration-fast: var(--pulmu-duration-instant)");
+  });
+
+  it("preserves visible forced-color links and native button colors", () => {
+    expect(css).toContain("--pulmu-color-action-default: LinkText");
+    expect(css).toContain("--pulmu-button-background: ButtonFace");
+    expect(css).toContain("--pulmu-button-foreground: ButtonText");
   });
 });

@@ -220,10 +220,10 @@ export function TokenCatalog() {
         <aside className="token-catalog__rule" aria-labelledby="arbitrary-rule-heading">
           <h3 id="arbitrary-rule-heading" lang="en">No arbitrary values</h3>
           <p>
-            Source와 Storybook에서 임의 color·spacing literal 또는 Tailwind arbitrary value를 추가하지 않는다. 먼저 적절한
-            semantic token을 재사용하고, 의미가 없을 때만 이 package에 primitive → semantic → component 순서로 추가한다.
-            Tailwind를 쓰는 consumer도 config에서 이 CSS/TypeScript 계약을 참조해야 하며 token package 자체는 Tailwind에
-            의존하지 않는다.
+            제품 styling과 Storybook catalog layout에 임의 color·spacing literal 또는 Tailwind arbitrary value를 추가하지
+            않는다. 먼저 적절한 semantic token을 재사용하고, 재사용할 의미가 있을 때만 이 package에 primitive → semantic →
+            component 순서로 추가한다. Intrinsic zero·percentage와 token 값을 시각화하는 demo mechanics는 예외다. Tailwind를
+            쓰는 consumer도 config에서 이 CSS/TypeScript 계약을 참조해야 하며 token package 자체는 Tailwind에 의존하지 않는다.
           </p>
         </aside>
       </section>

@@ -233,8 +233,12 @@ button, input, select, textarea { font: inherit; }
     --pulmu-color-border-strong: CanvasText;
     --pulmu-color-text-primary: CanvasText;
     --pulmu-color-text-muted: CanvasText;
-    --pulmu-color-action-default: ButtonFace;
-    --pulmu-color-action-text: ButtonText;
+    --pulmu-color-action-default: LinkText;
+    --pulmu-color-action-hover: LinkText;
+    --pulmu-color-action-pressed: LinkText;
+    --pulmu-color-action-text: Canvas;
     --pulmu-color-focus-ring: Highlight;
+    --pulmu-button-background: ButtonFace;
+    --pulmu-button-foreground: ButtonText;
   }
 }
