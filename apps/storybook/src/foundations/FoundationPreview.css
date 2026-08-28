@@ -8,7 +8,7 @@
 
 .foundation-preview__eyebrow {
   margin: 0 0 0.5rem;
-  color: var(--foundation-action);
+  color: var(--pulmu-color-action-default);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -24,15 +24,15 @@
 .foundation-preview__summary {
   max-width: 66ch;
   margin: 0.75rem 0 0;
-  color: var(--foundation-muted);
+  color: var(--pulmu-color-text-muted);
   line-height: 1.6;
 }
 
 .foundation-preview__panel {
   padding: clamp(1rem, 4vw, 1.5rem);
-  border: 1px solid var(--foundation-border);
-  border-radius: 0.75rem;
-  background: var(--foundation-surface);
+  border: var(--pulmu-panel-border);
+  border-radius: var(--pulmu-panel-radius);
+  background: var(--pulmu-panel-background);
 }
 
 .foundation-preview__panel h2 {
@@ -52,7 +52,7 @@
 }
 
 .foundation-preview__settings dt {
-  color: var(--foundation-muted);
+  color: var(--pulmu-color-text-muted);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -66,12 +66,12 @@
 
 .foundation-preview__button {
   min-width: 11rem;
-  min-height: 44px;
-  padding: 0.625rem 1rem;
+  min-height: var(--pulmu-button-min-height);
+  padding: var(--pulmu-space-3) var(--pulmu-button-padding-inline);
   border: 1px solid transparent;
-  border-radius: 0.5rem;
-  background: var(--foundation-action);
-  color: var(--foundation-action-text);
+  border-radius: var(--pulmu-button-radius);
+  background: var(--pulmu-button-background);
+  color: var(--pulmu-button-foreground);
   cursor: pointer;
   font-weight: 750;
 }
@@ -81,4 +81,3 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-

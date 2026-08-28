@@ -15,7 +15,7 @@ const preview: Preview = {
   ],
   globalTypes: {
     theme: {
-      description: "Provisional preview theme",
+      description: "Dark token theme or compatibility light preview",
       toolbar: {
         items: [
           { title: "Dark", value: "dark" },
