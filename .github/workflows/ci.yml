@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-14
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Show Bash runtime
+        run: /bin/bash --version
+
+      - name: Validate shell syntax
+        run: /bin/bash -n install.sh uninstall.sh .agents/skills/pulmu/scripts/*.sh
+
+      - name: Validate Python syntax
+        run: python3 -c 'import ast, pathlib; ast.parse(pathlib.Path(".agents/skills/pulmu/scripts/run-context.py").read_text())'
+
+      - name: Validate agent configuration
+        run: python3 -c 'import pathlib, tomllib; [tomllib.loads(path.read_text()) for path in pathlib.Path(".codex").rglob("*.toml")]'
+
+      - name: Validate packaged runtime files
+        run: |
+          test -f .agents/skills/pulmu/SKILL.md
+          test -f .agents/skills/pulmu/agents/openai.yaml
+          test "$(find .codex/agents -name 'pulmu-*.toml' -type f | wc -l | tr -d ' ')" -eq 12
