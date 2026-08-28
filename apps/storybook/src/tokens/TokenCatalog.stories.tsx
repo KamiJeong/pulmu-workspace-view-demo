@@ -57,6 +57,9 @@ export const DarkFoundations: Story = {
     await expect(getComputedStyle(lineHeightPreview).fontWeight).toBe("400");
     await expect(getComputedStyle(lineHeightPreview).lineHeight).toBe("26.4px");
     await expect(lineHeightPreview.scrollHeight).toBeLessThanOrEqual(lineHeightPreview.clientHeight);
+    await expect(
+      getComputedStyle(preview("--pulmu-typography-metric-variant-numeric")).fontVariantNumeric,
+    ).toContain("tabular-nums");
     await expect(getComputedStyle(preview("--pulmu-space-2")).gap).toBe("8px");
     await expect(getComputedStyle(preview("--pulmu-size-icon-sm")).width).toBe("16px");
     await expect(getComputedStyle(preview("--pulmu-radius-md")).borderRadius).toBe("12px");

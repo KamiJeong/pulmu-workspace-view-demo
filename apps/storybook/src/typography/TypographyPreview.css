@@ -1,0 +1,230 @@
+.typography-preview {
+  width: min(100%, var(--pulmu-size-content-max));
+  min-width: 0;
+  margin: 0 auto;
+  padding: var(--pulmu-spacing-panel);
+  color: var(--pulmu-color-text-primary);
+  font-family: var(--pulmu-typography-body-family);
+  font-size: var(--pulmu-typography-body-size);
+  font-weight: var(--pulmu-typography-body-weight);
+  line-height: var(--pulmu-typography-body-line-height);
+  overflow-wrap: anywhere;
+}
+
+.typography-preview--forced-fallback,
+.typography-preview__fallback-sample {
+  --pulmu-typography-body-family: "__PulmuMissingPreferred__", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --pulmu-typography-caption-family: "__PulmuMissingPreferred__", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --pulmu-typography-heading-family: "__PulmuMissingPreferred__", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --pulmu-typography-label-family: "__PulmuMissingPreferred__", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --pulmu-typography-metric-family: "__PulmuMissingPreferred__", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.typography-preview__header,
+.typography-preview__section {
+  margin-block-end: var(--pulmu-spacing-section);
+}
+
+.typography-preview__eyebrow {
+  margin: 0 0 var(--pulmu-space-2);
+  color: var(--pulmu-color-action-default);
+  font: var(--pulmu-typography-label-weight) var(--pulmu-typography-label-size) / var(--pulmu-typography-label-line-height) var(--pulmu-typography-label-family);
+}
+
+.typography-preview h1,
+.typography-preview h2,
+.typography-preview h3 {
+  font-family: var(--pulmu-typography-heading-family);
+  font-weight: var(--pulmu-typography-heading-weight);
+  line-height: var(--pulmu-typography-heading-line-height);
+}
+
+.typography-preview h1 {
+  margin: 0;
+  font-size: var(--pulmu-typography-heading-page-size);
+}
+
+.typography-preview h2 {
+  margin: 0;
+  font-size: var(--pulmu-typography-heading-section-size);
+}
+
+.typography-preview h3 {
+  margin: 0 0 var(--pulmu-space-2);
+  font-size: var(--pulmu-typography-label-size);
+}
+
+.typography-preview__intro {
+  max-width: 66ch;
+  margin: var(--pulmu-space-3) 0 0;
+  color: var(--pulmu-color-text-muted);
+}
+
+.typography-preview__section,
+.typography-preview__license {
+  min-width: 0;
+  padding: var(--pulmu-spacing-panel);
+  border: var(--pulmu-border-default);
+  border-radius: var(--pulmu-radius-panel);
+  background: var(--pulmu-color-surface-default);
+}
+
+.typography-preview__section-heading {
+  margin-block-end: var(--pulmu-space-4);
+}
+
+.typography-preview__section-heading p,
+.typography-preview__license p {
+  margin: var(--pulmu-space-2) 0 0;
+  color: var(--pulmu-color-text-muted);
+  font: var(--pulmu-typography-caption-weight) var(--pulmu-typography-caption-size) / var(--pulmu-typography-caption-line-height) var(--pulmu-typography-caption-family);
+}
+
+.typography-preview__scale,
+.typography-preview__metric-card,
+.typography-preview__references {
+  display: grid;
+  gap: var(--pulmu-space-3);
+  min-width: 0;
+  margin: 0;
+}
+
+.typography-preview__scale > div,
+.typography-preview__metric-card,
+.typography-preview__references,
+.typography-preview__resilience > div {
+  min-width: 0;
+  padding: var(--pulmu-space-4);
+  border: var(--pulmu-border-default);
+  border-radius: var(--pulmu-radius-control);
+  background: var(--pulmu-color-surface-elevated);
+}
+
+.typography-preview dt {
+  margin-block-end: var(--pulmu-space-1);
+  color: var(--pulmu-color-text-muted);
+  font: var(--pulmu-typography-caption-weight) var(--pulmu-typography-caption-size) / var(--pulmu-typography-caption-line-height) var(--pulmu-typography-caption-family);
+}
+
+.typography-preview dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.type-page {
+  font: var(--pulmu-typography-heading-weight) var(--pulmu-typography-heading-page-size) / var(--pulmu-typography-heading-line-height) var(--pulmu-typography-heading-family);
+}
+
+.type-section {
+  font: var(--pulmu-typography-heading-weight) var(--pulmu-typography-heading-section-size) / var(--pulmu-typography-heading-line-height) var(--pulmu-typography-heading-family);
+}
+
+.type-body {
+  font: var(--pulmu-typography-body-weight) var(--pulmu-typography-body-size) / var(--pulmu-typography-body-line-height) var(--pulmu-typography-body-family);
+}
+
+.type-label {
+  font: var(--pulmu-typography-label-weight) var(--pulmu-typography-label-size) / var(--pulmu-typography-label-line-height) var(--pulmu-typography-label-family);
+}
+
+.type-caption {
+  color: var(--pulmu-color-text-muted);
+  font: var(--pulmu-typography-caption-weight) var(--pulmu-typography-caption-size) / var(--pulmu-typography-caption-line-height) var(--pulmu-typography-caption-family);
+}
+
+.typography-preview__run-status {
+  display: flex;
+  align-items: baseline;
+  gap: var(--pulmu-spacing-inline);
+  min-width: 0;
+  margin-block-end: var(--pulmu-space-4);
+  font: var(--pulmu-typography-label-weight) var(--pulmu-typography-label-size) / var(--pulmu-typography-label-line-height) var(--pulmu-typography-label-family);
+}
+
+.typography-preview__status-mark {
+  color: var(--pulmu-color-status-running);
+}
+
+.typography-preview__stages {
+  display: grid;
+  gap: var(--pulmu-space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.typography-preview__stages li {
+  display: flex;
+  gap: var(--pulmu-spacing-inline);
+  min-width: 0;
+  padding: var(--pulmu-space-3);
+  border-inline-start: var(--pulmu-border-selected);
+  background: var(--pulmu-color-surface-elevated);
+  font: var(--pulmu-typography-label-weight) var(--pulmu-typography-label-size) / var(--pulmu-typography-label-line-height) var(--pulmu-typography-label-family);
+}
+
+.typography-preview__metrics,
+.typography-preview__resilience {
+  display: grid;
+  gap: var(--pulmu-space-3);
+  min-width: 0;
+}
+
+.typography-preview__metric-card dd {
+  font-family: var(--pulmu-typography-metric-family);
+  font-size: var(--pulmu-typography-metric-size);
+  font-variant-numeric: var(--pulmu-typography-metric-variant-numeric);
+  font-weight: var(--pulmu-typography-metric-weight);
+  line-height: var(--pulmu-typography-metric-line-height);
+}
+
+.typography-preview code {
+  font-family: var(--pulmu-typography-code-family);
+  font-size: var(--pulmu-typography-code-size);
+  font-weight: var(--pulmu-typography-code-weight);
+  line-height: var(--pulmu-typography-code-line-height);
+}
+
+.typography-preview__references dd,
+.typography-preview__wrapped {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.typography-preview__wrapped,
+.typography-preview__ellipsis {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.typography-preview__ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typography-preview__ellipsis:focus-visible {
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.typography-preview__license {
+  background: var(--pulmu-color-surface-elevated);
+}
+
+@media (min-width: 48rem) {
+  .typography-preview__scale,
+  .typography-preview__metrics,
+  .typography-preview__resilience {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .typography-preview__resilience > :last-child {
+    grid-column: 1 / -1;
+  }
+}

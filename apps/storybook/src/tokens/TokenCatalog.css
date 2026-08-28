@@ -110,6 +110,7 @@
 .token-preview--typography[data-token-preview-variant="size"] { font-size: min(var(--token-sample-value), var(--pulmu-font-size-lg)); }
 .token-preview--typography[data-token-preview-variant="weight"] { font-weight: var(--token-sample-value); }
 .token-preview--typography[data-token-preview-variant="line-height"] { line-height: var(--token-sample-value); }
+.token-preview--typography[data-token-preview-variant="numeric"] { font-variant-numeric: var(--token-sample-value); }
 .token-preview--spacing {
   display: inline-flex;
   align-items: center;

@@ -95,6 +95,38 @@ describe("token registries", () => {
     expect(Object.keys(stageStatusTokens)).toEqual([...PULMU_STAGE_STATUSES]);
     expect(Object.keys(stageTokens)).toEqual(PULMU_STAGES.map(({ id }) => id));
   });
+
+  it("maps each typography role to the shared primitive scale", () => {
+    expect(semanticTokens.typography).toMatchObject({
+      headingFamily: { value: "var(--pulmu-font-family-sans)" },
+      headingPageSize: { value: "var(--pulmu-font-size-xl)" },
+      headingSectionSize: { value: "var(--pulmu-font-size-lg)" },
+      headingLineHeight: { value: "var(--pulmu-line-height-tight)" },
+      headingWeight: { value: "var(--pulmu-font-weight-bold)" },
+      bodyFamily: { value: "var(--pulmu-font-family-sans)" },
+      bodySize: { value: "var(--pulmu-font-size-md)" },
+      bodyLineHeight: { value: "var(--pulmu-line-height-normal)" },
+      bodyWeight: { value: "var(--pulmu-font-weight-regular)" },
+      labelFamily: { value: "var(--pulmu-font-family-sans)" },
+      labelSize: { value: "var(--pulmu-font-size-sm)" },
+      labelLineHeight: { value: "var(--pulmu-line-height-normal)" },
+      labelWeight: { value: "var(--pulmu-font-weight-medium)" },
+      captionFamily: { value: "var(--pulmu-font-family-sans)" },
+      captionSize: { value: "var(--pulmu-font-size-xs)" },
+      captionLineHeight: { value: "var(--pulmu-line-height-normal)" },
+      captionWeight: { value: "var(--pulmu-font-weight-regular)" },
+      metricFamily: { value: "var(--pulmu-font-family-sans)" },
+      metricSize: { value: "var(--pulmu-font-size-xl)" },
+      metricLineHeight: { value: "var(--pulmu-line-height-tight)" },
+      metricWeight: { value: "var(--pulmu-font-weight-bold)" },
+      metricVariantNumeric: { value: "tabular-nums" },
+      codeFamily: { value: "var(--pulmu-font-family-mono)" },
+      codeSize: { value: "var(--pulmu-font-size-sm)" },
+      codeLineHeight: { value: "var(--pulmu-line-height-normal)" },
+      codeWeight: { value: "var(--pulmu-font-weight-regular)" },
+    });
+    expect(primitiveTokens.fontFamily.sans.value).toMatch(/^Inter, .*system-ui.*sans-serif$/);
+  });
 });
 
 describe("dark theme accessibility contracts", () => {
@@ -105,7 +137,9 @@ describe("dark theme accessibility contracts", () => {
 
   it("meets documented text and UI-boundary contrast thresholds", () => {
     expect(contrast(resolve(semanticTokens.color.text), canvas)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(resolve(semanticTokens.color.textMuted), surface)).toBeGreaterThanOrEqual(4.5);
+    for (const background of [canvas, surface, elevated]) {
+      expect(contrast(resolve(semanticTokens.color.textMuted), background)).toBeGreaterThanOrEqual(4.5);
+    }
     expect(contrast(resolve(semanticTokens.color.border), elevated)).toBeGreaterThanOrEqual(3);
     expect(contrast(resolve(semanticTokens.color.action), canvas)).toBeGreaterThanOrEqual(3);
   });
