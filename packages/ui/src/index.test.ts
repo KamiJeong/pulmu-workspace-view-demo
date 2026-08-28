@@ -6,25 +6,7 @@ import { PULMU_UI_MATURITY, componentMaturity } from ".";
 const css = readFileSync(new URL("./global.css", import.meta.url), "utf8");
 const source = readFileSync(new URL("./index.ts", import.meta.url), "utf8");
 const tokenCss = readFileSync(new URL("../../tokens/src/global.css", import.meta.url), "utf8");
-const tokenRoot = tokenCss.match(/^:root\s*\{([\s\S]*?)^\}/m)?.[1] ?? "";
-const tokenDeclarations = new Map(
-  [...tokenRoot.matchAll(/(--pulmu-[\w-]+):\s*([^;]+);/g)].map(([, name, value]) => [name, value.trim()]),
-);
-const resolveToken = (name: string): string => {
-  const value = tokenDeclarations.get(name);
-  if (!value) throw new Error(`Missing token ${name}`);
-  const reference = value.match(/^var\((--pulmu-[^)]+)\)$/)?.[1];
-  return reference ? resolveToken(reference) : value;
-};
-const rgb = (hex: string) => [0, 2, 4].map((offset) => Number.parseInt(hex.slice(1 + offset, 3 + offset), 16));
-const luminance = (channels: number[]) => channels
-  .map((channel) => channel / 255)
-  .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
-  .reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0);
-const contrast = (first: number[], second: number[]) => {
-  const values = [luminance(first), luminance(second)].sort((a, b) => b - a);
-  return (values[0] + 0.05) / (values[1] + 0.05);
-};
+const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{([^}]+)\\}`))?.[1] ?? "";
 
 describe("core UI public contract", () => {
   it("publishes every issue #7 primitive at beta maturity", () => {
@@ -47,17 +29,46 @@ describe("core UI public contract", () => {
     expect(css).toContain("@media (forced-colors: active)");
   });
 
-  it("keeps destructive hover and active states on the failed-status color family", () => {
-    expect(css).toContain(".pulmu-button--danger:hover:not(:disabled)");
-    expect(css).toContain(".pulmu-button--danger:active:not(:disabled)");
-    expect(css).toContain("color: var(--pulmu-color-danger-action-text)");
-    expect(css.match(/\.pulmu-button--danger:(?:hover|active)[^{]+\{[^}]+\}/g)?.every((rule) =>
-      rule.includes("var(--pulmu-color-status-failed)"),
-    )).toBe(true);
-    const activeShare = Number(css.match(/\.pulmu-button--danger:active[^}]+status-failed\)\s+(\d+)%/)?.[1]) / 100;
-    const activeBackground = rgb(resolveToken("--pulmu-color-status-failed")).map((channel) => channel * activeShare);
-    const label = rgb(resolveToken("--pulmu-color-danger-action-text"));
-    expect(activeShare).toBeGreaterThanOrEqual(0.76);
-    expect(contrast(activeBackground, label)).toBeGreaterThanOrEqual(4.5);
+  it("uses only current semantic and component color roles", () => {
+    expect(css).not.toMatch(/--pulmu-color-surface-elevated|--pulmu-color-status-(?:running|completed|failed|interrupted)/);
+    expect(css).not.toMatch(/color-mix\(|(?:background|color|border(?:-color)?):\s*(?:#|rgb\()/);
+    for (const [, token] of css.matchAll(/var\((--pulmu-[\w-]+)\)/g)) {
+      expect(tokenCss, `missing token declaration for ${token}`).toContain(`${token}:`);
+    }
+  });
+
+  it("keeps primary, secondary, quiet, and danger interaction states isolated", () => {
+    expect(rule(".pulmu-button--primary:hover:not(:disabled)")).toContain("var(--pulmu-color-action-hover)");
+    expect(rule(".pulmu-button--primary:active:not(:disabled)")).toContain("var(--pulmu-color-action-pressed)");
+    expect(rule(".pulmu-button--secondary")).toContain("var(--pulmu-color-surface-default)");
+    expect(rule(".pulmu-button--secondary:hover:not(:disabled)")).toContain("var(--pulmu-color-surface-hover)");
+    expect(rule(".pulmu-button--secondary:active:not(:disabled)")).toContain("var(--pulmu-color-surface-subtle)");
+    expect(rule(".pulmu-button--quiet:hover:not(:disabled)")).toContain("var(--pulmu-color-surface-hover)");
+    expect(rule(".pulmu-button--quiet:active:not(:disabled)")).toContain("var(--pulmu-color-surface-subtle)");
+    expect(rule(".pulmu-button--danger")).toContain("var(--pulmu-color-status-danger-foreground)");
+    expect(rule(".pulmu-button--danger:hover:not(:disabled)")).toContain("var(--pulmu-color-danger-action-text)");
+    expect(rule(".pulmu-button--danger:active:not(:disabled)")).toContain("var(--pulmu-color-danger-action-text)");
+    expect(css).not.toMatch(/\.pulmu-button:(?:hover|active):not\(:disabled\)/);
+  });
+
+  it("covers field, selection, focus, invalid, and disabled states", () => {
+    expect(rule(".pulmu-input:hover:not(:disabled), .pulmu-select:hover:not(:disabled)")).toContain("var(--pulmu-color-border-strong)");
+    expect(rule(".pulmu-input:focus-visible, .pulmu-select:focus-visible")).toContain("var(--pulmu-color-border-interactive)");
+    expect(rule(".pulmu-input:disabled, .pulmu-select:disabled")).toContain("var(--pulmu-color-surface-subtle)");
+    expect(rule(".pulmu-field--invalid .pulmu-input, .pulmu-field--invalid .pulmu-select")).toContain("var(--pulmu-color-status-danger-foreground)");
+    expect(rule(".pulmu-check:checked + .pulmu-check__visual, .pulmu-check-field__label:hover .pulmu-check:checked:not(:disabled) + .pulmu-check__visual")).toContain("var(--pulmu-color-brand-soft)");
+    expect(rule(".pulmu-check:focus-visible + .pulmu-check__visual")).toContain("var(--pulmu-focus-ring-width)");
+  });
+
+  it("uses subtle status fills and restrained surface hierarchy", () => {
+    for (const tone of ["info", "success", "warning", "danger"]) {
+      expect(rule(`.pulmu-tone--${tone}`)).toContain(`var(--pulmu-color-status-${tone}-subtle)`);
+      expect(rule(`.pulmu-tone--${tone}`)).toContain(`var(--pulmu-color-status-${tone}-foreground)`);
+    }
+    expect(rule(".pulmu-card")).toContain("var(--pulmu-panel-background)");
+    expect(rule(".pulmu-card")).toContain("var(--pulmu-shadow-raised)");
+    expect(rule(".pulmu-tooltip__content, .pulmu-popover__content, .pulmu-menu__content")).toContain("var(--pulmu-color-surface-default)");
+    expect(rule(".pulmu-tooltip__content, .pulmu-popover__content, .pulmu-menu__content")).toContain("var(--pulmu-shadow-overlay)");
+    expect(css).toMatch(/(?:^|\n)\.pulmu-tabs__tab\[aria-selected="true"\]\s*\{[^}]+var\(--pulmu-color-brand-soft\)/);
   });
 });
