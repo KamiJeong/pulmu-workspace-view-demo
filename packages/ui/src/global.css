@@ -30,7 +30,7 @@
 .pulmu-button--danger[data-loading="true"] { background: var(--pulmu-color-status-failed); }
 .pulmu-button--secondary { background: var(--pulmu-color-surface-elevated); border-color: var(--pulmu-color-border-default); color: var(--pulmu-color-text-primary); }
 .pulmu-button--secondary:hover:not(:disabled), .pulmu-button--quiet:hover:not(:disabled) { background: var(--pulmu-color-surface-default); border-color: var(--pulmu-color-border-strong); }
-.pulmu-button--danger { background: var(--pulmu-color-status-failed); color: var(--pulmu-color-text-inverse); }
+.pulmu-button--danger { background: var(--pulmu-color-status-failed); color: var(--pulmu-color-danger-action-text); }
 .pulmu-button--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--pulmu-color-status-failed) 82%, black); }
 .pulmu-button--danger:active:not(:disabled) { background: color-mix(in srgb, var(--pulmu-color-status-failed) 76%, black); }
 .pulmu-button--quiet { background: transparent; color: var(--pulmu-color-text-primary); }

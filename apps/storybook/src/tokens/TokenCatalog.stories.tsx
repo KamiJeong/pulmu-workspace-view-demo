@@ -18,19 +18,23 @@ export const DarkFoundations: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const pageHeading = canvas.getByRole("heading", { level: 1, name: "Token catalog" });
+    const pageHeading = canvas.getByRole("heading", { level: 1, name: "Iron & Ember color tokens" });
     await expect(pageHeading).toBeVisible();
     await expect(pageHeading).toHaveAttribute("lang", "en");
     await expect(canvas.getByRole("list", { name: "Primitive tokens" })).toHaveAttribute("lang", "en");
     for (const heading of [
-      "Semantic foundations and contrast",
-      "Action, status, and canonical stages",
-      "Chart palette and motion",
-      "Primitive scale",
-      "Component aliases and consumption",
+      "Light and Dark source palettes",
+      "Semantic roles and contrast",
+      "Forge lifecycle mapping",
+      "Theme-aware charts",
+      "Compatibility and consumption",
     ]) {
       await expect(canvas.getByRole("heading", { name: heading })).toBeVisible();
     }
+    await expect(canvas.getByRole("list", { name: "light theme palette" })).toBeVisible();
+    await expect(canvas.getByRole("list", { name: "dark theme palette" })).toBeVisible();
+    await expect(canvas.getAllByText("#E66A32").length).toBeGreaterThan(0);
+    await expect(canvas.getAllByText("#D85B26").length).toBeGreaterThan(0);
     for (const stage of PULMU_STAGES) {
       await expect(canvas.getByText(`${stage.icon} ${stage.name}`)).toBeVisible();
     }
@@ -77,9 +81,22 @@ export const DarkFoundations: Story = {
     }
     await expect(getComputedStyle(preview("--pulmu-easing-standard")).transitionTimingFunction).toContain("cubic-bezier");
 
-    const firstLink = canvas.getByRole("link", { name: "Semantic" });
+    const firstLink = canvas.getByRole("link", { name: "Palettes" });
     firstLink.focus();
     await expect(firstLink).toHaveFocus();
+    await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
+  },
+};
+
+export const LightFoundations: Story = {
+  globals: { theme: "light" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    await expect(canvas.getByRole("heading", { level: 1, name: "Iron & Ember color tokens" })).toBeVisible();
+    const rootStyles = getComputedStyle(document.documentElement);
+    await expect(rootStyles.getPropertyValue("--pulmu-color-surface-canvas").trim()).toBe("#F7F7F5");
+    await expect(rootStyles.getPropertyValue("--pulmu-color-brand-default").trim()).toBe("#D85B26");
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
   },
 };
@@ -103,7 +120,7 @@ export const ReducedMotionAndFocus: Story = {
     await expect(Number.parseFloat(motionStyles.transitionDuration)).toBeLessThanOrEqual(0.00001);
     await expect(Number.parseFloat(motionStyles.animationDuration)).toBeLessThanOrEqual(0.00001);
 
-    const firstLink = canvas.getByRole("link", { name: "Semantic" });
+    const firstLink = canvas.getByRole("link", { name: "Palettes" });
     await userEvent.tab();
     const hasFocus = document.activeElement === firstLink;
     const isFocusVisible = firstLink.matches(":focus-visible");
@@ -129,7 +146,7 @@ export const NarrowReflow: Story = {
   globals: { viewport: { isRotated: false, value: "narrow" } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { level: 1, name: "Token catalog" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { level: 1, name: "Iron & Ember color tokens" })).toBeVisible();
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
   },
 };
