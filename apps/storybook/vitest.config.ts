@@ -11,6 +11,14 @@ export default defineConfig({
   test: {
     projects: [
       {
+        root: path.resolve(directory, "../.."),
+        test: {
+          environment: "node",
+          include: ["packages/**/*.test.ts"],
+          name: "unit",
+        },
+      },
+      {
         extends: true,
         root: directory,
         plugins: [

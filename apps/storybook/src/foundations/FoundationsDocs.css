@@ -1,0 +1,37 @@
+.sbdocs-wrapper:has(.foundations-docs),
+.sbdocs-content:has(.foundations-docs),
+#storybook-docs:has(.foundations-docs) {
+  background: var(--foundation-canvas);
+  color: var(--foundation-text);
+}
+
+.foundations-docs {
+  width: 100%;
+  max-width: 72ch;
+  min-width: 0;
+  background: var(--foundation-canvas);
+  color: var(--foundation-text);
+  overflow-wrap: anywhere;
+}
+
+.foundations-docs :is(h1, h2, h3, dt, dd, li, p, strong) {
+  color: inherit;
+}
+
+.foundations-docs a,
+.foundations-docs a:visited {
+  color: var(--foundation-action) !important;
+}
+
+.foundations-docs code {
+  border-color: var(--foundation-border) !important;
+  background: var(--foundation-surface) !important;
+  color: var(--foundation-text) !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+.foundations-docs h2:focus {
+  outline: 3px solid var(--foundation-focus) !important;
+  outline-offset: 3px !important;
+}
