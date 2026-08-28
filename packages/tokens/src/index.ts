@@ -26,6 +26,70 @@ const token = <
 >(cssVar: CssVar, value: Value, description: Description, usage: Usage) =>
   ({ cssVar, value, description, usage }) as const;
 
+export type ColorThemeName = "light" | "dark";
+
+export type IronAndEmberPalette = {
+  readonly canvas: string;
+  readonly surface: string;
+  readonly surfaceSubtle: string;
+  readonly surfaceHover: string;
+  readonly border: string;
+  readonly borderStrong: string;
+  readonly textPrimary: string;
+  readonly textSecondary: string;
+  readonly textMuted: string;
+  readonly brand: string;
+  readonly brandHover: string;
+  readonly brandSoft: string;
+  readonly success: string;
+  readonly warning: string;
+  readonly danger: string;
+  readonly info: string;
+};
+
+/** Exact source palettes. Consume semantic tokens in product UI rather than these literals. */
+export const ironAndEmberPalettes = {
+  light: {
+    canvas: "#F7F7F5",
+    surface: "#FFFFFF",
+    surfaceSubtle: "#F1F1EE",
+    surfaceHover: "#ECEDEA",
+    border: "#DADCD8",
+    borderStrong: "#BEC2BE",
+    textPrimary: "#1B1D1F",
+    textSecondary: "#62676C",
+    textMuted: "#8D9297",
+    brand: "#D85B26",
+    brandHover: "#BF491B",
+    brandSoft: "#FFF0E8",
+    success: "#3F8F62",
+    warning: "#C28A2E",
+    danger: "#C65353",
+    info: "#4D78A8",
+  },
+  dark: {
+    canvas: "#111315",
+    surface: "#171A1D",
+    surfaceSubtle: "#1D2125",
+    surfaceHover: "#24292E",
+    border: "#2D3338",
+    borderStrong: "#3A4147",
+    textPrimary: "#F3F4F2",
+    textSecondary: "#A8AFB5",
+    textMuted: "#747C83",
+    brand: "#E66A32",
+    brandHover: "#F0783D",
+    brandSoft: "#342018",
+    success: "#54A875",
+    warning: "#D5A043",
+    danger: "#D66565",
+    info: "#6590BE",
+  },
+} as const satisfies Record<ColorThemeName, IronAndEmberPalette>;
+
+const light = ironAndEmberPalettes.light;
+const dark = ironAndEmberPalettes.dark;
+
 export const primitiveTokens = {
   color: {
     neutral950: token("--pulmu-color-neutral-950", "#121212", "Deep neutral", "Dark canvas"),
@@ -45,6 +109,88 @@ export const primitiveTokens = {
     red400: token("--pulmu-color-red-400", "#ff7f86", "Clear red", "Failed states"),
     purple400: token("--pulmu-color-purple-400", "#c4a2ff", "Clear purple", "Chart data"),
     pink400: token("--pulmu-color-pink-400", "#ff91c8", "Clear pink", "Chart data"),
+    theme: {
+      light: {
+        canvas: token("--pulmu-color-light-canvas", light.canvas, "Ivory canvas", "Light theme canvas"),
+        surface: token("--pulmu-color-light-surface", light.surface, "White surface", "Light theme panels"),
+        surfaceSubtle: token("--pulmu-color-light-surface-subtle", light.surfaceSubtle, "Subtle steel surface", "Light theme grouped regions"),
+        surfaceHover: token("--pulmu-color-light-surface-hover", light.surfaceHover, "Hover steel surface", "Light theme hover states"),
+        border: token("--pulmu-color-light-border", light.border, "Subtle boundary", "Light theme decorative boundaries"),
+        borderStrong: token("--pulmu-color-light-border-strong", light.borderStrong, "Strong subtle boundary", "Light theme structural boundaries"),
+        textPrimary: token("--pulmu-color-light-text-primary", light.textPrimary, "Primary ink", "Light theme primary text"),
+        textSecondary: token("--pulmu-color-light-text-secondary", light.textSecondary, "Secondary ink", "Light theme supporting text"),
+        textMuted: token("--pulmu-color-light-text-muted", light.textMuted, "Muted ink", "Non-essential light theme metadata only"),
+        brand: token("--pulmu-color-light-brand", light.brand, "Pulmu Ember", "Light theme brand accent"),
+        brandHover: token("--pulmu-color-light-brand-hover", light.brandHover, "Deep Ember", "Light theme brand hover"),
+        brandSoft: token("--pulmu-color-light-brand-soft", light.brandSoft, "Soft Ember", "Light theme selected backgrounds"),
+        success: token("--pulmu-color-light-success", light.success, "Success green", "Light theme success accent"),
+        warning: token("--pulmu-color-light-warning", light.warning, "Warning amber", "Light theme warning accent"),
+        danger: token("--pulmu-color-light-danger", light.danger, "Danger red", "Light theme danger accent"),
+        info: token("--pulmu-color-light-info", light.info, "Information blue", "Light theme information accent"),
+      },
+      dark: {
+        canvas: token("--pulmu-color-dark-canvas", dark.canvas, "Coal canvas", "Dark theme canvas"),
+        surface: token("--pulmu-color-dark-surface", dark.surface, "Iron surface", "Dark theme panels"),
+        surfaceSubtle: token("--pulmu-color-dark-surface-subtle", dark.surfaceSubtle, "Subtle iron surface", "Dark theme grouped regions"),
+        surfaceHover: token("--pulmu-color-dark-surface-hover", dark.surfaceHover, "Hover iron surface", "Dark theme hover states"),
+        border: token("--pulmu-color-dark-border", dark.border, "Subtle dark boundary", "Dark theme decorative boundaries"),
+        borderStrong: token("--pulmu-color-dark-border-strong", dark.borderStrong, "Strong dark boundary", "Dark theme structural boundaries"),
+        textPrimary: token("--pulmu-color-dark-text-primary", dark.textPrimary, "Primary ivory", "Dark theme primary text"),
+        textSecondary: token("--pulmu-color-dark-text-secondary", dark.textSecondary, "Secondary steel", "Dark theme supporting text"),
+        textMuted: token("--pulmu-color-dark-text-muted", dark.textMuted, "Muted steel", "Non-essential dark theme metadata only"),
+        brand: token("--pulmu-color-dark-brand", dark.brand, "Pulmu Ember", "Dark theme brand accent"),
+        brandHover: token("--pulmu-color-dark-brand-hover", dark.brandHover, "Bright Ember", "Dark theme brand hover"),
+        brandSoft: token("--pulmu-color-dark-brand-soft", dark.brandSoft, "Soft Ember", "Dark theme selected backgrounds"),
+        success: token("--pulmu-color-dark-success", dark.success, "Success green", "Dark theme success accent"),
+        warning: token("--pulmu-color-dark-warning", dark.warning, "Warning amber", "Dark theme warning accent"),
+        danger: token("--pulmu-color-dark-danger", dark.danger, "Danger red", "Dark theme danger accent"),
+        info: token("--pulmu-color-dark-info", dark.info, "Information blue", "Dark theme information accent"),
+      },
+    },
+    accessible: {
+      lightBoundary: token("--pulmu-color-light-boundary-accessible", "#797F79", "Accessible light boundary", "Sole visual boundary on light surfaces"),
+      darkBoundary: token("--pulmu-color-dark-boundary-accessible", "#6F7880", "Accessible dark boundary", "Sole visual boundary on dark surfaces"),
+      lightActionHover: token("--pulmu-color-light-action-hover", "#A83B13", "Accessible light action hover", "Primary action hover fill"),
+      lightActionPressed: token("--pulmu-color-light-action-pressed", "#8F3110", "Accessible light action pressed", "Primary action pressed fill"),
+      darkActionPressed: token("--pulmu-color-dark-action-pressed", "#D05A25", "Accessible dark action pressed", "Primary action pressed fill"),
+      lightMutedText: token("--pulmu-color-light-muted-text-accessible", "#666B6F", "Accessible light muted text", "Small supporting text on light surfaces"),
+      darkMutedText: token("--pulmu-color-dark-muted-text-accessible", "#8B939A", "Accessible dark muted text", "Small supporting text on dark surfaces"),
+      lightDangerActionText: token("--pulmu-color-light-danger-action-text", "#FFFFFF", "Light danger action text", "Danger button foreground on light surfaces"),
+      darkDangerActionText: token("--pulmu-color-dark-danger-action-text", "#000000", "Dark danger action text", "Danger button foreground on dark surfaces"),
+      darkDangerText: token("--pulmu-color-dark-danger-text", "#ED8383", "Accessible dark danger text", "Danger text and legacy danger fills"),
+      darkInfoText: token("--pulmu-color-dark-info-text", "#6F9AC8", "Accessible dark information text", "Information text on subtle dark fill"),
+      lightSuccessText: token("--pulmu-color-light-success-text", "#276B46", "Accessible success text", "Success text on subtle light fill"),
+      lightWarningText: token("--pulmu-color-light-warning-text", "#765315", "Accessible warning text", "Warning text on subtle light fill"),
+      lightDangerText: token("--pulmu-color-light-danger-text", "#923838", "Accessible danger text", "Danger text on subtle light fill"),
+      lightInfoText: token("--pulmu-color-light-info-text", "#365E88", "Accessible information text", "Information text on subtle light fill"),
+      lightSuccessSubtle: token("--pulmu-color-light-success-subtle", "#E8F3EC", "Subtle success fill", "Light theme success badge background"),
+      lightWarningSubtle: token("--pulmu-color-light-warning-subtle", "#FAF1DE", "Subtle warning fill", "Light theme warning badge background"),
+      lightDangerSubtle: token("--pulmu-color-light-danger-subtle", "#FAEAEA", "Subtle danger fill", "Light theme danger badge background"),
+      lightInfoSubtle: token("--pulmu-color-light-info-subtle", "#EAF0F7", "Subtle information fill", "Light theme information badge background"),
+      darkSuccessSubtle: token("--pulmu-color-dark-success-subtle", "#1B2B22", "Subtle success fill", "Dark theme success badge background"),
+      darkWarningSubtle: token("--pulmu-color-dark-warning-subtle", "#2D281B", "Subtle warning fill", "Dark theme warning badge background"),
+      darkDangerSubtle: token("--pulmu-color-dark-danger-subtle", "#302021", "Subtle danger fill", "Dark theme danger badge background"),
+      darkInfoSubtle: token("--pulmu-color-dark-info-subtle", "#1C2936", "Subtle information fill", "Dark theme information badge background"),
+    },
+    sidebar: {
+      lightBg: token("--pulmu-color-light-sidebar-bg", "#F1F1EE", "Light sidebar", "Light sidebar background"),
+      lightHover: token("--pulmu-color-light-sidebar-hover", "#E7E7E3", "Light sidebar hover", "Light sidebar hover state"),
+      lightActive: token("--pulmu-color-light-sidebar-active", "#FFF0E8", "Light sidebar active", "Light sidebar active state"),
+      lightText: token("--pulmu-color-light-sidebar-text", "#303438", "Light sidebar text", "Light sidebar labels"),
+      lightTextMuted: token("--pulmu-color-light-sidebar-text-muted", "#62676C", "Light sidebar muted text", "Light sidebar metadata"),
+      lightAccent: token("--pulmu-color-light-sidebar-accent", "#BF491B", "Light sidebar Ember", "Light sidebar active indicator"),
+      darkBg: token("--pulmu-color-dark-sidebar-bg", "#15191D", "Dark sidebar", "Dark sidebar background"),
+      darkHover: token("--pulmu-color-dark-sidebar-hover", "#1D2328", "Dark sidebar hover", "Dark sidebar hover state"),
+      darkActive: token("--pulmu-color-dark-sidebar-active", "#28241F", "Dark sidebar active", "Dark sidebar active state"),
+      darkText: token("--pulmu-color-dark-sidebar-text", "#D7DBDE", "Dark sidebar text", "Dark sidebar labels"),
+      darkTextMuted: token("--pulmu-color-dark-sidebar-text-muted", "#818991", "Dark sidebar muted text", "Dark sidebar metadata"),
+      darkAccent: token("--pulmu-color-dark-sidebar-accent", "#E66A32", "Dark sidebar Ember", "Dark sidebar active indicator"),
+    },
+    chart: {
+      lightWarning: token("--pulmu-color-light-chart-warning", "#9B6818", "Accessible chart amber", "Light chart series"),
+      lightTeal: token("--pulmu-color-light-chart-teal", "#317D78", "Accessible chart teal", "Light chart series"),
+      darkTeal: token("--pulmu-color-dark-chart-teal", "#65AFA9", "Accessible chart teal", "Dark chart series"),
+    },
   },
   fontFamily: {
     sans: token("--pulmu-font-family-sans", "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", "System sans stack", "Interface and prose"),
@@ -126,28 +272,28 @@ export const primitiveTokens = {
 } as const;
 
 const runStatusPalette = [
-  token("--pulmu-color-status-running", "var(--pulmu-color-blue-400)", "Running status", "Running text and icon"),
-  token("--pulmu-color-status-completed", "var(--pulmu-color-green-400)", "Completed status", "Completed text and icon"),
-  token("--pulmu-color-status-failed", "var(--pulmu-color-red-400)", "Failed status", "Failed text and icon"),
-  token("--pulmu-color-status-interrupted", "var(--pulmu-color-yellow-400)", "Interrupted status", "Interrupted text and icon"),
+  token("--pulmu-color-status-running", "var(--pulmu-color-status-info-foreground)", "Running status", "Running text and icon"),
+  token("--pulmu-color-status-completed", "var(--pulmu-color-status-success-foreground)", "Completed status", "Completed text and icon"),
+  token("--pulmu-color-status-failed", "var(--pulmu-color-status-danger-foreground)", "Failed status", "Failed text and icon"),
+  token("--pulmu-color-status-interrupted", "var(--pulmu-color-status-warning-foreground)", "Interrupted status", "Interrupted text and icon"),
 ] as const satisfies readonly TokenDefinition[];
 
 const stageStatusPalette = [
-  token("--pulmu-color-stage-status-pending", "var(--pulmu-color-neutral-400)", "Pending stage", "Pending text and icon"),
-  token("--pulmu-color-stage-status-in-progress", "var(--pulmu-color-blue-400)", "In-progress stage", "In-progress text and icon"),
-  token("--pulmu-color-stage-status-completed", "var(--pulmu-color-green-400)", "Completed stage", "Completed text and icon"),
-  token("--pulmu-color-stage-status-failed", "var(--pulmu-color-red-400)", "Failed stage", "Failed text and icon"),
-  token("--pulmu-color-stage-status-interrupted", "var(--pulmu-color-yellow-400)", "Interrupted stage", "Interrupted text and icon"),
+  token("--pulmu-color-stage-status-pending", "var(--pulmu-color-text-muted)", "Pending stage", "Pending text and icon with a text label"),
+  token("--pulmu-color-stage-status-in-progress", "var(--pulmu-color-brand-default)", "Current stage", "Current stage accent with a text label"),
+  token("--pulmu-color-stage-status-completed", "var(--pulmu-color-status-success-foreground)", "Completed stage", "Completed text and icon"),
+  token("--pulmu-color-stage-status-failed", "var(--pulmu-color-status-danger-foreground)", "Failed stage", "Failed text and icon"),
+  token("--pulmu-color-stage-status-interrupted", "var(--pulmu-color-status-warning-foreground)", "Interrupted stage", "Interrupted text and icon"),
 ] as const satisfies readonly TokenDefinition[];
 
 const stagePalette = [
-  token("--pulmu-color-stage-ignite", "var(--pulmu-color-orange-400)", "Ignite stage", "Ignite text and icon"),
-  token("--pulmu-color-stage-inspect", "var(--pulmu-color-blue-400)", "Inspect stage", "Inspect text and icon"),
-  token("--pulmu-color-stage-shape", "var(--pulmu-color-purple-400)", "Shape stage", "Shape text and icon"),
-  token("--pulmu-color-stage-hammer", "var(--pulmu-color-cyan-400)", "Hammer stage", "Hammer text and icon"),
-  token("--pulmu-color-stage-quench", "var(--pulmu-color-yellow-400)", "Quench stage", "Quench text and icon"),
-  token("--pulmu-color-stage-hone", "var(--pulmu-color-pink-400)", "Hone stage", "Hone text and icon"),
-  token("--pulmu-color-stage-ship", "var(--pulmu-color-green-400)", "Ship stage", "Ship text and icon"),
+  token("--pulmu-color-stage-ignite", "var(--pulmu-color-text-secondary)", "Deprecated Ignite identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-inspect", "var(--pulmu-color-text-secondary)", "Deprecated Inspect identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-shape", "var(--pulmu-color-text-secondary)", "Deprecated Shape identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-hammer", "var(--pulmu-color-text-secondary)", "Deprecated Hammer identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-quench", "var(--pulmu-color-text-secondary)", "Deprecated Quench identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-hone", "var(--pulmu-color-text-secondary)", "Deprecated Hone identity alias", "Use stage status tokens"),
+  token("--pulmu-color-stage-ship", "var(--pulmu-color-text-secondary)", "Deprecated Ship identity alias", "Use stage status tokens"),
 ] as const satisfies readonly TokenDefinition[];
 
 const mapCanonicalTokens = <Key extends string>(keys: readonly Key[], values: readonly TokenDefinition[]) =>
@@ -159,19 +305,45 @@ export const stageTokens = mapCanonicalTokens<PulmuStageId>(PULMU_STAGES.map(({ 
 
 export const semanticTokens = {
   color: {
-    canvas: token("--pulmu-color-surface-canvas", "var(--pulmu-color-neutral-950)", "Canvas surface", "Page background"),
-    surface: token("--pulmu-color-surface-default", "var(--pulmu-color-neutral-900)", "Default surface", "Panels and cards"),
-    surfaceElevated: token("--pulmu-color-surface-elevated", "var(--pulmu-color-neutral-850)", "Elevated surface", "Floating content"),
-    border: token("--pulmu-color-border-default", "var(--pulmu-color-neutral-700)", "Default boundary", "Meaningful UI boundaries"),
-    borderStrong: token("--pulmu-color-border-strong", "var(--pulmu-color-neutral-400)", "Strong boundary", "Selected and emphasized boundaries"),
-    text: token("--pulmu-color-text-primary", "var(--pulmu-color-neutral-100)", "Primary text", "Body and headings"),
-    textMuted: token("--pulmu-color-text-muted", "var(--pulmu-color-neutral-400)", "Muted text", "Supporting text"),
-    textInverse: token("--pulmu-color-text-inverse", "var(--pulmu-color-neutral-950)", "Inverse text", "Text on bright fills"),
-    action: token("--pulmu-color-action-default", "var(--pulmu-color-orange-400)", "Default action", "Action fills and links"),
-    actionHover: token("--pulmu-color-action-hover", "var(--pulmu-color-orange-300)", "Hover action", "Action hover state"),
-    actionPressed: token("--pulmu-color-action-pressed", "var(--pulmu-color-orange-500)", "Pressed action", "Action pressed state"),
-    actionText: token("--pulmu-color-action-text", "var(--pulmu-color-neutral-950)", "Action foreground", "Text and icons on actions"),
-    focus: token("--pulmu-color-focus-ring", "var(--pulmu-color-orange-300)", "Focus ring", "Keyboard focus on every surface"),
+    canvas: token("--pulmu-color-surface-canvas", "var(--pulmu-color-dark-canvas)", "Canvas surface", "Page background"),
+    surface: token("--pulmu-color-surface-default", "var(--pulmu-color-dark-surface)", "Default surface", "Panels and cards"),
+    surfaceSubtle: token("--pulmu-color-surface-subtle", "var(--pulmu-color-dark-surface-subtle)", "Subtle surface", "Grouped regions and inset content"),
+    surfaceHover: token("--pulmu-color-surface-hover", "var(--pulmu-color-dark-surface-hover)", "Hover surface", "Neutral hover state"),
+    surfaceElevated: token("--pulmu-color-surface-elevated", "var(--pulmu-color-surface-subtle)", "Deprecated elevated surface alias", "Use surfaceSubtle"),
+    border: token("--pulmu-color-border-default", "var(--pulmu-color-dark-border)", "Default boundary", "Decorative and multiply reinforced boundaries"),
+    borderStrong: token("--pulmu-color-border-strong", "var(--pulmu-color-dark-border-strong)", "Strong boundary", "Structural boundaries reinforced by layout"),
+    borderInteractive: token("--pulmu-color-border-interactive", "var(--pulmu-color-dark-boundary-accessible)", "Accessible interactive boundary", "Sole control and focus-adjacent boundaries"),
+    text: token("--pulmu-color-text-primary", "var(--pulmu-color-dark-text-primary)", "Primary text", "Body and headings"),
+    textSecondary: token("--pulmu-color-text-secondary", "var(--pulmu-color-dark-text-secondary)", "Secondary text", "Supporting and required text"),
+    textMuted: token("--pulmu-color-text-muted", "var(--pulmu-color-dark-muted-text-accessible)", "Muted text compatibility alias", "Small supporting text; exact palette muted is decorative only"),
+    textInverse: token("--pulmu-color-text-inverse", "var(--pulmu-color-neutral-950)", "Inverse text", "Dark text on bright fills"),
+    brand: token("--pulmu-color-brand-default", "var(--pulmu-color-dark-brand)", "Pulmu Ember", "Logo, selected state, focus, and current Forge stage"),
+    brandHover: token("--pulmu-color-brand-hover", "var(--pulmu-color-dark-brand-hover)", "Pulmu Ember hover", "Brand-accent hover state"),
+    brandSoft: token("--pulmu-color-brand-soft", "var(--pulmu-color-dark-brand-soft)", "Pulmu Ember soft", "Selected and active backgrounds"),
+    action: token("--pulmu-color-action-default", "var(--pulmu-color-dark-brand)", "Default action", "Primary action fill and important links"),
+    actionHover: token("--pulmu-color-action-hover", "var(--pulmu-color-dark-brand-hover)", "Hover action", "Primary action hover state"),
+    actionPressed: token("--pulmu-color-action-pressed", "var(--pulmu-color-dark-action-pressed)", "Pressed action", "Primary action pressed state"),
+    actionText: token("--pulmu-color-action-text", "var(--pulmu-color-dark-canvas)", "Action foreground", "Text and icons on primary actions"),
+    dangerActionText: token("--pulmu-color-danger-action-text", "var(--pulmu-color-dark-danger-action-text)", "Danger action foreground", "Danger button text across default, hover, and active fills"),
+    focus: token("--pulmu-color-focus-ring", "var(--pulmu-color-dark-brand)", "Focus ring", "Keyboard focus on every surface"),
+    statusSuccess: token("--pulmu-color-status-success", "var(--pulmu-color-dark-success)", "Success accent", "Icons and non-text success accents"),
+    statusWarning: token("--pulmu-color-status-warning", "var(--pulmu-color-dark-warning)", "Warning accent", "Icons and non-text warning accents"),
+    statusDanger: token("--pulmu-color-status-danger", "var(--pulmu-color-dark-danger)", "Danger accent", "Icons and non-text danger accents"),
+    statusInfo: token("--pulmu-color-status-info", "var(--pulmu-color-dark-info)", "Information accent", "Icons and non-text information accents"),
+    statusSuccessForeground: token("--pulmu-color-status-success-foreground", "var(--pulmu-color-dark-success)", "Success foreground", "Accessible success badge text"),
+    statusWarningForeground: token("--pulmu-color-status-warning-foreground", "var(--pulmu-color-dark-warning)", "Warning foreground", "Accessible warning badge text"),
+    statusDangerForeground: token("--pulmu-color-status-danger-foreground", "var(--pulmu-color-dark-danger-text)", "Danger foreground", "Accessible danger badge text"),
+    statusInfoForeground: token("--pulmu-color-status-info-foreground", "var(--pulmu-color-dark-info-text)", "Information foreground", "Accessible information badge text"),
+    statusSuccessSubtle: token("--pulmu-color-status-success-subtle", "var(--pulmu-color-dark-success-subtle)", "Success subtle fill", "Success badge background"),
+    statusWarningSubtle: token("--pulmu-color-status-warning-subtle", "var(--pulmu-color-dark-warning-subtle)", "Warning subtle fill", "Warning badge background"),
+    statusDangerSubtle: token("--pulmu-color-status-danger-subtle", "var(--pulmu-color-dark-danger-subtle)", "Danger subtle fill", "Danger badge background"),
+    statusInfoSubtle: token("--pulmu-color-status-info-subtle", "var(--pulmu-color-dark-info-subtle)", "Information subtle fill", "Information badge background"),
+    sidebarBg: token("--pulmu-color-sidebar-bg", "var(--pulmu-color-dark-sidebar-bg)", "Sidebar background", "App sidebar"),
+    sidebarHover: token("--pulmu-color-sidebar-hover", "var(--pulmu-color-dark-sidebar-hover)", "Sidebar hover", "Sidebar item hover"),
+    sidebarActive: token("--pulmu-color-sidebar-active", "var(--pulmu-color-dark-sidebar-active)", "Sidebar active", "Active sidebar item background"),
+    sidebarText: token("--pulmu-color-sidebar-text", "var(--pulmu-color-dark-sidebar-text)", "Sidebar text", "Sidebar labels"),
+    sidebarTextMuted: token("--pulmu-color-sidebar-text-muted", "var(--pulmu-color-dark-sidebar-text-muted)", "Sidebar muted text", "Sidebar metadata"),
+    sidebarAccent: token("--pulmu-color-sidebar-accent", "var(--pulmu-color-dark-sidebar-accent)", "Sidebar Ember", "Active sidebar indicator"),
   },
   typography: {
     headingFamily: token("--pulmu-typography-heading-family", "var(--pulmu-font-family-sans)", "Heading family", "Page and section headings"),
@@ -249,13 +421,13 @@ export const semanticTokens = {
     comfortable: token("--pulmu-density-comfortable", "var(--pulmu-space-4)", "Comfortable density", "Touch-oriented layouts"),
   },
   chart: {
-    series1: token("--pulmu-chart-series-1", "var(--pulmu-color-orange-400)", "Chart series 1", "Solid circle series"),
-    series2: token("--pulmu-chart-series-2", "var(--pulmu-color-blue-400)", "Chart series 2", "Dashed square series"),
-    series3: token("--pulmu-chart-series-3", "var(--pulmu-color-purple-400)", "Chart series 3", "Dotted triangle series"),
-    series4: token("--pulmu-chart-series-4", "var(--pulmu-color-cyan-400)", "Chart series 4", "Dash-dot diamond series"),
-    series5: token("--pulmu-chart-series-5", "var(--pulmu-color-yellow-400)", "Chart series 5", "Long-dash cross series"),
-    series6: token("--pulmu-chart-series-6", "var(--pulmu-color-pink-400)", "Chart series 6", "Short-dash star series"),
-    series7: token("--pulmu-chart-series-7", "var(--pulmu-color-green-400)", "Chart series 7", "Double-dash plus series"),
+    series1: token("--pulmu-chart-series-1", "var(--pulmu-color-brand-default)", "Chart series 1", "Solid circle series"),
+    series2: token("--pulmu-chart-series-2", "var(--pulmu-color-status-info)", "Chart series 2", "Dashed square series"),
+    series3: token("--pulmu-chart-series-3", "var(--pulmu-color-status-success)", "Chart series 3", "Dotted triangle series"),
+    series4: token("--pulmu-chart-series-4", "var(--pulmu-color-status-warning)", "Chart series 4", "Dash-dot diamond series"),
+    series5: token("--pulmu-chart-series-5", "var(--pulmu-color-status-danger)", "Chart series 5", "Long-dash cross series"),
+    series6: token("--pulmu-chart-series-6", "var(--pulmu-color-text-secondary)", "Chart series 6", "Short-dash star series"),
+    series7: token("--pulmu-chart-series-7", "var(--pulmu-color-dark-chart-teal)", "Chart series 7", "Double-dash plus series"),
   },
   motion: {
     durationFast: token("--pulmu-motion-duration-fast", "var(--pulmu-duration-fast)", "Fast motion", "Control feedback"),
@@ -294,13 +466,13 @@ export const componentTokens = {
 } as const;
 
 export const chartPalette = [
-  { ...semanticTokens.chart.series1, dash: "solid", label: "Series 1", literal: primitiveTokens.color.orange400.value, pointShape: "circle" },
-  { ...semanticTokens.chart.series2, dash: "8 4", label: "Series 2", literal: primitiveTokens.color.blue400.value, pointShape: "square" },
-  { ...semanticTokens.chart.series3, dash: "2 3", label: "Series 3", literal: primitiveTokens.color.purple400.value, pointShape: "triangle" },
-  { ...semanticTokens.chart.series4, dash: "8 3 2 3", label: "Series 4", literal: primitiveTokens.color.cyan400.value, pointShape: "diamond" },
-  { ...semanticTokens.chart.series5, dash: "12 4", label: "Series 5", literal: primitiveTokens.color.yellow400.value, pointShape: "cross" },
-  { ...semanticTokens.chart.series6, dash: "4 3", label: "Series 6", literal: primitiveTokens.color.pink400.value, pointShape: "star" },
-  { ...semanticTokens.chart.series7, dash: "10 3 3 3", label: "Series 7", literal: primitiveTokens.color.green400.value, pointShape: "plus" },
+  { ...semanticTokens.chart.series1, dash: "solid", label: "Series 1", literal: dark.brand, literals: { light: light.brand, dark: dark.brand }, pointShape: "circle" },
+  { ...semanticTokens.chart.series2, dash: "8 4", label: "Series 2", literal: dark.info, literals: { light: light.info, dark: dark.info }, pointShape: "square" },
+  { ...semanticTokens.chart.series3, dash: "2 3", label: "Series 3", literal: dark.success, literals: { light: light.success, dark: dark.success }, pointShape: "triangle" },
+  { ...semanticTokens.chart.series4, dash: "8 3 2 3", label: "Series 4", literal: dark.warning, literals: { light: primitiveTokens.color.chart.lightWarning.value, dark: dark.warning }, pointShape: "diamond" },
+  { ...semanticTokens.chart.series5, dash: "12 4", label: "Series 5", literal: dark.danger, literals: { light: light.danger, dark: dark.danger }, pointShape: "cross" },
+  { ...semanticTokens.chart.series6, dash: "4 3", label: "Series 6", literal: dark.textSecondary, literals: { light: light.textSecondary, dark: dark.textSecondary }, pointShape: "star" },
+  { ...semanticTokens.chart.series7, dash: "10 3 3 3", label: "Series 7", literal: primitiveTokens.color.chart.darkTeal.value, literals: { light: primitiveTokens.color.chart.lightTeal.value, dark: primitiveTokens.color.chart.darkTeal.value }, pointShape: "plus" },
 ] as const;
 
 export type PrimitiveTokenRegistry = typeof primitiveTokens;

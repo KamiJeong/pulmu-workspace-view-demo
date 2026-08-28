@@ -6,8 +6,9 @@ import { PULMU_UI_MATURITY, componentMaturity } from ".";
 const css = readFileSync(new URL("./global.css", import.meta.url), "utf8");
 const source = readFileSync(new URL("./index.ts", import.meta.url), "utf8");
 const tokenCss = readFileSync(new URL("../../tokens/src/global.css", import.meta.url), "utf8");
+const tokenRoot = tokenCss.match(/^:root\s*\{([\s\S]*?)^\}/m)?.[1] ?? "";
 const tokenDeclarations = new Map(
-  [...tokenCss.matchAll(/(--pulmu-[\w-]+):\s*([^;]+);/g)].map(([, name, value]) => [name, value.trim()]),
+  [...tokenRoot.matchAll(/(--pulmu-[\w-]+):\s*([^;]+);/g)].map(([, name, value]) => [name, value.trim()]),
 );
 const resolveToken = (name: string): string => {
   const value = tokenDeclarations.get(name);
@@ -49,12 +50,13 @@ describe("core UI public contract", () => {
   it("keeps destructive hover and active states on the failed-status color family", () => {
     expect(css).toContain(".pulmu-button--danger:hover:not(:disabled)");
     expect(css).toContain(".pulmu-button--danger:active:not(:disabled)");
+    expect(css).toContain("color: var(--pulmu-color-danger-action-text)");
     expect(css.match(/\.pulmu-button--danger:(?:hover|active)[^{]+\{[^}]+\}/g)?.every((rule) =>
       rule.includes("var(--pulmu-color-status-failed)"),
     )).toBe(true);
     const activeShare = Number(css.match(/\.pulmu-button--danger:active[^}]+status-failed\)\s+(\d+)%/)?.[1]) / 100;
     const activeBackground = rgb(resolveToken("--pulmu-color-status-failed")).map((channel) => channel * activeShare);
-    const label = rgb(resolveToken("--pulmu-color-text-inverse"));
+    const label = rgb(resolveToken("--pulmu-color-danger-action-text"));
     expect(activeShare).toBeGreaterThanOrEqual(0.76);
     expect(contrast(activeBackground, label)).toBeGreaterThanOrEqual(4.5);
   });
