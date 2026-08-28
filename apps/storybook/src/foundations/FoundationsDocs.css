@@ -1,16 +1,16 @@
 .sbdocs-wrapper:has(.foundations-docs),
 .sbdocs-content:has(.foundations-docs),
 #storybook-docs:has(.foundations-docs) {
-  background: var(--foundation-canvas);
-  color: var(--foundation-text);
+  background: var(--pulmu-color-surface-canvas);
+  color: var(--pulmu-color-text-primary);
 }
 
 .foundations-docs {
   width: 100%;
   max-width: 72ch;
   min-width: 0;
-  background: var(--foundation-canvas);
-  color: var(--foundation-text);
+  background: var(--pulmu-color-surface-canvas);
+  color: var(--pulmu-color-text-primary);
   overflow-wrap: anywhere;
 }
 
@@ -20,18 +20,18 @@
 
 .foundations-docs a,
 .foundations-docs a:visited {
-  color: var(--foundation-action) !important;
+  color: var(--pulmu-color-action-default) !important;
 }
 
 .foundations-docs code {
-  border-color: var(--foundation-border) !important;
-  background: var(--foundation-surface) !important;
-  color: var(--foundation-text) !important;
+  border-color: var(--pulmu-color-border-default) !important;
+  background: var(--pulmu-color-surface-default) !important;
+  color: var(--pulmu-color-text-primary) !important;
   white-space: normal !important;
   overflow-wrap: anywhere;
 }
 
 .foundations-docs h2:focus {
-  outline: 3px solid var(--foundation-focus) !important;
-  outline-offset: 3px !important;
+  outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color) !important;
+  outline-offset: var(--pulmu-focus-ring-offset) !important;
 }

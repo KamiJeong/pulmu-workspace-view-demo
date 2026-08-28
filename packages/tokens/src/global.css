@@ -1,65 +1,208 @@
 :root {
   color-scheme: dark;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+
+  /* Primitive tokens: literals only. */
+  --pulmu-color-neutral-950: #121212;
+  --pulmu-color-neutral-900: #1d1d1d;
+  --pulmu-color-neutral-850: #292929;
+  --pulmu-color-neutral-700: #767676;
+  --pulmu-color-neutral-600: #7d7d7d;
+  --pulmu-color-neutral-400: #b9b9b9;
+  --pulmu-color-neutral-100: #f7f7f7;
+  --pulmu-color-orange-500: #e9782f;
+  --pulmu-color-orange-400: #f7924b;
+  --pulmu-color-orange-300: #ffb37d;
+  --pulmu-color-blue-400: #66b5ff;
+  --pulmu-color-cyan-400: #4fd3c4;
+  --pulmu-color-green-400: #65d690;
+  --pulmu-color-yellow-400: #e8c65a;
+  --pulmu-color-red-400: #ff7f86;
+  --pulmu-color-purple-400: #c4a2ff;
+  --pulmu-color-pink-400: #ff91c8;
+  --pulmu-font-family-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --pulmu-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --pulmu-font-size-xs: 0.75rem;
+  --pulmu-font-size-sm: 0.875rem;
+  --pulmu-font-size-md: 1rem;
+  --pulmu-font-size-lg: 1.25rem;
+  --pulmu-font-size-xl: 1.75rem;
+  --pulmu-font-weight-regular: 400;
+  --pulmu-font-weight-medium: 500;
+  --pulmu-font-weight-bold: 700;
+  --pulmu-line-height-tight: 1.2;
+  --pulmu-line-height-normal: 1.5;
+  --pulmu-line-height-relaxed: 1.65;
+  --pulmu-space-0: 0;
+  --pulmu-space-1: 0.25rem;
+  --pulmu-space-2: 0.5rem;
+  --pulmu-space-3: 0.75rem;
+  --pulmu-space-4: 1rem;
+  --pulmu-space-6: 1.5rem;
+  --pulmu-space-8: 2rem;
+  --pulmu-space-12: 3rem;
+  --pulmu-size-icon-sm: 1rem;
+  --pulmu-size-icon-md: 1.25rem;
+  --pulmu-size-control: 2.75rem;
+  --pulmu-size-content: 72rem;
+  --pulmu-radius-sm: 0.5rem;
+  --pulmu-radius-md: 0.75rem;
+  --pulmu-radius-full: 9999px;
+  --pulmu-border-width-thin: 1px;
+  --pulmu-border-width-strong: 2px;
+  --pulmu-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --pulmu-shadow-md: 0 8px 24px rgb(0 0 0 / 0.4);
+  --pulmu-opacity-disabled: 0.48;
+  --pulmu-opacity-muted: 0.72;
+  --pulmu-opacity-overlay: 0.8;
+  --pulmu-z-base: 0;
+  --pulmu-z-sticky: 100;
+  --pulmu-z-overlay: 400;
+  --pulmu-z-modal: 500;
+  --pulmu-breakpoint-mobile: 24.375rem;
+  --pulmu-breakpoint-tablet: 48rem;
+  --pulmu-breakpoint-desktop: 90rem;
+  --pulmu-duration-instant: 0ms;
+  --pulmu-duration-fast: 120ms;
+  --pulmu-duration-normal: 200ms;
+  --pulmu-duration-slow: 320ms;
+  --pulmu-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --pulmu-easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --pulmu-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Semantic tokens: primitive references or context contracts. */
+  --pulmu-color-surface-canvas: var(--pulmu-color-neutral-950);
+  --pulmu-color-surface-default: var(--pulmu-color-neutral-900);
+  --pulmu-color-surface-elevated: var(--pulmu-color-neutral-850);
+  --pulmu-color-border-default: var(--pulmu-color-neutral-700);
+  --pulmu-color-border-strong: var(--pulmu-color-neutral-400);
+  --pulmu-color-text-primary: var(--pulmu-color-neutral-100);
+  --pulmu-color-text-muted: var(--pulmu-color-neutral-400);
+  --pulmu-color-text-inverse: var(--pulmu-color-neutral-950);
+  --pulmu-color-action-default: var(--pulmu-color-orange-400);
+  --pulmu-color-action-hover: var(--pulmu-color-orange-300);
+  --pulmu-color-action-pressed: var(--pulmu-color-orange-500);
+  --pulmu-color-action-text: var(--pulmu-color-neutral-950);
+  --pulmu-color-focus-ring: var(--pulmu-color-orange-300);
+  --pulmu-typography-body-family: var(--pulmu-font-family-sans);
+  --pulmu-typography-body-size: var(--pulmu-font-size-md);
+  --pulmu-typography-body-line-height: var(--pulmu-line-height-normal);
+  --pulmu-typography-heading-weight: var(--pulmu-font-weight-bold);
+  --pulmu-typography-code-family: var(--pulmu-font-family-mono);
+  --pulmu-spacing-inline: var(--pulmu-space-2);
+  --pulmu-spacing-control: var(--pulmu-space-3);
+  --pulmu-spacing-panel: var(--pulmu-space-6);
+  --pulmu-spacing-section: var(--pulmu-space-8);
+  --pulmu-size-icon: var(--pulmu-size-icon-md);
+  --pulmu-size-content-max: var(--pulmu-size-content);
+  --pulmu-radius-control: var(--pulmu-radius-sm);
+  --pulmu-radius-panel: var(--pulmu-radius-md);
+  --pulmu-border-default: var(--pulmu-border-width-thin) solid var(--pulmu-color-border-default);
+  --pulmu-border-selected: var(--pulmu-border-width-strong) solid var(--pulmu-color-border-strong);
+  --pulmu-shadow-raised: var(--pulmu-shadow-sm);
+  --pulmu-shadow-overlay: var(--pulmu-shadow-md);
+  --pulmu-opacity-state-disabled: var(--pulmu-opacity-disabled);
+  --pulmu-z-navigation: var(--pulmu-z-sticky);
+  --pulmu-z-popover: var(--pulmu-z-overlay);
+  --pulmu-z-dialog: var(--pulmu-z-modal);
+  --pulmu-breakpoint-compact: var(--pulmu-breakpoint-mobile);
+  --pulmu-breakpoint-wide: var(--pulmu-breakpoint-tablet);
+  --pulmu-focus-ring-color: var(--pulmu-color-focus-ring);
+  --pulmu-focus-ring-width: 3px;
+  --pulmu-focus-ring-offset: 3px;
+  --pulmu-target-size-min: var(--pulmu-size-control);
+  --pulmu-density-compact: var(--pulmu-space-2);
+  --pulmu-density-default: var(--pulmu-space-3);
+  --pulmu-density-comfortable: var(--pulmu-space-4);
+  --pulmu-motion-duration-fast: var(--pulmu-duration-fast);
+  --pulmu-motion-duration-normal: var(--pulmu-duration-normal);
+  --pulmu-motion-duration-slow: var(--pulmu-duration-slow);
+  --pulmu-motion-easing-standard: var(--pulmu-easing-standard);
+  --pulmu-color-status-running: var(--pulmu-color-blue-400);
+  --pulmu-color-status-completed: var(--pulmu-color-green-400);
+  --pulmu-color-status-failed: var(--pulmu-color-red-400);
+  --pulmu-color-status-interrupted: var(--pulmu-color-yellow-400);
+  --pulmu-color-stage-status-pending: var(--pulmu-color-neutral-400);
+  --pulmu-color-stage-status-in-progress: var(--pulmu-color-blue-400);
+  --pulmu-color-stage-status-completed: var(--pulmu-color-green-400);
+  --pulmu-color-stage-status-failed: var(--pulmu-color-red-400);
+  --pulmu-color-stage-status-interrupted: var(--pulmu-color-yellow-400);
+  --pulmu-color-stage-ignite: var(--pulmu-color-orange-400);
+  --pulmu-color-stage-inspect: var(--pulmu-color-blue-400);
+  --pulmu-color-stage-shape: var(--pulmu-color-purple-400);
+  --pulmu-color-stage-hammer: var(--pulmu-color-cyan-400);
+  --pulmu-color-stage-quench: var(--pulmu-color-yellow-400);
+  --pulmu-color-stage-hone: var(--pulmu-color-pink-400);
+  --pulmu-color-stage-ship: var(--pulmu-color-green-400);
+  --pulmu-chart-series-1: var(--pulmu-color-orange-400);
+  --pulmu-chart-series-2: var(--pulmu-color-blue-400);
+  --pulmu-chart-series-3: var(--pulmu-color-purple-400);
+  --pulmu-chart-series-4: var(--pulmu-color-cyan-400);
+  --pulmu-chart-series-5: var(--pulmu-color-yellow-400);
+  --pulmu-chart-series-6: var(--pulmu-color-pink-400);
+  --pulmu-chart-series-7: var(--pulmu-color-green-400);
+
+  /* Component tokens: semantic references only. */
+  --pulmu-button-background: var(--pulmu-color-action-default);
+  --pulmu-button-foreground: var(--pulmu-color-action-text);
+  --pulmu-button-radius: var(--pulmu-radius-control);
+  --pulmu-button-min-height: var(--pulmu-target-size-min);
+  --pulmu-button-padding-inline: var(--pulmu-spacing-control);
+  --pulmu-panel-background: var(--pulmu-color-surface-default);
+  --pulmu-panel-border: var(--pulmu-border-default);
+  --pulmu-panel-radius: var(--pulmu-radius-panel);
+  --pulmu-panel-padding: var(--pulmu-spacing-panel);
+  --pulmu-toolbar-background: var(--pulmu-color-surface-elevated);
+  --pulmu-toolbar-border: var(--pulmu-border-default);
+  --pulmu-toolbar-min-height: var(--pulmu-target-size-min);
+  --pulmu-token-card-background: var(--pulmu-color-surface-default);
+  --pulmu-token-card-border: var(--pulmu-border-default);
+  --pulmu-token-card-radius: var(--pulmu-radius-panel);
+
+  font-family: var(--pulmu-typography-body-family);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --foundation-canvas: #151515;
-  --foundation-surface: #1f1f1f;
-  --foundation-border: #414141;
-  --foundation-text: #f5f5f5;
-  --foundation-muted: #c1c1c1;
-  --foundation-action: #ff8a3d;
-  --foundation-action-text: #1b1008;
-  --foundation-focus: #ffb783;
 }
 
+/* Compatibility preview only; the light palette is not a completed theme. */
 :root[data-theme="light"] {
   color-scheme: light;
-  --foundation-canvas: #f7f6f4;
-  --foundation-surface: #ffffff;
-  --foundation-border: #696969;
-  --foundation-text: #1d1d1d;
-  --foundation-muted: #555555;
-  --foundation-action: #b84200;
-  --foundation-action-text: #ffffff;
-  --foundation-focus: #9b3600;
+  --pulmu-color-surface-canvas: #f7f6f4;
+  --pulmu-color-surface-default: #ffffff;
+  --pulmu-color-surface-elevated: #efeeeb;
+  --pulmu-color-border-default: #696969;
+  --pulmu-color-border-strong: #343434;
+  --pulmu-color-text-primary: #1d1d1d;
+  --pulmu-color-text-muted: #555555;
+  --pulmu-color-action-default: #b84200;
+  --pulmu-color-action-hover: #913400;
+  --pulmu-color-action-pressed: #762900;
+  --pulmu-color-action-text: #ffffff;
+  --pulmu-color-focus-ring: #9b3600;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  background: var(--foundation-canvas);
-}
-
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--pulmu-color-surface-canvas); }
 body {
-  margin: 0;
   min-width: 0;
-  background: var(--foundation-canvas);
-  color: var(--foundation-text);
+  margin: 0;
+  background: var(--pulmu-color-surface-canvas);
+  color: var(--pulmu-color-text-primary);
+  font-size: var(--pulmu-typography-body-size);
+  line-height: var(--pulmu-typography-body-line-height);
 }
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
+button, input, select, textarea { font: inherit; }
 :focus-visible {
-  outline: 3px solid var(--foundation-focus);
-  outline-offset: 3px;
+  outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color);
+  outline-offset: var(--pulmu-focus-ring-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  :root {
+    --pulmu-motion-duration-fast: var(--pulmu-duration-instant);
+    --pulmu-motion-duration-normal: var(--pulmu-duration-instant);
+    --pulmu-motion-duration-slow: var(--pulmu-duration-instant);
+  }
+  *, *::before, *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
@@ -67,6 +210,11 @@ textarea {
   }
 }
 
+:root[data-motion="reduced"] {
+  --pulmu-motion-duration-fast: var(--pulmu-duration-instant);
+  --pulmu-motion-duration-normal: var(--pulmu-duration-instant);
+  --pulmu-motion-duration-slow: var(--pulmu-duration-instant);
+}
 :root[data-motion="reduced"] *,
 :root[data-motion="reduced"] *::before,
 :root[data-motion="reduced"] *::after {
@@ -76,3 +224,21 @@ textarea {
   animation-iteration-count: 1 !important;
 }
 
+@media (forced-colors: active) {
+  :root {
+    --pulmu-color-surface-canvas: Canvas;
+    --pulmu-color-surface-default: Canvas;
+    --pulmu-color-surface-elevated: Canvas;
+    --pulmu-color-border-default: CanvasText;
+    --pulmu-color-border-strong: CanvasText;
+    --pulmu-color-text-primary: CanvasText;
+    --pulmu-color-text-muted: CanvasText;
+    --pulmu-color-action-default: LinkText;
+    --pulmu-color-action-hover: LinkText;
+    --pulmu-color-action-pressed: LinkText;
+    --pulmu-color-action-text: Canvas;
+    --pulmu-color-focus-ring: Highlight;
+    --pulmu-button-background: ButtonFace;
+    --pulmu-button-foreground: ButtonText;
+  }
+}

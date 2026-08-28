@@ -136,7 +136,7 @@ WCAG 2.2 AA를 **목표**로 하며 conformance를 선제적으로 주장하지 
 
 ### Theme과 motion
 
-Dark-first를 기본 방향으로 삼되 light toolbar override와 forced colors에서도 같은 정보 계층을 유지한다. 최종 색·간격 token 값은 이 문서에서 정하지 않는다. 필수 정보를 animation에 의존하지 않으며 `prefers-reduced-motion: reduce` 또는 Storybook motion suppression 설정에서는 비필수 transition과 animation을 제거한다.
+Dark-first token을 기본 방향으로 삼고 light toolbar override는 호환성 preview로 유지한다. 상세 값과 contrast 근거는 `02 Tokens` catalog를 따른다. forced colors에서도 같은 정보 계층을 유지하고, 필수 정보를 animation에 의존하지 않으며 `prefers-reduced-motion: reduce` 또는 Storybook motion suppression 설정에서는 비필수 transition과 animation을 제거한다.
 
 ### Content와 internationalization
 
@@ -156,7 +156,7 @@ Dark-first를 기본 방향으로 삼되 light toolbar override와 forced colors
 
 v0.1은 다음을 제공하거나 암시하지 않는다.
 
-- 최종 primitive/semantic/component token 값 또는 시각 component library
+- 완성된 light/high-contrast theme, 전체 시각 component library 또는 brand redesign
 - live Run Context polling, raw command output·log viewer, terminal emulator
 - 기존 Pulmu workflow 동작, stage 순서, agent routing, retry 또는 delivery 정책 변경
 - hosted multi-tenant SaaS, cloud synchronization 또는 원격 실행 제어
