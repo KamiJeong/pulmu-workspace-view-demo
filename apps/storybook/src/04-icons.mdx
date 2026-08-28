@@ -13,8 +13,12 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 ## Rules
 
-- 일반 UI, lifecycle status, Pulmu stage, brand icon은 각 registry에서 분리합니다.
-- 7개 stage의 canonical emoji와 이름은 유지하며 Lucide glyph는 이를 보조합니다.
+- 일반 UI, lifecycle/status, Forge identity, brand icon은 각 registry에서 분리합니다.
+- 제품의 7개 Forge stage identity glyph는 neutral color를 유지합니다.
+- Stage status는 별도 glyph와 visible text로 표시합니다: Pending, Current, Completed, Failed.
+- Status glyph는 `--pulmu-color-stage-status-*` semantic token을 사용하고 visible text label과 짝을 이룹니다.
+- `--pulmu-color-stage-<id>` alias는 compatibility 용도로만 유지하며 새 제품 UI에서 사용하지 않습니다.
+- Canonical stage emoji는 workflow copy contract에 남지만 제품 icon specimen에서는 Lucide identity glyph를 사용합니다.
 - Pattern은 여덟 번째 stage가 아니라 Shape 내부의 conditional design pass입니다.
 - 아이콘만 있는 button의 accessible name은 parent control에 둡니다.
 - 장식 SVG는 assistive technology에서 숨기고 focus 대상에서 제외합니다.

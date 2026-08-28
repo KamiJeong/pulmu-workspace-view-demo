@@ -22,6 +22,44 @@ const readableName = (name: string) =>
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^./, (letter) => letter.toUpperCase());
 
+type ProductStageStatus = "pending" | "in_progress" | "completed" | "failed";
+
+const PRODUCT_STAGE_STATUSES = {
+  pending: {
+    glyph: PULMU_STAGE_STATUS_ICONS.pending,
+    label: "Pending",
+    token: "--pulmu-color-stage-status-pending",
+  },
+  in_progress: {
+    glyph: PULMU_STAGE_STATUS_ICONS.in_progress,
+    label: "Current",
+    token: "--pulmu-color-stage-status-in-progress",
+  },
+  completed: {
+    glyph: PULMU_STAGE_STATUS_ICONS.completed,
+    label: "Completed",
+    token: "--pulmu-color-stage-status-completed",
+  },
+  failed: {
+    glyph: PULMU_STAGE_STATUS_ICONS.failed,
+    label: "Failed",
+    token: "--pulmu-color-stage-status-failed",
+  },
+} as const satisfies Record<
+  ProductStageStatus,
+  { readonly glyph: (typeof PULMU_STAGE_STATUS_ICONS)[ProductStageStatus]; readonly label: string; readonly token: string }
+>;
+
+const stageSequence = (highlightedIndex: number, highlightedStatus: "in_progress" | "failed") =>
+  PULMU_STAGE_ICONS.map((_, index): ProductStageStatus => {
+    if (index < highlightedIndex) return "completed";
+    if (index === highlightedIndex) return highlightedStatus;
+    return "pending";
+  });
+
+const ACTIVE_STAGE_SEQUENCE = stageSequence(3, "in_progress");
+const FAILED_STAGE_SEQUENCE = stageSequence(4, "failed");
+
 type IconGridProps = {
   readonly label: string;
   readonly registry: Record<string, (typeof UI_ICONS)[keyof typeof UI_ICONS]>;
@@ -32,12 +70,76 @@ function IconGrid({ label, registry, tone }: IconGridProps) {
   return (
     <ul aria-label={label} className="icon-grid" lang="en">
       {Object.entries(registry).map(([name, icon]) => (
-        <li className="icon-card" key={name} style={tone?.(name)}>
-          <PulmuIcon decorative icon={icon} />
+        <li className="icon-card" key={name}>
+          <PulmuIcon decorative icon={icon} style={tone?.(name)} />
           <strong>{readableName(name)}</strong>
         </li>
       ))}
     </ul>
+  );
+}
+
+type ForgeStageSequenceProps = {
+  readonly description: string;
+  readonly label: string;
+  readonly statuses: readonly ProductStageStatus[];
+};
+
+function ForgeStageSequence({ description, label, statuses }: ForgeStageSequenceProps) {
+  return (
+    <article className="forge-sequence">
+      <h3 lang="en">{label}</h3>
+      <p>{description}</p>
+      <ol
+        aria-label={label}
+        className="stage-icon-grid"
+        data-stage-sequence="true"
+        lang="en"
+      >
+        {PULMU_STAGE_ICONS.map((stage, index) => {
+          const status = statuses[index];
+          const statusDisplay = PRODUCT_STAGE_STATUSES[status];
+
+          return (
+            <li
+              className="stage-icon-card"
+              data-stage-id={stage.id}
+              data-stage-status={status}
+              key={stage.id}
+            >
+              <div className="stage-icon-card__row">
+                <div className="stage-icon-card__identity">
+                  <PulmuIcon decorative icon={stage.glyph} />
+                  <strong>{stage.name}</strong>
+                </div>
+                <div
+                  className="stage-icon-card__status"
+                >
+                  <PulmuIcon
+                    data-color-token={statusDisplay.token}
+                    decorative
+                    icon={statusDisplay.glyph}
+                    size="sm"
+                    style={{ color: `var(${statusDisplay.token})` }}
+                  />
+                  <span data-stage-status-label="true">{statusDisplay.label}</span>
+                </div>
+              </div>
+              <p>{stage.step.replace(`${stage.icon} ${stage.name} — `, "")}</p>
+              {stage.id === PULMU_PATTERN_ICON.parentStageId ? (
+                <div className="pattern-icon-card" data-pattern-pass="true">
+                  <PulmuIcon decorative icon={PULMU_PATTERN_ICON.glyph} size="sm" />
+                  <div>
+                    <strong>{PULMU_PATTERN_ICON.name}</strong>
+                    <span>Conditional design pass inside Shape</span>
+                  </div>
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </article>
   );
 }
 
@@ -54,7 +156,8 @@ export function IconCatalog() {
         <aside className="icon-catalog__rules" aria-labelledby="icon-rules-heading">
           <h2 id="icon-rules-heading" lang="en">Usage rules</h2>
           <ul>
-            <li>일반 UI, lifecycle status, Pulmu stage, brand namespace를 섞지 않는다.</li>
+            <li>일반 UI, lifecycle status, Forge identity, brand namespace를 섞지 않는다.</li>
+            <li>Stage identity glyph는 neutral이며 별도 status glyph와 label만 semantic color를 사용한다.</li>
             <li>아이콘만 있는 control의 accessible name은 parent control에 둔다.</li>
             <li>장식 SVG는 assistive technology와 keyboard focus에서 제외한다.</li>
             <li>Status는 항상 보이는 text label과 함께 표시한다.</li>
@@ -86,34 +189,21 @@ export function IconCatalog() {
       </section>
 
       <section aria-labelledby="stage-icons-heading">
-        <h2 id="stage-icons-heading" lang="en">Seven canonical forge stages</h2>
-        <p>고정된 emoji, 이름, step 문구를 보존하고 Lucide glyph는 보조 시각 요소로만 사용한다.</p>
-        <ol aria-label="Canonical Pulmu stage icons" className="stage-icon-grid" lang="en">
-          {PULMU_STAGE_ICONS.map((stage) => (
-            <li
-              className="stage-icon-card"
-              data-stage-icon="true"
-              data-stage-id={stage.id}
-              key={stage.id}
-              style={{ color: `var(--pulmu-color-stage-${stage.id})` }}
-            >
-              <div className="stage-icon-card__heading">
-                <PulmuIcon decorative icon={stage.glyph} />
-                <strong>{stage.icon} {stage.name}</strong>
-              </div>
-              <p>{stage.step}</p>
-              {stage.id === PULMU_PATTERN_ICON.parentStageId ? (
-                <div className="pattern-icon-card" data-testid="pattern-icon">
-                  <PulmuIcon decorative icon={PULMU_PATTERN_ICON.glyph} size="sm" />
-                  <div>
-                    <strong>{PULMU_PATTERN_ICON.icon} {PULMU_PATTERN_ICON.name}</strong>
-                    <span>Conditional design pass nested inside Shape</span>
-                  </div>
-                </div>
-              ) : null}
-            </li>
-          ))}
-        </ol>
+        <h2 id="stage-icons-heading" lang="en">Forge identity</h2>
+        <p>
+          일곱 stage의 중립 identity glyph와 별도 lifecycle status를 결합한다. 제품 UI에서는 deprecated
+          per-stage color alias를 사용하지 않는다.
+        </p>
+        <ForgeStageSequence
+          description="Hammer가 현재 단계인 진행 중 forge의 completed, current, pending 상태다."
+          label="Active forge sequence"
+          statuses={ACTIVE_STAGE_SEQUENCE}
+        />
+        <ForgeStageSequence
+          description="Quench에서 멈춘 forge의 completed, failed, pending 상태다."
+          label="Failed forge sequence"
+          statuses={FAILED_STAGE_SEQUENCE}
+        />
       </section>
 
       <section aria-labelledby="brand-icons-heading">
