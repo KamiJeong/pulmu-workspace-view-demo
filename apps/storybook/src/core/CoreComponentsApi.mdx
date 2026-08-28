@@ -1,0 +1,114 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import {
+  Alert, Avatar, Badge, Breadcrumb, Button, Card, Checkbox, CodeReference, CopyButton,
+  Dialog, EmptyState, ErrorState, IconButton, Input, Link, Menu, Pagination, Popover,
+  Progress, SearchField, Select, Skeleton, SkipLink, Spinner, Switch, Tabs, Tooltip,
+  VisuallyHidden,
+} from '@pulmu/ui';
+
+<Meta title="05 Core Components/API Reference" />
+
+# Core component API reference
+
+All public primitives are typed, exported from `@pulmu/ui`, and currently have **beta** maturity. The tables below are generated from each component's TypeScript contract.
+
+## Actions
+
+### Button
+<ArgTypes of={Button} />
+
+### IconButton
+`label` is required and supplies the icon-only control's accessible name.
+<ArgTypes of={IconButton} />
+
+### Link
+<ArgTypes of={Link} />
+
+### CopyButton
+Clipboard success and failure are announced politely; localize `copiedLabel`, `copyLabel`, and `errorLabel` together.
+<ArgTypes of={CopyButton} />
+
+## Fields
+
+### Input
+<ArgTypes of={Input} />
+
+### SearchField
+<ArgTypes of={SearchField} />
+
+### Select
+<ArgTypes of={Select} />
+
+### Checkbox
+<ArgTypes of={Checkbox} />
+
+### Switch
+<ArgTypes of={Switch} />
+
+## Navigation
+
+### Tabs
+<ArgTypes of={Tabs} />
+
+### Pagination
+<ArgTypes of={Pagination} />
+
+### Breadcrumb
+<ArgTypes of={Breadcrumb} />
+
+## Content
+
+### Badge
+<ArgTypes of={Badge} />
+
+### Avatar
+<ArgTypes of={Avatar} />
+
+### Card
+<ArgTypes of={Card} />
+
+### CodeReference
+<ArgTypes of={CodeReference} />
+
+## Feedback
+
+### Progress
+Values are clamped to the visible range. Non-positive or non-finite `max` values use the safe default of `100`.
+<ArgTypes of={Progress} />
+
+### Spinner
+<ArgTypes of={Spinner} />
+
+### Skeleton
+<ArgTypes of={Skeleton} />
+
+### Alert
+<ArgTypes of={Alert} />
+
+### EmptyState
+<ArgTypes of={EmptyState} />
+
+### ErrorState
+<ArgTypes of={ErrorState} />
+
+## Overlays
+
+### Tooltip
+<ArgTypes of={Tooltip} />
+
+### Popover
+<ArgTypes of={Popover} />
+
+### Menu
+<ArgTypes of={Menu} />
+
+### Dialog
+<ArgTypes of={Dialog} />
+
+## Accessibility
+
+### VisuallyHidden
+<ArgTypes of={VisuallyHidden} />
+
+### SkipLink
+<ArgTypes of={SkipLink} />

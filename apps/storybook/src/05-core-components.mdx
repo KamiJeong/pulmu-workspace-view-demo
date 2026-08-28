@@ -4,8 +4,24 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # 05 Core Components
 
-**Status: planned**
+**Status: beta**
 
 <p lang="ko">
-  Button, field, feedback, navigation 등 도메인 컴포넌트가 공유할 접근 가능한 UI primitive를 구축할 예정입니다.
+  Button, field, feedback, navigation, overlay를 위한 접근 가능한 UI primitive를 제공합니다.
+  모든 컴포넌트는 현재 beta이며 Components 문서의 Maturity Overview에서 상태를 한눈에 확인할 수 있습니다.
 </p>
+
+## Keyboard contract
+
+- Native buttons, links, inputs, selects, checkboxes, and switches retain their platform keyboard behavior.
+- Tabs use a roving tab stop. Arrow keys move between tabs, Home/End move to the boundaries, and manual activation uses Enter or Space.
+- Menu opens onto its first enabled item. Arrow keys, Home/End, typeahead, Escape, and focus return are supported.
+- Dialog uses the browser modal focus model, closes with Escape, and restores focus to the opener.
+- Popover dismisses outside and with Escape. Tooltip content is available from hover and keyboard focus.
+- Tooltip also dismisses with Escape without moving focus. Popover and Menu placement flips or clamps at viewport edges.
+
+## Responsive and content guidance
+
+Controls meet the 44 × 44 px target contract and use the shared 3 px focus ring. Tab lists scroll internally on narrow viewports, overlays stay viewport-bound, dialog actions stack when space is limited, and long Korean or English references wrap without creating page overflow.
+
+Progress values are clamped consistently for visuals and accessibility; invalid maximums use `100`. CopyButton announces both success and localized failure feedback without leaking clipboard errors.
