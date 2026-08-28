@@ -42,6 +42,13 @@
     "packages/icons": {
       "name": "@pulmu/icons",
       "version": "0.0.0",
+      "dependencies": {
+        "@pulmu/model": "workspace:*",
+        "lucide-react": "1.34.0",
+      },
+      "peerDependencies": {
+        "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+      },
     },
     "packages/pulmu-model": {
       "name": "@pulmu/model",
@@ -50,6 +57,9 @@
     "packages/tokens": {
       "name": "@pulmu/tokens",
       "version": "0.0.0",
+      "dependencies": {
+        "@pulmu/model": "workspace:*",
+      },
     },
     "packages/ui": {
       "name": "@pulmu/ui",
@@ -638,6 +648,8 @@
     "loupe": ["loupe@3.2.1", "", {}, "sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ=="],
 
     "lru-cache": ["lru-cache@11.5.2", "", {}, "sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g=="],
+
+    "lucide-react": ["lucide-react@1.34.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-vnjGJNI7Htk5+oWW8gXGuaLgwgAb0T6/iZbBrp9JCfRFwdNWZ0YTm3eyxjOLgwN6r8iyAf3UA70zNmBRBNv7yg=="],
 
     "lz-string": ["lz-string@1.5.0", "", { "bin": { "lz-string": "bin/bin.js" } }, "sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ=="],
 

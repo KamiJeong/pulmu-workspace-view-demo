@@ -1,0 +1,153 @@
+.icon-catalog {
+  width: min(100%, var(--pulmu-size-content-max));
+  min-width: 0;
+  margin: 0 auto;
+  padding: var(--pulmu-spacing-panel);
+  overflow-wrap: anywhere;
+}
+
+.icon-catalog__intro,
+.icon-catalog section {
+  margin-block-end: var(--pulmu-spacing-section);
+}
+
+.icon-catalog__eyebrow {
+  margin: 0 0 var(--pulmu-space-2);
+  color: var(--pulmu-color-action-default);
+  font-size: var(--pulmu-font-size-xs);
+  font-weight: var(--pulmu-font-weight-bold);
+  text-transform: uppercase;
+}
+
+.icon-catalog h1,
+.icon-catalog h2,
+.icon-catalog h3 { line-height: var(--pulmu-line-height-tight); }
+.icon-catalog h1 { margin: 0; font-size: var(--pulmu-font-size-xl); }
+.icon-catalog h2 { margin: 0 0 var(--pulmu-space-3); font-size: var(--pulmu-font-size-xl); }
+.icon-catalog h3 { margin: var(--pulmu-space-6) 0 var(--pulmu-space-3); font-size: var(--pulmu-font-size-lg); }
+.icon-catalog code { font-family: var(--pulmu-typography-code-family); }
+
+.icon-catalog a {
+  color: var(--pulmu-color-action-default);
+  outline-color: var(--pulmu-focus-ring-color);
+  outline-offset: var(--pulmu-focus-ring-offset);
+}
+
+.icon-catalog a:focus-visible {
+  outline-style: solid;
+  outline-width: var(--pulmu-focus-ring-width);
+}
+
+.icon-catalog__rules,
+.icon-demo-card {
+  padding: var(--pulmu-spacing-panel);
+  border: var(--pulmu-border-default);
+  border-radius: var(--pulmu-radius-panel);
+  background: var(--pulmu-color-surface-default);
+}
+
+.icon-catalog__rules { margin-block-start: var(--pulmu-space-6); }
+.icon-catalog__rules h2 { font-size: var(--pulmu-font-size-lg); }
+.icon-catalog__rules ul { margin-block-end: 0; padding-inline-start: var(--pulmu-space-6); }
+
+.icon-grid,
+.stage-icon-grid,
+.icon-catalog__demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--pulmu-size-control) * 5)), 1fr));
+  gap: var(--pulmu-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-card,
+.stage-icon-card {
+  min-width: 0;
+  padding: var(--pulmu-space-4);
+  border: var(--pulmu-border-default);
+  border-radius: var(--pulmu-radius-control);
+  background: var(--pulmu-color-surface-default);
+}
+
+.icon-card {
+  display: flex;
+  align-items: center;
+  gap: var(--pulmu-spacing-inline);
+}
+
+.icon-card svg,
+.stage-icon-card svg,
+.icon-demo-card svg { min-width: var(--pulmu-size-icon-sm); }
+
+.stage-icon-card__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--pulmu-spacing-inline);
+}
+
+.stage-icon-card > p,
+.icon-demo-card > p {
+  margin: var(--pulmu-space-2) 0 0;
+  color: var(--pulmu-color-text-muted);
+  font-size: var(--pulmu-font-size-sm);
+}
+
+.pattern-icon-card {
+  display: flex;
+  align-items: center;
+  gap: var(--pulmu-space-2);
+  margin-block-start: var(--pulmu-space-3);
+  padding: var(--pulmu-space-3);
+  border: var(--pulmu-border-default);
+  border-inline-start: var(--pulmu-border-width-strong) solid currentColor;
+  border-radius: var(--pulmu-radius-control);
+  background: var(--pulmu-color-surface-elevated);
+}
+
+.pattern-icon-card div { display: grid; gap: var(--pulmu-space-1); }
+.pattern-icon-card span { color: var(--pulmu-color-text-muted); font-size: var(--pulmu-font-size-xs); }
+
+.icon-catalog__demo-grid { align-items: stretch; }
+.icon-demo-card h3 { margin-block-start: 0; }
+
+.icon-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pulmu-space-4);
+}
+
+.icon-size-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pulmu-space-2);
+  min-height: var(--pulmu-target-size-min);
+}
+
+.icon-only-button {
+  display: inline-grid;
+  width: var(--pulmu-target-size-min);
+  min-width: var(--pulmu-target-size-min);
+  height: var(--pulmu-target-size-min);
+  padding: 0;
+  place-items: center;
+  border: var(--pulmu-border-default);
+  border-radius: var(--pulmu-radius-control);
+  background: var(--pulmu-color-surface-elevated);
+  color: var(--pulmu-color-text-primary);
+  cursor: pointer;
+}
+
+@media (max-width: 24.375rem) {
+  .icon-grid,
+  .stage-icon-grid,
+  .icon-catalog__demo-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (forced-colors: active) {
+  .icon-card,
+  .stage-icon-card,
+  .pattern-icon-card,
+  .icon-demo-card { border-color: CanvasText; }
+  .icon-only-button { color: ButtonText; background: ButtonFace; }
+}
