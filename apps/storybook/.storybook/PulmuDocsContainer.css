@@ -1,0 +1,42 @@
+#storybook-docs,
+.sbdocs-wrapper,
+.sbdocs-content {
+  background: var(--pulmu-color-surface-canvas) !important;
+  color: var(--pulmu-color-text-primary) !important;
+}
+
+.sbdocs-content > :is(p, ul, ol, blockquote) {
+  max-inline-size: 76ch;
+}
+
+.sbdocs-content :is(h1, h2, h3, h4, p, li, dt, dd, strong, label, th, td) {
+  color: var(--pulmu-color-text-primary);
+}
+
+.sbdocs-content a,
+.sbdocs-content a:visited {
+  color: var(--pulmu-color-action-hover);
+}
+
+.sbdocs-content :not(pre) > code {
+  background: var(--pulmu-color-surface-elevated);
+  border-color: var(--pulmu-color-border-default);
+  color: var(--pulmu-color-text-primary);
+}
+
+.sbdocs-content table,
+.sbdocs-content table :is(thead, tbody, tr, th, td) {
+  background: var(--pulmu-color-surface-default) !important;
+  border-color: var(--pulmu-color-border-default) !important;
+}
+
+:root[data-theme="dark"] .sbdocs-content .docblock-argstable-body > tr > td:nth-child(2) > div + div :is(span, code),
+:root[data-theme="dark"] .sbdocs-content .docblock-argstable-body > tr > td:nth-child(3) :is(span, code) {
+  color: var(--pulmu-color-text-muted) !important;
+}
+
+.sbdocs-content .docblock-argstable,
+.sbdocs-content .docs-story {
+  inline-size: 100%;
+  max-inline-size: none;
+}

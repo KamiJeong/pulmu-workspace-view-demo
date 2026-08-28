@@ -14,7 +14,7 @@ export default defineConfig({
         root: path.resolve(directory, "../.."),
         test: {
           environment: "node",
-          include: ["packages/**/*.test.ts"],
+          include: ["packages/**/*.test.ts", "apps/storybook/.storybook/**/*.test.ts"],
           name: "unit",
         },
       },
