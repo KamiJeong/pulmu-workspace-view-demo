@@ -83,11 +83,32 @@
   --pulmu-color-action-pressed: var(--pulmu-color-orange-500);
   --pulmu-color-action-text: var(--pulmu-color-neutral-950);
   --pulmu-color-focus-ring: var(--pulmu-color-orange-300);
+  --pulmu-typography-heading-family: var(--pulmu-font-family-sans);
+  --pulmu-typography-heading-page-size: var(--pulmu-font-size-xl);
+  --pulmu-typography-heading-section-size: var(--pulmu-font-size-lg);
+  --pulmu-typography-heading-line-height: var(--pulmu-line-height-tight);
+  --pulmu-typography-heading-weight: var(--pulmu-font-weight-bold);
   --pulmu-typography-body-family: var(--pulmu-font-family-sans);
   --pulmu-typography-body-size: var(--pulmu-font-size-md);
   --pulmu-typography-body-line-height: var(--pulmu-line-height-normal);
-  --pulmu-typography-heading-weight: var(--pulmu-font-weight-bold);
+  --pulmu-typography-body-weight: var(--pulmu-font-weight-regular);
+  --pulmu-typography-label-family: var(--pulmu-font-family-sans);
+  --pulmu-typography-label-size: var(--pulmu-font-size-sm);
+  --pulmu-typography-label-line-height: var(--pulmu-line-height-normal);
+  --pulmu-typography-label-weight: var(--pulmu-font-weight-medium);
+  --pulmu-typography-caption-family: var(--pulmu-font-family-sans);
+  --pulmu-typography-caption-size: var(--pulmu-font-size-xs);
+  --pulmu-typography-caption-line-height: var(--pulmu-line-height-normal);
+  --pulmu-typography-caption-weight: var(--pulmu-font-weight-regular);
+  --pulmu-typography-metric-family: var(--pulmu-font-family-sans);
+  --pulmu-typography-metric-size: var(--pulmu-font-size-xl);
+  --pulmu-typography-metric-line-height: var(--pulmu-line-height-tight);
+  --pulmu-typography-metric-weight: var(--pulmu-font-weight-bold);
+  --pulmu-typography-metric-variant-numeric: tabular-nums;
   --pulmu-typography-code-family: var(--pulmu-font-family-mono);
+  --pulmu-typography-code-size: var(--pulmu-font-size-sm);
+  --pulmu-typography-code-line-height: var(--pulmu-line-height-normal);
+  --pulmu-typography-code-weight: var(--pulmu-font-weight-regular);
   --pulmu-spacing-inline: var(--pulmu-space-2);
   --pulmu-spacing-control: var(--pulmu-space-3);
   --pulmu-spacing-panel: var(--pulmu-space-6);
@@ -188,6 +209,7 @@ body {
   background: var(--pulmu-color-surface-canvas);
   color: var(--pulmu-color-text-primary);
   font-size: var(--pulmu-typography-body-size);
+  font-weight: var(--pulmu-typography-body-weight);
   line-height: var(--pulmu-typography-body-line-height);
 }
 button, input, select, textarea { font: inherit; }

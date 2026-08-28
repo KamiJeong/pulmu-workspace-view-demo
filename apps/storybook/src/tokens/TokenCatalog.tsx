@@ -45,8 +45,9 @@ const getPreviewKind = ({ cssVar }: TokenCatalogEntry): PreviewKind => {
 const getTypographyVariant = ({ cssVar }: TokenCatalogEntry, previewKind: PreviewKind) => {
   if (previewKind !== "typography") return undefined;
   if (cssVar.includes("family")) return "family";
-  if (cssVar.includes("font-size") || cssVar.includes("body-size")) return "size";
+  if (cssVar.includes("size")) return "size";
   if (cssVar.includes("weight")) return "weight";
+  if (cssVar.includes("variant-numeric")) return "numeric";
   return "line-height";
 };
 
