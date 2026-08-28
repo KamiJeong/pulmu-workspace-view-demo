@@ -10,8 +10,11 @@ import { PulmuIcon, UI_ICONS } from "@pulmu/icons";
 import { classes, FieldFrame, useFieldIds } from "./internal";
 
 type FieldText = {
+  /** Supporting guidance connected to the control with `aria-describedby`. */
   readonly description?: ReactNode;
+  /** Validation feedback that marks the control invalid and is announced as an alert. */
   readonly error?: ReactNode;
+  /** Visible control label; required to preserve an accessible name. */
   readonly label: ReactNode;
 };
 
@@ -38,6 +41,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 });
 
 export type SearchFieldProps = Omit<InputProps, "type"> & {
+  /** Called with the current value when Enter is pressed and not prevented. */
   readonly onSearch?: (value: string) => void;
 };
 
@@ -60,9 +64,18 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
   );
 });
 
-export type SelectOption = { readonly disabled?: boolean; readonly label: string; readonly value: string };
+export type SelectOption = {
+  /** Prevents this native option from being selected. */
+  readonly disabled?: boolean;
+  /** Visible option text. */
+  readonly label: string;
+  /** Stable submitted value. */
+  readonly value: string;
+};
 export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & FieldText & {
+  /** Native select options rendered in order. */
   readonly options: readonly SelectOption[];
+  /** Optional first option used as an unselected prompt. */
   readonly placeholder?: string;
 };
 

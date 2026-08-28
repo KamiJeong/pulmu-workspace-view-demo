@@ -10,11 +10,12 @@ import {
 
 # Core component API reference
 
-All public primitives are typed, exported from `@pulmu/ui`, and currently have **beta** maturity. The tables below are generated from each component's TypeScript contract.
+All public primitives are typed, exported from `@pulmu/ui`, and currently have **beta** maturity. Adoption notes explain the custom contract; each table remains generated from the component's TypeScript props and JSDoc.
 
 ## Actions
 
 ### Button
+Choose `variant` from `primary`, `secondary`, `danger`, or `quiet`. `loading` prevents duplicate activation, sets `aria-busy`, and replaces children with the visible `loadingLabel`; it is intentionally not faded like `disabled`.
 <ArgTypes of={Button} />
 
 ### IconButton
@@ -22,6 +23,7 @@ All public primitives are typed, exported from `@pulmu/ui`, and currently have *
 <ArgTypes of={IconButton} />
 
 ### Link
+When `target="_blank"`, the component adds a safe default `rel` and announces `externalLabel` after the visible text.
 <ArgTypes of={Link} />
 
 ### CopyButton
@@ -31,43 +33,55 @@ Clipboard success and failure are announced politely; localize `copiedLabel`, `c
 ## Fields
 
 ### Input
+`label` is required. `description` is connected as guidance; `error` also sets `aria-invalid` and is announced as validation feedback. Native input props remain available.
 <ArgTypes of={Input} />
 
 ### SearchField
+Uses the Input label, description, and error contract. `onSearch(value)` runs on an unprevented Enter key while native search input behavior is preserved.
 <ArgTypes of={SearchField} />
 
 ### Select
+Pass ordered `{ label, value, disabled? }` options. `placeholder` creates the first empty native option; label, description, and error wiring matches Input.
 <ArgTypes of={Select} />
 
 ### Checkbox
+Provide a visible `label`; optional `description` and `error` are associated with the native checkbox. Use native `checked`/`onChange` or `defaultChecked` state props.
 <ArgTypes of={Checkbox} />
 
 ### Switch
+Uses a native checkbox with `role="switch"`. Provide the same label and field-message contract, then control it with native `checked`/`onChange` or `defaultChecked`.
 <ArgTypes of={Switch} />
 
 ## Navigation
 
 ### Tabs
+`items` use stable ids and may be disabled. Pair controlled `value` with `onValueChange`, or use `defaultValue`; invalid selections normalize to an enabled item. `activationMode` is `automatic` or `manual`, while `orientation` selects Left/Right or Up/Down navigation. Home/End always work.
 <ArgTypes of={Tabs} />
 
 ### Pagination
+Use one-based `currentPage` and `totalPages`; `getHref(page)` supplies real destinations. `label` names the navigation landmark.
 <ArgTypes of={Pagination} />
 
 ### Breadcrumb
+Pass ordered `{ label, href? }` items. The final item is rendered as the current page, and `label` names the navigation landmark.
 <ArgTypes of={Breadcrumb} />
 
 ## Content
 
 ### Badge
+Choose `tone` from `neutral`, `info`, `success`, `warning`, or `danger`; always keep meaningful status text in the badge.
 <ArgTypes of={Badge} />
 
 ### Avatar
+Provide accessible `alt` text and a short `fallback`. Supplying `src` renders an image; omitting it exposes the fallback with the same name.
 <ArgTypes of={Avatar} />
 
 ### Card
+Choose semantic `as="article"` or `as="section"`. `heading` renders a level-two title and `actions` uses the responsive trailing action area.
 <ArgTypes of={Card} />
 
 ### CodeReference
+Use for short inline identifiers that may need safe wrapping; standard HTML code attributes and children are supported.
 <ArgTypes of={CodeReference} />
 
 ## Feedback
@@ -77,38 +91,49 @@ Values are clamped to the visible range. Non-positive or non-finite `max` values
 <ArgTypes of={Progress} />
 
 ### Spinner
+`label` is required status text; choose `size="sm"` (16px) or `size="md"` (20px). Set `decorative` only when adjacent visible text already announces the same progress.
 <ArgTypes of={Spinner} />
 
 ### Skeleton
+Set `label` to describe the content being loaded. The placeholder is exposed as a busy polite status and respects reduced motion.
 <ArgTypes of={Skeleton} />
 
 ### Alert
+Choose `tone` from `info`, `success`, `warning`, or `danger`. `title` leads the message; danger uses assertive alert semantics while other tones use a polite status.
 <ArgTypes of={Alert} />
 
 ### EmptyState
+Provide a clear `title`, explanatory `description`, and an optional primary next-step `action`.
 <ArgTypes of={EmptyState} />
 
 ### ErrorState
+Uses the EmptyState content contract but exposes the whole state as an alert. Keep the optional `action` focused on recovery.
 <ArgTypes of={ErrorState} />
 
 ## Overlays
 
 ### Tooltip
+Wrap one focusable `children` trigger and pass descriptive `content`. It opens on hover/focus, preserves child handlers, clamps to the viewport, and dismisses on pointer leave, blur, or Escape without moving focus.
 <ArgTypes of={Tooltip} />
 
 ### Popover
+`triggerLabel` names both the visible button and non-modal region. `content` is viewport-clamped and dismisses on outside press or Escape; Escape returns focus to the trigger.
 <ArgTypes of={Popover} />
 
 ### Menu
+Pass ordered items with stable `id`, visible `label`, and either `href` or `onSelect`; disabled items are skipped. `label` names the menu and `triggerLabel` names its button. Arrow keys, Home/End, typeahead, Escape focus return, and natural Tab dismissal are built in.
 <ArgTypes of={Menu} />
 
 ### Dialog
+Control `open` with required `onOpenChange`. `title` names the modal, `description` supplies context, `closeLabel` names the icon control, and `actions` renders the footer. Opening moves focus inside; Escape or close restores the opener.
 <ArgTypes of={Dialog} />
 
 ## Accessibility
 
 ### VisuallyHidden
+Use for meaningful text that should remain in the accessibility tree without taking visual space; standard span props are supported.
 <ArgTypes of={VisuallyHidden} />
 
 ### SkipLink
+`href` is typed as a same-page `#id` target. Keep it first in the page's focus order and ensure the destination can receive focus.
 <ArgTypes of={SkipLink} />

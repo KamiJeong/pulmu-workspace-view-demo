@@ -71,13 +71,16 @@ function useViewportPlacement(
 }
 
 export type TooltipProps = {
+  /** Single focusable trigger; existing event handlers are preserved. */
   readonly children: ReactElement;
+  /** Descriptive text shown on hover/focus and dismissed by blur, pointer leave, or Escape. */
   readonly content: ReactNode;
 };
 
 export function Tooltip({ children, content }: TooltipProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
+  const dismissedRef = useRef(false);
   const triggerRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLSpanElement>(null);
   const placement = useViewportPlacement(open, triggerRef, panelRef);
@@ -86,11 +89,11 @@ export function Tooltip({ children, content }: TooltipProps) {
   return (
     <span
       className={classes("pulmu-tooltip", open && "pulmu-tooltip--open")}
-      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}
-      onFocusCapture={() => setOpen(true)}
-      onKeyDownCapture={(event) => { if (event.key === "Escape") { event.preventDefault(); setOpen(false); } }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) { dismissedRef.current = false; setOpen(false); } }}
+      onFocusCapture={() => { if (!dismissedRef.current) setOpen(true); }}
+      onKeyDownCapture={(event) => { if (event.key === "Escape") { event.preventDefault(); dismissedRef.current = true; setOpen(false); } }}
+      onMouseEnter={() => { if (!dismissedRef.current) setOpen(true); }}
+      onMouseLeave={() => { dismissedRef.current = false; setOpen(false); }}
       ref={triggerRef}
     >
       {cloneElement(children, { "aria-describedby": describedBy })}
@@ -100,7 +103,9 @@ export function Tooltip({ children, content }: TooltipProps) {
 }
 
 export type PopoverProps = Omit<HTMLAttributes<HTMLDivElement>, "content"> & {
+  /** Non-modal content dismissed by outside press or Escape, with collision-aware placement. */
   readonly content: ReactNode;
+  /** Visible trigger text and accessible name for the popover region. */
   readonly triggerLabel: string;
 };
 
@@ -133,15 +138,23 @@ export function Popover({ className, content, triggerLabel, ...props }: PopoverP
 }
 
 export type MenuItem = {
+  /** Removes the item from selection and keyboard navigation. */
   readonly disabled?: boolean;
+  /** Optional navigation destination; omit for an action button. */
   readonly href?: string;
+  /** Stable key for the item. */
   readonly id: string;
+  /** Visible text used by typeahead. */
   readonly label: string;
+  /** Called when an enabled item is activated. */
   readonly onSelect?: () => void;
 };
 export type MenuProps = HTMLAttributes<HTMLDivElement> & {
+  /** Ordered actions navigated with arrows, Home/End, and typeahead. */
   readonly items: readonly MenuItem[];
+  /** Accessible name for the menu popup. */
   readonly label: string;
+  /** Visible label for the menu trigger. Escape restores focus; Tab dismisses naturally. */
   readonly triggerLabel: string;
 };
 
@@ -210,11 +223,17 @@ export function Menu({ className, items, label, triggerLabel, ...props }: MenuPr
 }
 
 export type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "open" | "title"> & {
+  /** Optional footer actions that stack on narrow screens. */
   readonly actions?: ReactNode;
+  /** Accessible name for the icon-only close control. */
   readonly closeLabel?: string;
+  /** Supporting text connected with `aria-describedby`. */
   readonly description?: ReactNode;
+  /** Required controlled-state callback for close control, Escape, and native cancel. */
   readonly onOpenChange: (open: boolean) => void;
+  /** Controlled modal visibility. Opening captures focus; closing restores the opener. */
   readonly open: boolean;
+  /** Required dialog heading and accessible name. */
   readonly title: ReactNode;
 };
 

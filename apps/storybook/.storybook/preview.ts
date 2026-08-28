@@ -15,11 +15,11 @@ const preview: Preview = {
   ],
   globalTypes: {
     theme: {
-      description: "Dark token theme or compatibility light preview",
+      description: "Component preview and documentation theme",
       toolbar: {
         items: [
-          { title: "Dark", value: "dark" },
-          { title: "Light", value: "light" },
+          { title: "Dark theme", value: "dark" },
+          { title: "Light theme", value: "light" },
         ],
       },
     },

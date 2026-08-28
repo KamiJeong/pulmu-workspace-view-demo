@@ -24,6 +24,10 @@
 .pulmu-button:hover:not(:disabled) { background: var(--pulmu-color-action-hover); }
 .pulmu-button:active:not(:disabled) { background: var(--pulmu-color-action-pressed); }
 .pulmu-button:disabled, [aria-disabled="true"] { cursor: not-allowed; opacity: var(--pulmu-opacity-state-disabled); }
+.pulmu-button[data-loading="true"] { cursor: progress; opacity: 1; }
+.pulmu-button--primary[data-loading="true"] { background: var(--pulmu-color-action-pressed); }
+.pulmu-button--secondary[data-loading="true"], .pulmu-button--quiet[data-loading="true"] { border-color: var(--pulmu-color-action-default); }
+.pulmu-button--danger[data-loading="true"] { background: var(--pulmu-color-status-failed); }
 .pulmu-button--secondary { background: var(--pulmu-color-surface-elevated); border-color: var(--pulmu-color-border-default); color: var(--pulmu-color-text-primary); }
 .pulmu-button--secondary:hover:not(:disabled), .pulmu-button--quiet:hover:not(:disabled) { background: var(--pulmu-color-surface-default); border-color: var(--pulmu-color-border-strong); }
 .pulmu-button--danger { background: var(--pulmu-color-status-failed); color: var(--pulmu-color-text-inverse); }
@@ -136,6 +140,7 @@
 }
 
 @media (forced-colors: active) {
+  .pulmu-button[data-loading="true"] { border-style: dashed; opacity: 1; }
   .pulmu-tabs__tab[aria-selected="true"], .pulmu-alert { border-color: Highlight; }
   .pulmu-check:checked + .pulmu-check__visual { forced-color-adjust: none; }
 }

@@ -6,6 +6,7 @@ import {
 } from "@storybook/addon-docs/blocks";
 
 import { applyPreviewGlobals } from "./previewGlobals";
+import "./PulmuDocsContainer.css";
 
 const GLOBALS_UPDATED = "globalsUpdated";
 

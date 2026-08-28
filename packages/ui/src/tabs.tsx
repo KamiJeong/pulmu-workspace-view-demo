@@ -2,19 +2,30 @@ import { useEffect, useId, useRef, useState, type HTMLAttributes, type ReactNode
 import { classes } from "./internal";
 
 export type TabItem = {
+  /** Panel content associated with this tab. */
   readonly content: ReactNode;
+  /** Removes the tab from roving focus and selection. */
   readonly disabled?: boolean;
+  /** Stable value used for controlled selection and ARIA relationships. */
   readonly id: string;
+  /** Visible tab label. */
   readonly label: ReactNode;
 };
 
 export type TabsProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
+  /** `automatic` selects on arrow focus; `manual` waits for Enter or Space. */
   readonly activationMode?: "automatic" | "manual";
+  /** Initially selected item id for uncontrolled Tabs. */
   readonly defaultValue?: string;
+  /** Accessible name for the tab list. */
   readonly label: string;
+  /** Called whenever user interaction requests a new selected item id. */
   readonly onValueChange?: (value: string) => void;
+  /** Sets layout and arrow keys: Left/Right for horizontal, Up/Down for vertical. */
   readonly orientation?: "horizontal" | "vertical";
+  /** Controlled selected item id; pair with `onValueChange`. */
   readonly value?: string;
+  /** Ordered tab definitions; disabled items are skipped by keyboard navigation. */
   readonly items: readonly TabItem[];
 };
 

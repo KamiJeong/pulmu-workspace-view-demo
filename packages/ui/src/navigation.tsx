@@ -2,9 +2,13 @@ import { type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode } from "
 import { classes } from "./internal";
 
 export type PaginationProps = HTMLAttributes<HTMLElement> & {
+  /** One-based active page, exposed with `aria-current="page"`. */
   readonly currentPage: number;
+  /** Returns the destination URL for a one-based page number. */
   readonly getHref: (page: number) => string;
+  /** Accessible name for the pagination landmark. */
   readonly label?: string;
+  /** Total number of numbered page links. */
   readonly totalPages: number;
 };
 
@@ -20,11 +24,15 @@ export function Pagination({ className, currentPage, getHref, label = "Paginatio
 }
 
 export type BreadcrumbItem = {
+  /** Destination for non-current items; omit to render plain text. */
   readonly href?: string;
+  /** Visible crumb text or content. */
   readonly label: ReactNode;
 };
 export type BreadcrumbProps = HTMLAttributes<HTMLElement> & {
+  /** Ordered path; the last item is marked as the current page. */
   readonly items: readonly BreadcrumbItem[];
+  /** Accessible name for the breadcrumb landmark. */
   readonly label?: string;
 };
 

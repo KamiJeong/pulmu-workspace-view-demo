@@ -22,6 +22,37 @@ type Story = StoryObj<typeof meta>;
 const options = [{ label: "Quick Forge", value: "quick" }, { label: "Standard Forge", value: "standard" }, { label: "Full Forge", value: "full" }];
 const menuSelect = fn();
 const tooltipKeyDown = fn();
+const loadingAction = fn();
+const maturityGroups = Object.entries(componentMaturity).reduce<Record<string, string[]>>((groups, [name, maturity]) => {
+  (groups[maturity] ??= []).push(name);
+  return groups;
+}, {});
+
+const colorChannels = (color: string) => (color.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+const relativeLuminance = (color: string) => colorChannels(color)
+  .map((channel) => channel / 255)
+  .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+  .reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0);
+const contrastRatio = (foreground: string, background: string) => {
+  const values = [relativeLuminance(foreground), relativeLuminance(background)].sort((a, b) => b - a);
+  return (values[0] + 0.05) / (values[1] + 0.05);
+};
+const verifyLoadingButton = async (canvasElement: HTMLElement) => {
+  const canvas = within(canvasElement);
+  const loading = canvas.getByRole("button", { name: "Starting forge" });
+  const disabled = canvas.getByRole("button", { name: "Unavailable" });
+  await expect(loading).toHaveAttribute("aria-busy", "true");
+  await expect(loading).toHaveAttribute("data-loading", "true");
+  await expect(loading).toBeDisabled();
+  await expect(loading).toHaveTextContent("Starting forge");
+  await expect(loading).not.toHaveTextContent(/^Start forge$/);
+  await expect(getComputedStyle(loading).opacity).toBe("1");
+  await expect(Number(getComputedStyle(disabled).opacity)).toBeLessThan(1);
+  await expect(contrastRatio(getComputedStyle(loading).color, getComputedStyle(loading).backgroundColor)).toBeGreaterThanOrEqual(4.5);
+  loadingAction.mockClear();
+  await userEvent.click(loading);
+  await expect(loadingAction).not.toHaveBeenCalled();
+};
 
 const DemoDialog = () => {
   const [open, setOpen] = useState(false);
@@ -52,7 +83,17 @@ const ControlledTabsDemo = () => {
   return <div className="core-stack"><div className="core-row"><Button onClick={() => setValue("three")}>Select third</Button><Button onClick={() => setShowFirst(false)} variant="secondary">Remove first</Button><Button onClick={() => setDisableFirst(true)} variant="secondary">Disable first</Button></div><Tabs items={items} label="Controlled tabs" onValueChange={setValue} value={value} /></div>;
 };
 
-export const ButtonStory: Story = { name: "Button", render: () => <div className="core-row"><Button>Start forge</Button><Button variant="secondary">Cancel</Button><Button variant="danger">Delete run</Button><Button loading loadingLabel="Starting forge">Start forge</Button><Button disabled>Unavailable</Button></div> };
+export const ButtonStory: Story = {
+  name: "Button",
+  globals: { theme: "dark" },
+  render: () => <div className="core-row"><Button>Start forge</Button><Button variant="secondary">Cancel</Button><Button variant="danger">Delete run</Button><Button loading loadingLabel="Starting forge" onClick={loadingAction}>Start forge</Button><Button disabled>Unavailable</Button></div>,
+  play: async ({ canvasElement }) => verifyLoadingButton(canvasElement),
+};
+export const ButtonLightStates: Story = {
+  globals: { theme: "light" },
+  render: () => <div className="core-row"><Button>Start forge</Button><Button loading loadingLabel="Starting forge" onClick={loadingAction}>Start forge</Button><Button disabled>Unavailable</Button></div>,
+  play: async ({ canvasElement }) => verifyLoadingButton(canvasElement),
+};
 export const IconButtonStory: Story = { name: "IconButton", render: () => <IconButton icon={UI_ICONS.settings} label="Open settings" variant="secondary" /> };
 export const LinkStory: Story = { name: "Link", render: () => <Link href="https://example.com" target="_blank">Read external documentation</Link> };
 export const InputStory: Story = { name: "Input", render: () => <div className="core-stack"><Input description="Use a memorable workspace name." label="Workspace name" defaultValue="Pulmu demo" /><Input error="A repository URL is required." label="Repository URL" aria-required="true" /></div> };
@@ -223,7 +264,7 @@ export const CopyButtonStory: Story = {
 export const CodeReferenceStory: Story = { name: "CodeReference", render: () => <CodeReference>pulmu/feat/exceptionally-long-core-ui-component-branch-reference</CodeReference> };
 export const VisuallyHiddenStory: Story = { name: "VisuallyHidden", render: () => <Button><VisuallyHidden>Start the</VisuallyHidden> Forge</Button> };
 export const SkipLinkStory: Story = { name: "SkipLink", render: () => <><SkipLink href="#storybook-main">Skip to component preview</SkipLink><p>Press Tab to reveal the skip link.</p></> };
-export const MaturityOverview: Story = { render: () => <div className="core-maturity"><h2>Component maturity</h2><p>All issue #7 primitives begin at <Badge tone="warning">beta</Badge>.</p><ul>{Object.entries(componentMaturity).map(([name, maturity]) => <li key={name}><CodeReference>{name}</CodeReference><Badge>{maturity}</Badge></li>)}</ul></div> };
+export const MaturityOverview: Story = { render: () => <div className="core-maturity"><h2>Component maturity</h2><p>Maturity groups communicate adoption confidence without repeating the same status on every row.</p>{Object.entries(maturityGroups).map(([maturity, names]) => <section className="core-maturity__group" key={maturity}><header><Badge tone="warning">{maturity}</Badge><strong>{names.length} components</strong></header><ul aria-label={`${maturity} components`}>{names.map((name) => <li aria-label={`${name}: ${maturity}`} key={name}><CodeReference>{name}</CodeReference></li>)}</ul></section>)}</div> };
 export const NarrowContentCoverage: Story = {
   render: () => <Card heading="매우 긴 한국어와 English content"><p>좁은 화면에서 한국어 설명이 자연스럽게 줄바꿈됩니다.</p><CodeReference>pulmu/feat/an-exceptionally-long-unbroken-english-code-reference-that-must-wrap</CodeReference></Card>,
   parameters: { viewport: { defaultViewport: "narrow" } },

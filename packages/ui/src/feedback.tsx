@@ -4,8 +4,11 @@ import { classes } from "./internal";
 import type { Tone } from "./content";
 
 export type ProgressProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** Accessible and visible name for the operation. */
   readonly label: string;
+  /** Positive finite upper bound; invalid values safely normalize to 100. */
   readonly max?: number;
+  /** Determinate value clamped to 0…max; omit for an indeterminate progress bar. */
   readonly value?: number;
 };
 
@@ -23,21 +26,35 @@ export function Progress({ className, label, max = 100, value, ...props }: Progr
   );
 }
 
-export function Spinner({ className, label, size = "md", ...props }: HTMLAttributes<HTMLSpanElement> & { readonly label: string; readonly size?: "sm" | "md" }) {
+export type SpinnerProps = HTMLAttributes<HTMLSpanElement> & {
+  /** Hides the spinner from assistive technology when adjacent text already announces progress. */
+  readonly decorative?: boolean;
+  /** Status text announced while the spinner is visible. */
+  readonly label: string;
+  /** Icon size: 16px `sm` or 20px `md`. */
+  readonly size?: "sm" | "md";
+};
+
+export function Spinner({ className, decorative = false, label, size = "md", ...props }: SpinnerProps) {
   return (
-    <span {...props} className={classes("pulmu-spinner", `pulmu-spinner--${size}`, className)} role="status">
+    <span {...props} aria-hidden={decorative || undefined} className={classes("pulmu-spinner", `pulmu-spinner--${size}`, className)} role={decorative ? undefined : "status"}>
       <PulmuIcon decorative icon={PULMU_RUN_STATUS_ICONS.running} size={size} />
-      <span className="pulmu-visually-hidden">{label}</span>
+      {decorative ? null : <span className="pulmu-visually-hidden">{label}</span>}
     </span>
   );
 }
 
-export function Skeleton({ className, label = "Loading content", ...props }: HTMLAttributes<HTMLDivElement> & { readonly label?: string }) {
+export function Skeleton({ className, label = "Loading content", ...props }: HTMLAttributes<HTMLDivElement> & {
+  /** Accessible loading description for the placeholder. */
+  readonly label?: string;
+}) {
   return <div {...props} aria-label={label} aria-live="polite" aria-busy="true" className={classes("pulmu-skeleton", className)} role="status" />;
 }
 
 export type AlertProps = HTMLAttributes<HTMLDivElement> & {
+  /** Short status heading read before the supporting message. */
   readonly title: ReactNode;
+  /** Status intent; danger uses assertive alert semantics, other tones use polite status. */
   readonly tone?: Exclude<Tone, "neutral">;
 };
 
@@ -51,8 +68,11 @@ export function Alert({ children, className, title, tone = "info", ...props }: A
 }
 
 export type EmptyStateProps = HTMLAttributes<HTMLDivElement> & {
+  /** Optional recovery or creation control. */
   readonly action?: ReactNode;
+  /** Concise explanation and next-step context. */
   readonly description: ReactNode;
+  /** State heading. */
   readonly title: ReactNode;
 };
 

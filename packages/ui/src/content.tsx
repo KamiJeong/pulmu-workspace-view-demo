@@ -3,13 +3,21 @@ import { classes } from "./internal";
 
 export type Tone = "neutral" | "info" | "success" | "warning" | "danger";
 
-export function Badge({ className, tone = "neutral", ...props }: HTMLAttributes<HTMLSpanElement> & { readonly tone?: Tone }) {
+export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+  /** Semantic color intent: neutral, info, success, warning, or danger. */
+  readonly tone?: Tone;
+};
+
+export function Badge({ className, tone = "neutral", ...props }: BadgeProps) {
   return <span {...props} className={classes("pulmu-badge", `pulmu-tone--${tone}`, className)} />;
 }
 
 export type AvatarProps = HTMLAttributes<HTMLSpanElement> & {
+  /** Accessible name for either the image or text fallback. */
   readonly alt: string;
+  /** Short initials or glyph shown when `src` is absent. */
   readonly fallback: string;
+  /** Optional image URL; omit it to render the fallback. */
   readonly src?: string;
 };
 
@@ -22,8 +30,11 @@ export function Avatar({ alt, className, fallback, src, ...props }: AvatarProps)
 }
 
 export type CardProps = HTMLAttributes<HTMLElement> & {
+  /** Optional trailing action area that wraps and stacks on narrow screens. */
   readonly actions?: ReactNode;
+  /** Semantic container element: article for standalone content or section for grouped content. */
   readonly as?: "article" | "section";
+  /** Optional card heading rendered at level two. */
   readonly heading?: ReactNode;
 };
 

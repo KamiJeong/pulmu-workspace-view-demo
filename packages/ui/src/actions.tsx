@@ -13,8 +13,11 @@ import { Spinner } from "./feedback";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "quiet";
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  /** Prevents activation, sets `aria-busy`, and replaces the label with `loadingLabel`. */
   readonly loading?: boolean;
+  /** Visible progress text shown while `loading` is true. Localize this as a complete phrase. */
   readonly loadingLabel?: string;
+  /** Visual emphasis: primary, secondary, destructive danger, or chrome-free quiet. */
   readonly variant?: ButtonVariant;
 };
 
@@ -27,18 +30,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...props}
       aria-busy={loading || undefined}
       className={classes("pulmu-button", `pulmu-button--${variant}`, className)}
+      data-loading={loading || undefined}
       disabled={disabled || loading}
       ref={ref}
       type={type}
     >
-      {loading ? <Spinner label={loadingLabel} size="sm" /> : null}
-      <span>{children}</span>
+      {loading ? <Spinner decorative label={loadingLabel} size="sm" /> : null}
+      <span>{loading ? loadingLabel : children}</span>
     </button>
   );
 });
 
 export type IconButtonProps = Omit<ButtonProps, "children"> & {
+  /** Glyph rendered decoratively; the control name comes from `label`. */
   readonly icon: PulmuIconProps["icon"];
+  /** Required accessible name for the icon-only control. */
   readonly label: string;
 };
 
@@ -53,6 +59,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
 });
 
 export type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+  /** Hidden suffix announced for links with `target="_blank"`. */
   readonly externalLabel?: string;
 };
 
@@ -75,10 +82,15 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 });
 
 export type CopyButtonProps = Omit<ButtonProps, "children" | "onClick"> & {
+  /** Success feedback shown and politely announced after copying. */
   readonly copiedLabel?: string;
+  /** Idle action label. */
   readonly copyLabel?: string;
+  /** Failure feedback shown and politely announced when clipboard access fails. */
   readonly errorLabel?: string;
+  /** Exact text written to the clipboard. */
   readonly text: string;
+  /** Called after a successful clipboard write. */
   readonly onCopy?: (text: string) => void;
 };
 
