@@ -3,12 +3,17 @@ import "@pulmu/tokens/global.css";
 import type { Preview } from "@storybook/react-vite";
 
 import { PulmuDocsContainer } from "./PulmuDocsContainer";
-import { applyPreviewGlobals } from "./previewGlobals";
+import {
+  applyPreviewThemeContext,
+  type PreviewThemeContext,
+} from "./previewGlobals";
+import { readStoredThemePreference } from "../src/theme/themeRuntime";
 
 const preview: Preview = {
   decorators: [
     (Story, context) => {
-      applyPreviewGlobals(context.globals);
+      const themeContext = context as typeof context & PreviewThemeContext;
+      applyPreviewThemeContext(themeContext);
 
       return Story();
     },
@@ -18,8 +23,9 @@ const preview: Preview = {
       description: "Component preview and documentation theme",
       toolbar: {
         items: [
-          { title: "Dark theme", value: "dark" },
+          { title: "System preference", value: "system" },
           { title: "Light theme", value: "light" },
+          { title: "Dark theme", value: "dark" },
         ],
       },
     },
@@ -45,7 +51,7 @@ const preview: Preview = {
   initialGlobals: {
     locale: "ko",
     motion: "system",
-    theme: "dark",
+    theme: readStoredThemePreference(),
     viewport: { value: "desktop", isRotated: false },
   },
   parameters: {

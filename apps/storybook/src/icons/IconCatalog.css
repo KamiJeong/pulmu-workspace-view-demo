@@ -76,6 +76,8 @@
   gap: var(--pulmu-spacing-inline);
 }
 
+.icon-card strong { color: var(--pulmu-color-text-primary); }
+
 .icon-card svg,
 .stage-icon-card svg,
 .icon-demo-card svg { min-width: var(--pulmu-size-icon-sm); }
