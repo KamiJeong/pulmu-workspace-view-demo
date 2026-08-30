@@ -54,6 +54,110 @@ const verifyLoadingButton = async (canvasElement: HTMLElement) => {
   await expect(loadingAction).not.toHaveBeenCalled();
 };
 
+const resolveTokenStyle = (property: string, token: string) => {
+  const probe = document.createElement("span");
+  probe.style.setProperty(property, `var(${token})`);
+  document.body.append(probe);
+  const value = getComputedStyle(probe).getPropertyValue(property);
+  probe.remove();
+  return value;
+};
+
+const expectTokenStyle = async (element: HTMLElement, property: string, token: string) => {
+  await expect(getComputedStyle(element).getPropertyValue(property)).toBe(resolveTokenStyle(property, token));
+};
+
+const SemanticStateMatrix = () => <div className="core-matrix" data-testid="semantic-matrix">
+  <section>
+    <h2>Actions</h2>
+    <div className="core-row">
+      <Button data-testid="matrix-primary">Start forge</Button>
+      <Button data-testid="matrix-secondary" variant="secondary">Review</Button>
+      <Button data-testid="matrix-quiet" variant="quiet">Dismiss</Button>
+      <Button data-testid="matrix-danger" variant="danger">Delete</Button>
+      <Button disabled variant="secondary">Unavailable</Button>
+      <IconButton icon={UI_ICONS.settings} label="Matrix settings" variant="secondary" />
+    </div>
+  </section>
+  <section>
+    <h2>Fields</h2>
+    <div className="core-stack">
+      <Input data-testid="matrix-input" description="Uses the default field surface." label="Workspace" defaultValue="Pulmu" />
+      <Input data-testid="matrix-invalid" error="Enter a repository URL." label="Repository" aria-required="true" />
+      <Input data-testid="matrix-disabled-input" disabled label="Disabled field" defaultValue="Unavailable" />
+      <Select label="Forge depth" options={options} defaultValue="standard" />
+      <Checkbox data-testid="matrix-checkbox" defaultChecked label="Selected check" />
+      <Switch data-testid="matrix-switch" defaultChecked label="Selected switch" />
+    </div>
+  </section>
+  <section>
+    <h2>Status</h2>
+    <div className="core-row">
+      <Badge data-testid="matrix-neutral">Pending</Badge><Badge data-testid="matrix-info" tone="info">Running</Badge><Badge data-testid="matrix-success" tone="success">Passed</Badge><Badge data-testid="matrix-warning" tone="warning">Interrupted</Badge><Badge data-testid="matrix-danger-tone" tone="danger">Failed</Badge>
+    </div>
+    <div className="core-stack">
+      <Alert title="Verification passed" tone="success">The exact diff is ready.</Alert>
+      <Alert title="Verification failed" tone="danger">Review the failing check.</Alert>
+      <Progress label="Forge progress" value={64} />
+    </div>
+  </section>
+  <section>
+    <h2>Navigation</h2>
+    <div className="core-stack">
+      <Tabs label="Matrix tabs" items={[{ id: "summary", label: "Summary", content: "Ready." }, { id: "checks", label: "Checks", content: "All checks passed." }]} />
+      <Pagination currentPage={2} getHref={(page) => `?matrix-page=${page}`} totalPages={3} />
+      <Breadcrumb items={[{ href: "#workspaces", label: "Workspaces" }, { href: "#pulmu", label: "Pulmu" }, { label: "Run #22" }]} />
+    </div>
+  </section>
+  <section className="core-matrix__surface">
+    <h2>Surfaces</h2>
+    <Card data-testid="matrix-card" actions={<Button variant="secondary">Review details</Button>} heading="Core UI surface">Default surfaces use a restrained border and raised shadow.</Card>
+  </section>
+</div>;
+
+const verifySemanticMatrix = async (canvasElement: HTMLElement, theme: "light" | "dark") => {
+  const canvas = within(canvasElement);
+  const primary = canvas.getByTestId("matrix-primary");
+  const secondary = canvas.getByTestId("matrix-secondary");
+  const disabledInput = canvas.getByTestId("matrix-disabled-input");
+  const matrix = canvas.getByTestId("semantic-matrix");
+  await expect(document.documentElement).toHaveAttribute("data-theme", theme);
+  await expectTokenStyle(primary, "background-color", "--pulmu-color-action-default");
+  await expectTokenStyle(secondary, "background-color", "--pulmu-color-surface-default");
+  await expect(getComputedStyle(canvas.getByTestId("matrix-quiet")).backgroundColor).toBe("rgba(0, 0, 0, 0)");
+  await expectTokenStyle(canvas.getByTestId("matrix-quiet"), "color", "--pulmu-color-text-primary");
+  await expectTokenStyle(canvas.getByTestId("matrix-danger"), "background-color", "--pulmu-color-status-danger-foreground");
+  await expectTokenStyle(canvas.getByTestId("matrix-danger"), "color", "--pulmu-color-danger-action-text");
+  await expectTokenStyle(canvas.getByTestId("matrix-input"), "background-color", "--pulmu-color-surface-default");
+  await expectTokenStyle(canvas.getByTestId("matrix-invalid"), "border-color", "--pulmu-color-status-danger-foreground");
+  await expectTokenStyle(disabledInput, "background-color", "--pulmu-color-surface-subtle");
+  await expect(getComputedStyle(disabledInput).opacity).toBe(resolveTokenStyle("opacity", "--pulmu-opacity-state-disabled"));
+  for (const control of ["checkbox", "switch"]) {
+    const visual = canvas.getByTestId(`matrix-${control}`).nextElementSibling as HTMLElement;
+    await expectTokenStyle(visual, "background-color", "--pulmu-color-brand-soft");
+    await expectTokenStyle(visual, "border-color", "--pulmu-color-action-default");
+  }
+  await expectTokenStyle(canvas.getByTestId("matrix-neutral"), "background-color", "--pulmu-color-surface-subtle");
+  await expectTokenStyle(canvas.getByTestId("matrix-neutral"), "color", "--pulmu-color-text-secondary");
+  for (const tone of ["info", "success", "warning", "danger"] as const) {
+    const badge = canvas.getByTestId(`matrix-${tone === "danger" ? "danger-tone" : tone}`);
+    await expectTokenStyle(badge, "background-color", `--pulmu-color-status-${tone}-subtle`);
+    await expectTokenStyle(badge, "color", `--pulmu-color-status-${tone}-foreground`);
+  }
+  await expectTokenStyle(canvas.getByRole("tab", { name: "Summary" }), "background-color", "--pulmu-color-brand-soft");
+  await expectTokenStyle(canvas.getByTestId("matrix-card"), "background-color", "--pulmu-panel-background");
+  await expectTokenStyle(canvas.getByTestId("matrix-card"), "box-shadow", "--pulmu-shadow-raised");
+
+  await userEvent.click(matrix);
+  await userEvent.tab();
+  await expect(primary).toHaveFocus();
+  await expectTokenStyle(primary, "outline-color", "--pulmu-focus-ring-color");
+  await expect(getComputedStyle(primary).outlineWidth).toBe(resolveTokenStyle("outline-width", "--pulmu-focus-ring-width"));
+  await expect(getComputedStyle(primary).outlineOffset).toBe(resolveTokenStyle("outline-offset", "--pulmu-focus-ring-offset"));
+  await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
+  await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
+};
+
 const DemoDialog = () => {
   const [open, setOpen] = useState(false);
   return <><Button onClick={() => setOpen(true)}>Open dialog</Button><Dialog actions={<Button onClick={() => setOpen(false)}>Confirm</Button>} description="Review the selected forge settings before continuing." onOpenChange={setOpen} open={open} title="Start forge?">Keyboard focus remains in this modal until it closes.</Dialog></>;
@@ -93,6 +197,16 @@ export const ButtonLightStates: Story = {
   globals: { theme: "light" },
   render: () => <div className="core-row"><Button>Start forge</Button><Button loading loadingLabel="Starting forge" onClick={loadingAction}>Start forge</Button><Button disabled>Unavailable</Button></div>,
   play: async ({ canvasElement }) => verifyLoadingButton(canvasElement),
+};
+export const LightSemanticStateMatrix: Story = {
+  globals: { theme: "light", viewport: { isRotated: false, value: "mobile" } },
+  render: () => <SemanticStateMatrix />,
+  play: async ({ canvasElement }) => verifySemanticMatrix(canvasElement, "light"),
+};
+export const DarkSemanticStateMatrix: Story = {
+  globals: { theme: "dark", viewport: { isRotated: false, value: "narrow" } },
+  render: () => <SemanticStateMatrix />,
+  play: async ({ canvasElement }) => verifySemanticMatrix(canvasElement, "dark"),
 };
 export const IconButtonStory: Story = { name: "IconButton", render: () => <IconButton icon={UI_ICONS.settings} label="Open settings" variant="secondary" /> };
 export const LinkStory: Story = { name: "Link", render: () => <Link href="https://example.com" target="_blank">Read external documentation</Link> };
