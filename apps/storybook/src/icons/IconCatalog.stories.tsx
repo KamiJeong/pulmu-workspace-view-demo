@@ -14,20 +14,69 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Iconography: Story = {
-  play: async ({ canvasElement }) => {
+const STATUS_LABELS = {
+  completed: "Completed",
+  failed: "Failed",
+  in_progress: "Current",
+  pending: "Pending",
+} as const;
+
+const STATUS_TOKENS = {
+  completed: "--pulmu-color-stage-status-completed",
+  failed: "--pulmu-color-stage-status-failed",
+  in_progress: "--pulmu-color-stage-status-in-progress",
+  pending: "--pulmu-color-stage-status-pending",
+} as const;
+
+const semanticColor = (token: string) => {
+  const probe = document.createElement("span");
+  probe.style.color = `var(${token})`;
+  document.body.append(probe);
+  const color = getComputedStyle(probe).color;
+  probe.remove();
+  return color;
+};
+
+const verifyIconCatalog = async (canvasElement: HTMLElement, theme: "dark" | "light") => {
     const canvas = within(canvasElement);
 
+    await expect(document.documentElement).toHaveAttribute("data-theme", theme);
     await expect(canvas.getByRole("heading", { level: 1, name: "Icon catalog" })).toBeVisible();
-    for (const heading of ["General UI", "Lifecycle status", "Seven canonical forge stages", "Brand", "Size, stroke, and accessibility"]) {
+    for (const heading of ["General UI", "Lifecycle status", "Forge identity", "Brand", "Size, stroke, and accessibility"]) {
       await expect(canvas.getByRole("heading", { name: heading })).toBeVisible();
     }
 
-    const stageCards = canvasElement.querySelectorAll<HTMLElement>('[data-stage-icon="true"]');
-    await expect(stageCards).toHaveLength(7);
-    await expect([...stageCards].map(({ dataset }) => dataset.stageId)).toEqual(PULMU_STAGES.map(({ id }) => id));
-    const shapeCard = canvasElement.querySelector<HTMLElement>('[data-stage-id="shape"]')!;
-    await expect(within(shapeCard).getByTestId("pattern-icon")).toBeVisible();
+    const sequences = canvasElement.querySelectorAll<HTMLOListElement>('[data-stage-sequence="true"]');
+    await expect(sequences).toHaveLength(2);
+    const expectedStatuses = [
+      ["completed", "completed", "completed", "in_progress", "pending", "pending", "pending"],
+      ["completed", "completed", "completed", "completed", "failed", "pending", "pending"],
+    ];
+    for (const [sequenceIndex, sequence] of [...sequences].entries()) {
+      const stageCards = sequence.querySelectorAll<HTMLElement>("[data-stage-id]");
+      await expect(stageCards).toHaveLength(7);
+      await expect([...stageCards].map(({ dataset }) => dataset.stageId)).toEqual(PULMU_STAGES.map(({ id }) => id));
+      await expect([...stageCards].map(({ dataset }) => dataset.stageStatus)).toEqual(expectedStatuses[sequenceIndex]);
+
+      for (const [index, stageCard] of [...stageCards].entries()) {
+        const status = expectedStatuses[sequenceIndex][index] as keyof typeof STATUS_TOKENS;
+        const identity = stageCard.querySelector<HTMLElement>(".stage-icon-card__identity")!;
+        const statusDisplay = stageCard.querySelector<SVGElement>(".stage-icon-card__status svg")!;
+        await expect(within(stageCard).getByText(STATUS_LABELS[status])).toBeVisible();
+        await expect(getComputedStyle(identity).color).toBe(semanticColor("--pulmu-color-text-secondary"));
+        await expect(statusDisplay).toHaveAttribute("data-color-token", STATUS_TOKENS[status]);
+        await expect(getComputedStyle(statusDisplay).color).toBe(semanticColor(STATUS_TOKENS[status]));
+      }
+
+      const shapeCard = sequence.querySelector<HTMLElement>('[data-stage-id="shape"]')!;
+      await expect(within(shapeCard).getByText("Pattern", { selector: "strong" })).toBeVisible();
+      await expect(within(shapeCard).getByText("Conditional design pass inside Shape")).toBeVisible();
+      await expect(sequence.querySelectorAll('[data-pattern-pass="true"]')).toHaveLength(1);
+      for (const stage of PULMU_STAGES) {
+        await expect(sequence).not.toHaveTextContent(stage.icon);
+      }
+      await expect(sequence).not.toHaveTextContent("🎨");
+    }
     await expect(canvasElement.querySelector('[data-stage-id="pattern"]')).toBeNull();
 
     for (const icon of canvasElement.querySelectorAll("svg")) {
@@ -55,7 +104,17 @@ export const Iconography: Story = {
     }
 
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
-  },
+};
+
+export const Iconography: Story = {
+  name: "Dark iconography",
+  globals: { theme: "dark" },
+  play: async ({ canvasElement }) => verifyIconCatalog(canvasElement, "dark"),
+};
+
+export const LightIconography: Story = {
+  globals: { theme: "light" },
+  play: async ({ canvasElement }) => verifyIconCatalog(canvasElement, "light"),
 };
 
 export const ReducedMotion: Story = {
