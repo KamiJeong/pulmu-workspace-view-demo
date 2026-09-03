@@ -1,7 +1,17 @@
 import { readFileSync } from "node:fs";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { PULMU_UI_MATURITY, componentMaturity } from ".";
+import { adaptPulmuRunContext, RUNNING_RUN_CONTEXT_FIXTURE } from "@pulmu/model";
+import {
+  FailureInterruptedNotice,
+  ForgeStageRail,
+  PULMU_UI_MATURITY,
+  RetryLoop,
+  RunLifecycleStatus,
+  componentMaturity,
+} from ".";
 
 const css = readFileSync(new URL("./global.css", import.meta.url), "utf8");
 const source = readFileSync(new URL("./index.ts", import.meta.url), "utf8");
@@ -11,14 +21,54 @@ const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*
 describe("core UI public contract", () => {
   it("publishes every issue #7 primitive at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(28);
+    expect(Object.keys(componentMaturity)).toHaveLength(40);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "content", "feedback", "fields", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "content", "feedback", "fields", "forge", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
     }
+  });
+
+  it("renders exactly seven canonical stages with Pattern nested inside Shape", () => {
+    const run = adaptPulmuRunContext(RUNNING_RUN_CONTEXT_FIXTURE);
+    const markup = renderToStaticMarkup(createElement(ForgeStageRail, { run }));
+    const stageItems = [...markup.matchAll(/<li[^>]+data-stage-status="([^"]+)"[\s\S]*?<\/li>/g)];
+
+    expect(markup.match(/data-stage-id=/g)).toHaveLength(7);
+    expect([...markup.matchAll(/data-stage-id="([^"]+)"/g)].map((match) => match[1])).toEqual([
+      "ignite", "inspect", "shape", "hammer", "quench", "hone", "ship",
+    ]);
+    expect(markup.indexOf("Pattern")).toBeGreaterThan(markup.indexOf("data-stage-id=\"shape\""));
+    expect(markup.indexOf("Pattern")).toBeLessThan(markup.indexOf("data-stage-id=\"hammer\""));
+    expect(markup).not.toContain("data-stage-id=\"pattern\"");
+    expect(markup.match(/aria-current="step"/g)).toHaveLength(1);
+    expect(stageItems.map((item) => item[1])).toEqual([
+      "completed", "completed", "completed", "in_progress", "pending", "pending", "pending",
+    ]);
+    expect(stageItems.map((item) => item[0].match(/<span>(Completed|In progress|Pending)<\/span>/)?.[1])).toEqual([
+      "Completed", "Completed", "Completed", "In progress", "Pending", "Pending", "Pending",
+    ]);
+    expect(markup).toContain("Full forge flow: Ignite: Completed; Inspect: Completed; Shape: Completed; Hammer: In progress; Quench: Pending; Hone: Pending; Ship: Pending.");
+  });
+
+  it("switches the seven-column rail to one column before cramped tablet widths", () => {
+    expect(css).toContain("@media (max-width: 64rem)");
+  });
+
+  it("keeps lifecycle, retry, failed, and interrupted semantics explicit", () => {
+    const lifecycle = renderToStaticMarkup(createElement(RunLifecycleStatus, { status: "running" }));
+    const retry = renderToStaticMarkup(createElement(RetryLoop, { count: 1, kind: "hone" }));
+    const failed = renderToStaticMarkup(createElement(FailureInterruptedNotice, { failureCode: "VERIFY_FAILED", stageId: "quench", status: "failed" }));
+    const interrupted = renderToStaticMarkup(createElement(FailureInterruptedNotice, { stageId: "hammer", status: "interrupted" }));
+
+    expect(lifecycle).toContain("Run status");
+    expect(retry).toContain("Hone refinement");
+    expect(retry).toContain("Hone → Hammer → Quench → Hone");
+    expect(retry).not.toContain("data-stage-id");
+    expect(failed).toContain('role="alert"');
+    expect(interrupted).toContain('role="status"');
   });
 
   it("keeps target, focus, narrow-content, and reduced-motion contracts token driven", () => {

@@ -1,0 +1,17 @@
+.forge-demo {
+  display: grid;
+  gap: var(--pulmu-space-6);
+  margin-inline: auto;
+  max-inline-size: var(--pulmu-size-content-max);
+  min-inline-size: 0;
+}
+
+.forge-demo__header { display: grid; gap: var(--pulmu-space-3); }
+.forge-demo__heading { align-items: flex-start; display: flex; flex-wrap: wrap; gap: var(--pulmu-space-4); justify-content: space-between; }
+.forge-demo__heading h1 { font-size: var(--pulmu-font-size-xl); margin: 0; overflow-wrap: anywhere; }
+.forge-demo__metadata { display: grid; gap: var(--pulmu-space-3); }
+.forge-demo__results { display: grid; gap: var(--pulmu-space-3); }
+
+@media (max-width: 30rem) {
+  .forge-demo__heading { flex-direction: column; }
+}
