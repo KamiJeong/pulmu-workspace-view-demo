@@ -11,13 +11,19 @@ const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*
 describe("core UI public contract", () => {
   it("publishes every issue #7 primitive at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(28);
+    expect(Object.keys(componentMaturity)).toHaveLength(39);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "content", "feedback", "fields", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "charts", "content", "data", "feedback", "fields", "formatters", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
+    }
+  });
+
+  it("publishes the issue #8 data and visualization surface", () => {
+    for (const component of ["BarChart", "ChartSummary", "DataState", "DataTable", "DonutChart", "FilterSummary", "Legend", "LineChart", "MetricCard", "SortableHeader", "TrendIndicator"]) {
+      expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
     }
   });
 

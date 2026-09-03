@@ -1,11 +1,58 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+import * as DataStories from "./data/DataComponents.stories";
 
 <Meta title="06 Data Components/Overview" />
 
 # 06 Data Components
 
-**Status: planned**
+**Status: beta**
 
-<p lang="ko">
-  Table, metric, progress, formatter 및 접근 가능한 data visualization primitive를 구축할 예정입니다.
-</p>
+Pulmu data UI keeps React responsible for DOM, state, focus, hover, and tooltip behavior. D3 is restricted to pure scale and shape calculations. `Progress`, `Pagination`, `EmptyState`, and `ErrorState` remain the shared core primitives and are composed here rather than duplicated.
+
+## Tables, filters, and pagination
+
+<Canvas of={DataStories.SemanticTableAndFilters} />
+
+`DataTable` always renders a native `<table>` with a caption, scoped headers, and stable row keys. Sortable columns render a button inside `<th>` and expose `aria-sort`; `sort` and `onSortChange` form the controlled sort contract. An accessor supplies both the default comparator and the value given to an optional cell renderer. A custom `compare` handles domain-specific ordering.
+
+### Table vs. grid threshold
+
+Viewport width never changes table semantics. Use this table at every width for read-only, row-oriented data. Adopt an ARIA grid only when the product requires both spreadsheet-style cell editing and two-dimensional arrow-key navigation; that interaction is outside this package's current scope.
+
+Columns declare a numeric `priority` (1 is most important) for product documentation and future composition. Priority does not hide data. At 768px and above, surrounding layouts may use multiple columns. At 390px and 320px, rows remain rows and the table's labelled region is the only horizontal scroller. Do not convert rows to cards or hide a column unless an accessible disclosure preserves the identical value.
+
+`FilterSummary` names each active constraint and gives removal controls explicit accessible names. Place controls and filter summary before the table, and `Pagination` immediately after it.
+
+## Metrics and formatting
+
+<Canvas of={DataStories.MetricsAndProgress} />
+
+`MetricCard` is reserved for KPIs: label, tabular value, signed `TrendIndicator`, then supporting context. A formatter result contains `display`, unabbreviated `accessible`, and a `valid | missing | unknown` state. Passing that result directly to `MetricCard` preserves the exact accessible value when visible notation is compact.
+
+| Formatter | Input contract | Edge behavior |
+| --- | --- | --- |
+| `formatNumber` | finite number | zero is valid; fraction options control visible output while compact or rounded display keeps a precise accessible value |
+| `formatPercentage` | ratio, so `0.42` means 42% | null is “Not available”; undefined/non-finite is “Unknown” |
+| `formatDate` | `Date`, epoch milliseconds, or parseable string | invalid input is “Unknown date”; set `timeZone` for deterministic display |
+| `formatDuration` | milliseconds | zero, negative, sub-second, and large durations remain explicit; accessible output is exact milliseconds |
+
+## Accessible visualization
+
+<Canvas of={DataStories.AccessibleVisualizations} />
+
+`DonutChart`, `LineChart`, and `BarChart` share these contracts:
+
+- A visible title and prose summary precede the plot and label the figure.
+- “View chart data” exposes an equivalent semantic table with null, unknown, negative, and exact values intact.
+- Color is redundant: line dash, marker shape, legend label, direct bar values, and tooltip text communicate identity and magnitude.
+- The first data mark is the plot's tab stop. Arrow keys move between valid marks, Home/End jump, and Escape dismisses the tooltip. Focus and hover show the same content.
+- Null line points create gaps. Negative line and bar values extend below zero. Donut values at or below zero do not create an angle but remain in the equivalent table; an all-zero/null/negative donut shows an explicit no-data message.
+- Narrow layouts wrap legends and reduce x-axis label density without overflowing the page. Reduced motion renders final geometry without animation. Forced-colors keeps boundaries, labels, focus, dash patterns, and markers visible.
+
+Charts are intentionally fixed primitives, not an arbitrary chart builder. Streaming, virtualization, D3 DOM mutation, and D3 transitions are out of scope.
+
+## Data states
+
+<Canvas of={DataStories.LoadingEmptyErrorAndStale} />
+
+`DataState` distinguishes loading (`aria-busy`), first-use empty, filtered empty, recoverable error, ready, and stale. Stale mode preserves its children, announces a warning and updated time, and accepts a refresh action. Error and empty modes accept an explicit recovery action.
