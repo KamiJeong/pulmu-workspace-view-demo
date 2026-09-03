@@ -8,7 +8,8 @@
     "./global.css": "./src/global.css"
   },
   "dependencies": {
-    "@pulmu/icons": "workspace:*"
+    "@pulmu/icons": "workspace:*",
+    "@pulmu/model": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0",

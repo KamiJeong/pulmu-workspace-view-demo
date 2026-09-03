@@ -4,8 +4,28 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # 07 Forge Components
 
-**Status: planned**
+**Status: beta**
 
 <p lang="ko">
-  Pulmu의 일곱 forge stage, Pattern, retry, verification, review 및 delivery 상태를 정확히 표현할 예정입니다.
+  Pulmu의 일곱 forge stage, Pattern, retry, verification, review 및 delivery 상태를 정확히 표현합니다.
 </p>
+
+`ForgeStageRail`은 `@pulmu/model`의 adapter가 만든 `PulmuRunViewModel`만 받습니다. Raw Run Context, 로그,
+prompt, 파일 경로, credential, branch/SHA 또는 PR URL을 표시 계층으로 전달하지 않습니다.
+
+## Composition order
+
+1. Run heading and `RunLifecycleStatus`
+2. `ForgeRiskBadge` and `TaskMetadata`
+3. `ForgeStageRail` (canonical seven-item ordered list)
+4. `PatternInset` inside Shape when enabled
+5. `ActiveStagePanel`, `StageActivity`, and optional `RetryLoop`
+6. `VerificationSummary` and `ReviewFinding`
+7. `DeliverySummary` or `FailureInterruptedNotice`
+
+Pattern is never an eighth stage. Retry components describe the bounded canonical path while the rail keeps the
+same seven stage items. Failed notices and verification failures are assertive; interruptions remain polite status
+messages. Every state pairs an icon with visible text, and the rail includes a complete textual alternative.
+
+These status surfaces are intentionally static and add no tab stops. Responsive CSS changes layout without changing
+DOM order, preserving keyboard and screen-reader reading order.
