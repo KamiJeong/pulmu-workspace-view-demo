@@ -31,8 +31,11 @@ const readSelectorDeclarations = (selector: string) => {
   return readDeclarations(block);
 };
 
-const darkDeclarations = readSelectorDeclarations(':root[data-theme="dark"]');
-const lightDeclarations = readSelectorDeclarations(':root[data-theme="light"]');
+const darkThemeSelector = ':root[data-theme="dark"],\n[data-pulmu-theme="dark"]';
+const lightThemeSelector = ':root[data-theme="light"],\n[data-pulmu-theme="light"]';
+const darkDeclarations = readSelectorDeclarations(darkThemeSelector);
+const lightDeclarations = readSelectorDeclarations(lightThemeSelector);
+const scopedDerivedDeclarations = readSelectorDeclarations("[data-pulmu-theme]");
 
 const resolveCssVariable = (
   name: string,
@@ -108,10 +111,28 @@ describe("token registries", () => {
   it("keeps explicit Light and Dark overrides symmetric and below the dark fallback", () => {
     expect([...darkDeclarations.keys()].sort()).toEqual([...lightDeclarations.keys()].sort());
     expect(darkDeclarations.size).toBeGreaterThan(40);
-    expect(css.indexOf(':root[data-theme="dark"]')).toBeGreaterThan(css.indexOf("Component tokens"));
-    expect(css.indexOf(':root[data-theme="light"]')).toBeGreaterThan(css.indexOf(':root[data-theme="dark"]'));
-    expect(css.indexOf("@media (forced-colors: active)")).toBeGreaterThan(css.indexOf(':root[data-theme="light"]'));
+    expect(css.indexOf(darkThemeSelector)).toBeGreaterThan(css.indexOf("Component tokens"));
+    expect(css.indexOf(lightThemeSelector)).toBeGreaterThan(css.indexOf(darkThemeSelector));
+    expect(css.indexOf("@media (forced-colors: active)")).toBeGreaterThan(css.indexOf(lightThemeSelector));
     expect(css).toContain(":root[data-theme]");
+    expect(css).toContain('[data-pulmu-theme="dark"]');
+    expect(css).toContain('[data-pulmu-theme="light"]');
+  });
+
+  it("scopes nested Light and Dark panes without changing the root runtime selector", () => {
+    expect(darkThemeSelector.split(",\n")).toEqual([
+      ':root[data-theme="dark"]',
+      '[data-pulmu-theme="dark"]',
+    ]);
+    expect(lightThemeSelector.split(",\n")).toEqual([
+      ':root[data-theme="light"]',
+      '[data-pulmu-theme="light"]',
+    ]);
+    expect(css.slice(css.lastIndexOf("@media (forced-colors: active)"))).toContain("[data-pulmu-theme]");
+    expect(scopedDerivedDeclarations.get("--pulmu-panel-background")).toBe("var(--pulmu-color-surface-default)");
+    expect(scopedDerivedDeclarations.get("--pulmu-border-default")).toContain("var(--pulmu-color-border-default)");
+    expect(scopedDerivedDeclarations.get("--pulmu-color-stage-status-completed")).toBe("var(--pulmu-color-status-success-foreground)");
+    expect(scopedDerivedDeclarations.get("--pulmu-focus-ring-color")).toBe("var(--pulmu-color-focus-ring)");
   });
 
   it("enforces primitive to semantic to component dependency direction", () => {

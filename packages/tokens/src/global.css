@@ -280,8 +280,9 @@
   text-rendering: optimizeLegibility;
 }
 
-/* Explicit themes override the same semantic color contract. :root above is the dark fallback. */
-:root[data-theme="dark"] {
+/* Explicit runtime roots and nested review surfaces share the semantic color contract. */
+:root[data-theme="dark"],
+[data-pulmu-theme="dark"] {
   color-scheme: dark;
   --pulmu-color-surface-canvas: var(--pulmu-color-dark-canvas);
   --pulmu-color-surface-default: var(--pulmu-color-dark-surface);
@@ -329,7 +330,8 @@
   --pulmu-chart-series-7: var(--pulmu-color-dark-chart-teal);
 }
 
-:root[data-theme="light"] {
+:root[data-theme="light"],
+[data-pulmu-theme="light"] {
   color-scheme: light;
   --pulmu-color-surface-canvas: var(--pulmu-color-light-canvas);
   --pulmu-color-surface-default: var(--pulmu-color-light-surface);
@@ -375,6 +377,39 @@
   --pulmu-chart-series-5: var(--pulmu-color-light-danger);
   --pulmu-chart-series-6: var(--pulmu-color-light-text-secondary);
   --pulmu-chart-series-7: var(--pulmu-color-light-chart-teal);
+}
+
+/* Recompute derived aliases at a scoped theme boundary instead of inheriting
+   values that were resolved against the document root theme. */
+[data-pulmu-theme] {
+  --pulmu-color-surface-elevated: var(--pulmu-color-surface-subtle);
+  --pulmu-color-status-running: var(--pulmu-color-status-info-foreground);
+  --pulmu-color-status-completed: var(--pulmu-color-status-success-foreground);
+  --pulmu-color-status-failed: var(--pulmu-color-status-danger-foreground);
+  --pulmu-color-status-interrupted: var(--pulmu-color-status-warning-foreground);
+  --pulmu-color-stage-status-pending: var(--pulmu-color-text-muted);
+  --pulmu-color-stage-status-in-progress: var(--pulmu-color-brand-default);
+  --pulmu-color-stage-status-completed: var(--pulmu-color-status-success-foreground);
+  --pulmu-color-stage-status-failed: var(--pulmu-color-status-danger-foreground);
+  --pulmu-color-stage-status-interrupted: var(--pulmu-color-status-warning-foreground);
+  --pulmu-color-stage-ignite: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-inspect: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-shape: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-hammer: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-quench: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-hone: var(--pulmu-color-text-secondary);
+  --pulmu-color-stage-ship: var(--pulmu-color-text-secondary);
+  --pulmu-border-default: var(--pulmu-border-width-thin) solid var(--pulmu-color-border-default);
+  --pulmu-border-selected: var(--pulmu-border-width-strong) solid var(--pulmu-color-border-strong);
+  --pulmu-focus-ring-color: var(--pulmu-color-focus-ring);
+  --pulmu-button-background: var(--pulmu-color-action-default);
+  --pulmu-button-foreground: var(--pulmu-color-action-text);
+  --pulmu-panel-background: var(--pulmu-color-surface-default);
+  --pulmu-panel-border: var(--pulmu-border-default);
+  --pulmu-toolbar-background: var(--pulmu-color-surface-elevated);
+  --pulmu-toolbar-border: var(--pulmu-border-default);
+  --pulmu-token-card-background: var(--pulmu-color-surface-default);
+  --pulmu-token-card-border: var(--pulmu-border-default);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -424,7 +459,8 @@ button, input, select, textarea { font: inherit; }
 
 @media (forced-colors: active) {
   :root,
-  :root[data-theme] {
+  :root[data-theme],
+  [data-pulmu-theme] {
     --pulmu-color-surface-canvas: Canvas;
     --pulmu-color-surface-default: Canvas;
     --pulmu-color-surface-subtle: Canvas;

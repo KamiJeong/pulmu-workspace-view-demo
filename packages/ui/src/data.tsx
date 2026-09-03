@@ -152,13 +152,16 @@ export type ActiveFilter = {
 
 export type FilterSummaryProps = HTMLAttributes<HTMLElement> & {
   readonly filters: readonly ActiveFilter[];
+  /** Distinguishes multiple filter summaries on comparison or dashboard surfaces. */
+  readonly label?: string;
   readonly onClear?: (id: string) => void;
   readonly onClearAll?: () => void;
 };
 
-export function FilterSummary({ className, filters, onClear, onClearAll, ...props }: FilterSummaryProps) {
+export function FilterSummary({ "aria-label": ariaLabel, className, filters, label, onClear, onClearAll, ...props }: FilterSummaryProps) {
+  const accessibleLabel = label ?? ariaLabel ?? "Active filters";
   return (
-    <section {...props} aria-label="Active filters" className={classes("pulmu-filter-summary", className)}>
+    <section {...props} aria-label={accessibleLabel} className={classes("pulmu-filter-summary", className)}>
       <strong>{filters.length === 0 ? "No filters applied" : `${filters.length} active ${filters.length === 1 ? "filter" : "filters"}`}</strong>
       {filters.length > 0 ? <ul>{filters.map((filter) => (
         <li key={filter.id}>

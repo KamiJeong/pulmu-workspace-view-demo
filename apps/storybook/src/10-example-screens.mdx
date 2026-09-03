@@ -16,6 +16,7 @@ Every run shown below comes from an anonymized `@pulmu/model` fixture that has a
 
 | Screen | Published design-system components | Contract demonstrated |
 | --- | --- | --- |
+| Component Map | Every `componentMaturity` export, plus explicit Drawer and Toast gaps | Same canonical composition in scoped Dark (left) and Light (right) themes, audit status distinct from beta API maturity, and responsive parity |
 | Workspace Overview | `AppShell`, `CollapsibleSidebar`, `PageHeader`, `MetricGrid`, `MetricCard`, `ContentWithRail`, `ForgeStageRail`, `ActiveStagePanel`, `DataState`, `DataTable`, `Badge`, `Button` | Canonical App Shell, one active stage, nested Pattern, and ready/loading/empty/error/stale data |
 | Active Forge Run | `AppShell`, `PageHeader`, `RunLifecycleStatus`, `ForgeRiskBadge`, `TaskMetadata`, `ContentWithRail`, `ActiveStagePanel`, `ForgeStageRail`, `AgentCard`, `AgentGroup` | Seven stages, one active stage, the sole Smith writer, and independent read-only reviewers |
 | Quench Retry | Run-detail components plus `RetryLoop` and `VerificationSummary` | Exact `Quench → Hammer → Quench` path and the same Smith correction |
@@ -29,6 +30,7 @@ Every run shown below comes from an anonymized `@pulmu/model` fixture that has a
 
 ## Responsive, keyboard, accessibility, and visual coverage
 
+- Component Map has bounded Dark and Light header, Data, workflow, and Overlay/gap baselines at 1440px, 768px, 390px, and 320px, avoiding clipped scaled full-page captures. Both themes resolve simultaneously in nested scoped panes; panes stack Dark then Light at 768px and below, and sample groups become one column at 390px and below.
 - Workspace Overview is captured in light and dark themes at 1440px, 768px, 390px, and 320px.
 - Active Forge Run covers desktop, tablet, mobile, and narrow compositions. Every other workflow outcome has a desktop baseline; Run History adds a focusable 320px table-overflow baseline and Empty Workspace adds a mobile baseline.
 - Story play tests exercise the skip link, desktop 44px navigation control, focus-managed compact drawer, one-`h1` rule, valid fragment targets, canonical stage structure, retry paths, delivery distinctions, and page-level overflow.

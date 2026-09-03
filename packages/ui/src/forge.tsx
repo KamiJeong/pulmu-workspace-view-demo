@@ -45,15 +45,18 @@ export type ForgeStageRailProps = Omit<HTMLAttributes<HTMLElement>, "children"> 
   readonly run: PulmuRunViewModel;
   /** Optional Pattern detail remains a descendant of Shape. */
   readonly patternDetail?: ReactNode;
+  /** Accessible navigation name; customize when more than one rail is present. */
+  readonly label?: string;
 };
 
-export function ForgeStageRail({ className, patternDetail, run, ...props }: ForgeStageRailProps) {
+export function ForgeStageRail({ "aria-label": ariaLabel, className, label, patternDetail, run, ...props }: ForgeStageRailProps) {
+  const accessibleLabel = label ?? ariaLabel ?? "Pulmu forge stages";
   const alternative = run.timeline
     .map((stage) => `${stage.name}: ${stageStatusLabels[stage.status]}`)
     .join("; ");
 
   return (
-    <nav {...props} aria-label="Pulmu forge stages" className={classes("pulmu-forge-rail", className)}>
+    <nav {...props} aria-label={accessibleLabel} className={classes("pulmu-forge-rail", className)}>
       <p className="pulmu-visually-hidden">Full forge flow: {alternative}.</p>
       <ol className="pulmu-forge-rail__list">
         {run.timeline.map((stage) => {

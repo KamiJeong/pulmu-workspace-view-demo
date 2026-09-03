@@ -12,6 +12,7 @@ import {
   AgentGroup,
   AgentIdentity,
   FailureInterruptedNotice,
+  FilterSummary,
   ForgeStageRail,
   OrchestrationFlow,
   ParallelReadOnlyGroup,
@@ -148,6 +149,32 @@ describe("core UI public contract", () => {
       "Completed", "Completed", "Completed", "In progress", "Pending", "Pending", "Pending",
     ]);
     expect(markup).toContain("Full forge flow: Ignite: Completed; Inspect: Completed; Shape: Completed; Hammer: In progress; Quench: Pending; Hone: Pending; Ship: Pending.");
+  });
+
+  it("allows repeated comparison landmarks to receive unique accessible names", () => {
+    const run = adaptPulmuRunContext(RUNNING_RUN_CONTEXT_FIXTURE);
+    const customRail = renderToStaticMarkup(createElement(ForgeStageRail, { "aria-label": "Legacy rail label", label: "Light theme forge stages", run }));
+    const legacyRail = renderToStaticMarkup(createElement(ForgeStageRail, { "aria-label": "Legacy rail label", run }));
+    const defaultRail = renderToStaticMarkup(createElement(ForgeStageRail, { run }));
+    const customFilters = renderToStaticMarkup(createElement(FilterSummary, {
+      "aria-label": "Legacy filter label",
+      filters: [{ id: "ready", label: "Status", value: "Ready" }],
+      label: "Light theme active filters",
+    }));
+    const legacyFilters = renderToStaticMarkup(createElement(FilterSummary, {
+      "aria-label": "Legacy filter label",
+      filters: [],
+    }));
+    const defaultFilters = renderToStaticMarkup(createElement(FilterSummary, { filters: [] }));
+
+    expect(customRail).toContain('aria-label="Light theme forge stages"');
+    expect(customRail).not.toContain("Legacy rail label");
+    expect(legacyRail).toContain('aria-label="Legacy rail label"');
+    expect(defaultRail).toContain('aria-label="Pulmu forge stages"');
+    expect(customFilters).toContain('aria-label="Light theme active filters"');
+    expect(customFilters).not.toContain("Legacy filter label");
+    expect(legacyFilters).toContain('aria-label="Legacy filter label"');
+    expect(defaultFilters).toContain('aria-label="Active filters"');
   });
 
   it("switches the seven-column rail to one column before cramped tablet widths", () => {
