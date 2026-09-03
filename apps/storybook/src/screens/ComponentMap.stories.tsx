@@ -114,6 +114,23 @@ async function assertComponentMap(canvasElement: HTMLElement, viewport: ScreenVi
       "No matching componentsChange filters or add a component story.",
       "Audit data unavailableRetry the Storybook audit after resolving the failure.",
     ]);
+    const headings = within(pane).getAllByRole("heading").map(({ tagName, textContent }) => ({
+      level: Number(tagName.slice(1)),
+      text: textContent,
+    }));
+    await expect(headings).toEqual([
+      { level: 2, text: pane === dark ? "Dark theme" : "Light theme" },
+      { level: 3, text: "Foundations" },
+      { level: 3, text: "Actions & navigation" },
+      { level: 3, text: "Fields" },
+      { level: 3, text: "Content & feedback" },
+      { level: 4, text: "No matching components" },
+      { level: 4, text: "Audit data unavailable" },
+      { level: 3, text: "Data" },
+      { level: 3, text: "Forge activity distribution" },
+      { level: 3, text: "Pulmu workflow" },
+      { level: 3, text: "Overlays" },
+    ]);
   }
 
   for (const trigger of canvas.getAllByRole("button", { name: /^(Popover|Actions)$/ })) {

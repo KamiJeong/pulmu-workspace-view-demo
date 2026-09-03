@@ -312,8 +312,8 @@ function ThemePane({ theme }: { readonly theme: PaneTheme }) {
         <Progress label="Component audit" value={98} />
         <div aria-label={`${title} data states`} className="component-map__states" role="group">
           <DataState data-state-sample="loading" status="loading" title="Loading components" />
-          <DataState data-state-sample="empty" description="Change filters or add a component story." status="empty" title="No matching components" />
-          <DataState data-state-sample="error" description="Retry the Storybook audit after resolving the failure." status="error" title="Audit data unavailable" />
+          <DataState data-state-sample="empty" description="Change filters or add a component story." headingLevel={4} status="empty" title="No matching components" />
+          <DataState data-state-sample="error" description="Retry the Storybook audit after resolving the failure." headingLevel={4} status="error" title="Audit data unavailable" />
         </div>
       </Group>
 

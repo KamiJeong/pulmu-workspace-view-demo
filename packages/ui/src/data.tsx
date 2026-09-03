@@ -220,20 +220,22 @@ export type DataStateProps = HTMLAttributes<HTMLDivElement> & {
   readonly action?: ReactNode;
   readonly children?: ReactNode;
   readonly description?: ReactNode;
+  /** Heading level forwarded to empty and error states; defaults to h2. */
+  readonly headingLevel?: 2 | 3 | 4 | 5 | 6;
   readonly status: "ready" | "loading" | "empty" | "filtered-empty" | "error" | "stale";
   readonly title?: ReactNode;
   readonly updatedAt?: ReactNode;
 };
 
-export function DataState({ action, children, className, description, status, title, updatedAt, ...props }: DataStateProps) {
+export function DataState({ action, children, className, description, headingLevel, status, title, updatedAt, ...props }: DataStateProps) {
   if (status === "loading") {
     return <div {...props} aria-busy="true" className={classes("pulmu-data-state", className)}><Skeleton label={typeof title === "string" ? title : "Loading data"} /></div>;
   }
   if (status === "empty" || status === "filtered-empty") {
-    return <EmptyState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? (status === "filtered-empty" ? "Adjust or clear filters to see results." : "There is no data to display yet.")} title={title ?? (status === "filtered-empty" ? "No matching results" : "No data yet")} />;
+    return <EmptyState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? (status === "filtered-empty" ? "Adjust or clear filters to see results." : "There is no data to display yet.")} headingLevel={headingLevel} title={title ?? (status === "filtered-empty" ? "No matching results" : "No data yet")} />;
   }
   if (status === "error") {
-    return <ErrorState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? "Try again or contact support if the problem continues."} title={title ?? "Data could not be loaded"} />;
+    return <ErrorState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? "Try again or contact support if the problem continues."} headingLevel={headingLevel} title={title ?? "Data could not be loaded"} />;
   }
   if (status === "stale") {
     return <div {...props} className={classes("pulmu-data-state", className)}>

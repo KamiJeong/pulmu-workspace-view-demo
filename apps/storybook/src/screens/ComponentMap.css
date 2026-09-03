@@ -42,7 +42,7 @@
 .component-map__stack { display: grid; gap: var(--pulmu-space-2); }
 .component-map__states { display: grid; gap: var(--pulmu-space-2); grid-template-columns: repeat(3, minmax(0, 1fr)); min-inline-size: 0; }
 .component-map__states .pulmu-empty-state { padding: var(--pulmu-space-3); }
-.component-map__states .pulmu-empty-state h2 { font-size: var(--pulmu-font-size-md); }
+.component-map__states .pulmu-empty-state :where(h2, h3, h4, h5, h6) { font-size: var(--pulmu-font-size-md); }
 .component-map__foundation-grid { display: grid; gap: var(--pulmu-space-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .component-map__foundation-grid span { align-items: center; display: flex; gap: var(--pulmu-space-2); }
 .component-map__swatch { border: var(--pulmu-border-default); border-radius: var(--pulmu-radius-control); block-size: 2rem; flex: 0 0 2rem; }

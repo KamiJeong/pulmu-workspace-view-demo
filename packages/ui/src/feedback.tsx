@@ -72,12 +72,15 @@ export type EmptyStateProps = HTMLAttributes<HTMLDivElement> & {
   readonly action?: ReactNode;
   /** Concise explanation and next-step context. */
   readonly description: ReactNode;
+  /** Context-appropriate heading level; defaults to h2 for backwards compatibility. */
+  readonly headingLevel?: 2 | 3 | 4 | 5 | 6;
   /** State heading. */
   readonly title: ReactNode;
 };
 
-export function EmptyState({ action, className, description, title, ...props }: EmptyStateProps) {
-  return <div {...props} className={classes("pulmu-empty-state", className)}><h2>{title}</h2><p>{description}</p>{action}</div>;
+export function EmptyState({ action, className, description, headingLevel = 2, title, ...props }: EmptyStateProps) {
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5" | "h6";
+  return <div {...props} className={classes("pulmu-empty-state", className)}><Heading>{title}</Heading><p>{description}</p>{action}</div>;
 }
 
 export function ErrorState(props: EmptyStateProps) {

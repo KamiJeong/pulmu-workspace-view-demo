@@ -11,6 +11,9 @@ import {
 import {
   AgentGroup,
   AgentIdentity,
+  DataState,
+  EmptyState,
+  ErrorState,
   FailureInterruptedNotice,
   FilterSummary,
   ForgeStageRail,
@@ -175,6 +178,22 @@ describe("core UI public contract", () => {
     expect(customFilters).not.toContain("Legacy filter label");
     expect(legacyFilters).toContain('aria-label="Legacy filter label"');
     expect(defaultFilters).toContain('aria-label="Active filters"');
+  });
+
+  it("preserves h2 state headings by default and supports context-appropriate levels", () => {
+    const emptyDefault = renderToStaticMarkup(createElement(EmptyState, { description: "No runs exist.", title: "No runs" }));
+    const emptyNested = renderToStaticMarkup(createElement(EmptyState, { description: "No matches.", headingLevel: 4, title: "No matches" }));
+    const errorNested = renderToStaticMarkup(createElement(ErrorState, { description: "Retry later.", headingLevel: 5, title: "Unavailable" }));
+    const dataDefault = renderToStaticMarkup(createElement(DataState, { status: "empty" }));
+    const dataNested = renderToStaticMarkup(createElement(DataState, { headingLevel: 4, status: "error" }));
+
+    expect(emptyDefault).toContain("<h2>No runs</h2>");
+    expect(emptyNested).toContain("<h4>No matches</h4>");
+    expect(errorNested).toContain("<h5>Unavailable</h5>");
+    expect(errorNested).toContain('role="alert"');
+    expect(dataDefault).toContain("<h2>No data yet</h2>");
+    expect(dataNested).toContain("<h4>Data could not be loaded</h4>");
+    expect(css).toContain(".pulmu-empty-state :where(h2, h3, h4, h5, h6)");
   });
 
   it("switches the seven-column rail to one column before cramped tablet widths", () => {
