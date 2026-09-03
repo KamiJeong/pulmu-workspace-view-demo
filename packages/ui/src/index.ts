@@ -18,10 +18,15 @@ export const componentMaturity = {
   ForgeRiskBadge: "beta", ForgeStageRail: "beta", PatternInset: "beta", RetryLoop: "beta",
   ReviewFinding: "beta", RunLifecycleStatus: "beta", StageActivity: "beta",
   TaskMetadata: "beta", VerificationSummary: "beta",
+  ActiveAgentGroup: "beta", AgentActivityRow: "beta", AgentAuthorityIndicator: "beta",
+  AgentCard: "beta", AgentGroup: "beta", AgentIdentity: "beta", AgentRoleBadge: "beta",
+  AgentStageRelationship: "beta", AgentStatus: "beta", OrchestrationFlow: "beta",
+  ParallelReadOnlyGroup: "beta", ReviewerFindingSummary: "beta",
 } as const satisfies Record<string, ComponentMaturity>;
 
 export * from "./a11y";
 export * from "./actions";
+export * from "./agents";
 export * from "./content";
 export * from "./charts";
 export * from "./data";
