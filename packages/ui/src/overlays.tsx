@@ -233,11 +233,13 @@ export type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "open" |
   readonly onOpenChange: (open: boolean) => void;
   /** Controlled modal visibility. Opening captures focus; closing restores the opener. */
   readonly open: boolean;
+  /** Restores the opener on close. Disable only when the caller moves focus to an activated destination. */
+  readonly restoreFocus?: boolean;
   /** Required dialog heading and accessible name. */
   readonly title: ReactNode;
 };
 
-export function Dialog({ actions, children, className, closeLabel = "Close dialog", description, onOpenChange, open, title, ...props }: DialogProps) {
+export function Dialog({ actions, children, className, closeLabel = "Close dialog", description, onOpenChange, open, restoreFocus = true, title, ...props }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -261,7 +263,10 @@ export function Dialog({ actions, children, className, closeLabel = "Close dialo
       aria-labelledby={titleId}
       className={classes("pulmu-dialog", className)}
       onCancel={(event) => { event.preventDefault(); close(); }}
-      onClose={() => { if (open) onOpenChange(false); queueMicrotask(() => returnFocusRef.current?.focus()); }}
+      onClose={() => {
+        if (open) onOpenChange(false);
+        if (restoreFocus) queueMicrotask(() => returnFocusRef.current?.focus());
+      }}
       onKeyDown={(event) => {
         props.onKeyDown?.(event);
         if (event.key === "Escape" && !event.defaultPrevented) {

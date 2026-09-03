@@ -10,12 +10,30 @@ import { Meta } from "@storybook/addon-docs/blocks";
   검증된 디자인 시스템 컴포넌트와 익명화 fixture를 조합한 실행 가능한 Pulmu example screen을 제공합니다.
 </p>
 
-## Workspace Overview: Before / After
+## Screen inventory
 
-- **Before:** example screens were planned only; product hierarchy, canonical forge progress, responsive behavior, and data states could not be reviewed together.
-- **After:** `Workspace Overview` provides identical light/dark content and APIs, one primary action, all seven canonical forge stages with Pattern nested under Shape, and responsive desktop/tablet/mobile/narrow stories.
-- **Visual QA:** Light and Dark are captured at 1440px, 768px, 390px, and 320px as canonical Chromium/Linux baselines. The aggregate test gate also runs Storybook accessibility checks as errors.
-- **States:** loading, empty, and error replace the recent-runs data region. Stale keeps the last successful semantic table below a warning, so users can still inspect known data while deciding whether to refresh.
-- **Scope:** the slice is fixture-driven and intentionally excludes billing, invitations, authentication, enterprise administration, live GitHub data, and backend integration.
+Every run shown below comes from an anonymized `@pulmu/model` fixture that has already passed through `adaptPulmuRunContext`. Screen components never receive a raw prompt, branch, log, environment value, commit hash, error message, or pull-request URL.
 
-The QA report and manual/browser limitations are recorded in `docs/iron-and-ember-qa.md`. Remaining #12 screens are Active Forge Run, Quench Retry, Hone Review Finding, Completed Local Delivery, Completed GitHub Delivery, Failed Run, Interrupted Run, Run History, and Empty Workspace.
+| Screen | Published design-system components | Contract demonstrated |
+| --- | --- | --- |
+| Workspace Overview | `AppShell`, `CollapsibleSidebar`, `PageHeader`, `MetricGrid`, `MetricCard`, `ContentWithRail`, `ForgeStageRail`, `ActiveStagePanel`, `DataState`, `DataTable`, `Badge`, `Button` | Canonical App Shell, one active stage, nested Pattern, and ready/loading/empty/error/stale data |
+| Active Forge Run | `AppShell`, `PageHeader`, `RunLifecycleStatus`, `ForgeRiskBadge`, `TaskMetadata`, `ContentWithRail`, `ActiveStagePanel`, `ForgeStageRail`, `AgentCard`, `AgentGroup` | Seven stages, one active stage, the sole Smith writer, and independent read-only reviewers |
+| Quench Retry | Run-detail components plus `RetryLoop` and `VerificationSummary` | Exact `Quench → Hammer → Quench` path and the same Smith correction |
+| Hone Review Finding | Run-detail components plus `ReviewFinding` and `RetryLoop` | Blocking finding and exact `Hone → Hammer → Quench → Hone` path |
+| Completed Local Delivery | Run-detail components plus `VerificationSummary`, `ReviewFinding`, and `DeliverySummary` | Reviewed local commit with no GitHub pull request |
+| Completed GitHub Delivery | Run-detail components plus `VerificationSummary`, `ReviewFinding`, and `DeliverySummary` | Reviewed GitHub pull-request delivery without displaying a raw URL |
+| Failed Run | Run-detail components plus `FailureInterruptedNotice`, `VerificationSummary`, and `DeliverySummary` | Failed verification, failure code, and blocked delivery |
+| Interrupted Run | Run-detail components plus `FailureInterruptedNotice` and `DeliverySummary` | Session interruption without misreporting a verification failure |
+| Run History | `AppShell`, `PageHeader`, `DataState`, `DataTable`, `Badge`, and `Button` | Sanitized lifecycle comparison, focusable narrow-table overflow, loading, and stale data |
+| Empty Workspace | `AppShell`, `PageHeader`, `StateLayout`, and `Button` | Quiet first-use state and the single public `$pulmu "<task>"` entry point |
+
+## Responsive, keyboard, accessibility, and visual coverage
+
+- Workspace Overview is captured in light and dark themes at 1440px, 768px, 390px, and 320px.
+- Active Forge Run covers desktop, tablet, mobile, and narrow compositions. Every other workflow outcome has a desktop baseline; Run History adds a focusable 320px table-overflow baseline and Empty Workspace adds a mobile baseline.
+- Story play tests exercise the skip link, desktop 44px navigation control, focus-managed compact drawer, one-`h1` rule, valid fragment targets, canonical stage structure, retry paths, delivery distinctions, and page-level overflow.
+- Storybook accessibility checks run with `a11y.test: "error"`; Chromium screenshot assertions provide the visual-regression gate.
+
+## Non-goals
+
+These examples do not implement a production backend, live GitHub API, authentication, billing, invitations, Repository Onboarding, multi-tenant organization management, source-file mutation, or deployment. Labels such as Billing, Invite, and Repository Onboarding are intentionally absent from the product navigation and actions.

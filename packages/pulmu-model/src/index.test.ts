@@ -8,6 +8,8 @@ import {
   PULMU_AGENT_ROUTING_FIXTURES,
   PULMU_AGENTS,
   PULMU_FORGE_MODES,
+  PULMU_EXAMPLE_RUN_FIXTURES,
+  PULMU_EXAMPLE_RUN_HISTORY,
   PULMU_PATTERN_PASS,
   PULMU_RETRY_POLICIES,
   PULMU_RUN_CONTEXT_FIXTURES,
@@ -223,5 +225,45 @@ describe("adaptPulmuRunContext", () => {
 
     expect(JSON.stringify(adaptPulmuRunContext(failedRaw))).not.toContain(sentinel);
     expect(JSON.stringify(adaptPulmuRunContext(completedRaw))).not.toContain(sentinel);
+  });
+});
+
+describe("Pulmu example-screen fixtures", () => {
+  it("publishes adapter-derived fixtures for every run screen and history state", () => {
+    expect(Object.keys(PULMU_EXAMPLE_RUN_FIXTURES)).toEqual([
+      "active",
+      "quenchRetry",
+      "honeFinding",
+      "completedLocal",
+      "completedGithub",
+      "failed",
+      "interrupted",
+    ]);
+    expect(PULMU_EXAMPLE_RUN_HISTORY).toHaveLength(7);
+    expect(PULMU_EXAMPLE_RUN_HISTORY.every(({ run }) => run.schemaVersion === 1)).toBe(true);
+  });
+
+  it("keeps delivery, terminal state, and retry scenarios distinct", () => {
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.quenchRetry.run.retries).toEqual({ quench: 2, hone: 0 });
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.honeFinding.run.retries).toEqual({ quench: 0, hone: 1 });
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.completedLocal.run.delivery).toEqual({
+      kind: "local",
+      status: "completed",
+    });
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.completedGithub.run.delivery).toEqual({
+      kind: "github",
+      status: "completed",
+    });
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.failed.run.status).toBe("failed");
+    expect(PULMU_EXAMPLE_RUN_FIXTURES.interrupted.run.status).toBe("interrupted");
+  });
+
+  it("does not expose raw Run Context fields to the screen fixtures", () => {
+    const serialized = JSON.stringify(PULMU_EXAMPLE_RUN_FIXTURES);
+
+    expect(serialized).not.toContain("Synthetic example task");
+    expect(serialized).not.toContain("pulmu/feat/synthetic-example");
+    expect(serialized).not.toContain("forge.example.invalid");
+    expect(serialized).not.toContain("abc1234");
   });
 });

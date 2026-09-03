@@ -1,9 +1,6 @@
 import { useRef, type MouseEvent as ReactMouseEvent } from "react";
 import {
-  adaptPulmuRunContext,
-  COMPLETED_RUN_CONTEXT_FIXTURE,
-  FAILED_RUN_CONTEXT_FIXTURE,
-  RUNNING_RUN_CONTEXT_FIXTURE,
+  PULMU_EXAMPLE_RUN_FIXTURES,
   type PulmuRunViewModel,
 } from "@pulmu/model";
 import {
@@ -42,10 +39,10 @@ type RecentRun = {
   readonly updatedAt: string;
 };
 
-export const activeOverviewRun = adaptPulmuRunContext(RUNNING_RUN_CONTEXT_FIXTURE);
-export const failedOverviewRun = adaptPulmuRunContext(FAILED_RUN_CONTEXT_FIXTURE);
+export const activeOverviewRun = PULMU_EXAMPLE_RUN_FIXTURES.active.run;
+export const failedOverviewRun = PULMU_EXAMPLE_RUN_FIXTURES.failed.run;
 
-const completedOverviewRun = adaptPulmuRunContext(COMPLETED_RUN_CONTEXT_FIXTURE);
+const completedOverviewRun = PULMU_EXAMPLE_RUN_FIXTURES.completedGithub.run;
 
 const statusPresentation: Record<RecentRun["status"], { readonly label: string; readonly tone: "info" | "success" | "danger" | "warning" }> = {
   completed: { label: "Completed", tone: "success" },
