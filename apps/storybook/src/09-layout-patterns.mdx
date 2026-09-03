@@ -25,6 +25,11 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 긴 한국어 작업 프롬프트, 줄바꿈 없는 저장소·브랜치 이름은 `overflow-wrap: anywhere`와 `min-inline-size: 0`으로 감쌉니다. 페이지 자체에는 가로 스크롤을 만들지 않습니다. 넓은 표나 차트만 이름이 있는 `OverflowRegion` 안에서 키보드 포커스를 받고 로컬로 스크롤합니다.
 
+## Workspace overview: Before / After
+
+- **Before:** layout primitives were documented separately, so there was no executable example proving their combined reading order, action hierarchy, and local table overflow across all four target widths.
+- **After:** `Workspace Overview` composes the canonical `AppShell`, main-first `ContentWithRail`, responsive sidebar, metric grid, and self-scrolling `DataTable`. The same DOM order keeps the active run before its stage rail at 1440px, 768px, 390px, and 320px.
+
 ## State layouts
 
 - loading: `aria-busy="true"`와 status로 진행 상태를 알립니다.

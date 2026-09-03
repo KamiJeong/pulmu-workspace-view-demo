@@ -3,6 +3,7 @@ import {
   useRef,
   useState,
   type HTMLAttributes,
+  type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type ReactNode,
 } from "react";
@@ -72,6 +73,8 @@ export type CollapsibleSidebarProps = Omit<HTMLAttributes<HTMLElement>, "childre
   readonly mobileCloseLabel?: string;
   /** Reports controlled and uncontrolled desktop collapse changes. */
   readonly onCollapsedChange?: (collapsed: boolean) => void;
+  /** Reports link activation from the compact drawer after it begins closing. */
+  readonly onNavigate?: (href: string) => void;
 };
 
 export function CollapsibleSidebar({
@@ -85,6 +88,7 @@ export function CollapsibleSidebar({
   mobileCloseLabel = "Close navigation",
   mobileTriggerLabel = "Open navigation",
   onCollapsedChange,
+  onNavigate,
   ...props
 }: CollapsibleSidebarProps) {
   const compact = useCompactSidebar();
@@ -97,6 +101,38 @@ export function CollapsibleSidebar({
   const setCollapsed = (next: boolean) => {
     if (collapsed === undefined) setInternalCollapsed(next);
     onCollapsedChange?.(next);
+  };
+  const navigateFromCompactSidebar = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const source = event.target;
+    const anchor = source instanceof Element ? source.closest<HTMLAnchorElement>("a[href]") : null;
+    if (
+      !anchor ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey
+    ) return;
+
+    const href = anchor.getAttribute("href");
+    if (!href) return;
+    onNavigate?.(href);
+    setMobileOpen(false);
+
+    if (!href.startsWith("#")) return;
+    const destinationId = decodeURIComponent(href.slice(1));
+    const destination = anchor.ownerDocument.getElementById(destinationId);
+    if (!destination) return;
+
+    event.preventDefault();
+    const view = anchor.ownerDocument.defaultView;
+    if (!view) return;
+    view.location.hash = href;
+    view.requestAnimationFrame(() => {
+      destination.focus();
+      destination.scrollIntoView({ block: "start" });
+    });
   };
   useEffect(() => {
     if (compact) {
@@ -116,7 +152,7 @@ export function CollapsibleSidebar({
       <div {...props} className={classes("pulmu-collapsible-sidebar-mobile", className)}>
         <Button aria-haspopup="dialog" onClick={() => setMobileOpen(true)} ref={mobileTriggerRef} variant="secondary">{mobileTriggerLabel}</Button>
         <Dialog className="pulmu-collapsible-sidebar__dialog" closeLabel={mobileCloseLabel} onOpenChange={setMobileOpen} open={mobileOpen} title={label}>
-          <div className="pulmu-collapsible-sidebar__content">{children}</div>
+          <div className="pulmu-collapsible-sidebar__content" onClick={navigateFromCompactSidebar}>{children}</div>
         </Dialog>
       </div>
     );
