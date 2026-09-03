@@ -76,13 +76,15 @@ Every Storybook story is evaluated with the global `a11y.test = "error"` policy,
 
 ### Repository checks
 
-| Result | Command | Coverage |
-| --- | --- | --- |
-| PASS | `bun run lint` | ESLint, zero warnings |
-| PASS | `bun run typecheck` | workspace TypeScript |
-| PASS | `bun run test` | token contracts, color governance, stories, accessibility, visual baselines |
-| PASS | `bun run build` | static Storybook build |
-| PASS | `bun run test:visual` | canonical story and screenshot comparison subset |
+The following exact results were recorded from the clean checkout on 2026-09-03:
+
+| Result | Command | Exact result | Coverage |
+| --- | --- | --- | --- |
+| PASS | `bun run lint` | ESLint completed with zero warnings | repository lint rules |
+| PASS | `bun run typecheck` | TypeScript completed with no errors | workspace TypeScript |
+| PASS | `bun run test` | 18 files passed, 11 files skipped (29 total); 182 tests passed in 31.97s | token contracts, color governance, stories, accessibility, visual baselines |
+| PASS | `bun run build` | Storybook production build completed; 2,260 modules transformed and Vite built in 3.14s | static Storybook build |
+| PASS | `bun run test:visual` | canonical story and screenshot comparison completed with no differences | canonical story and screenshot comparison subset |
 
 ## Manual QA record
 
