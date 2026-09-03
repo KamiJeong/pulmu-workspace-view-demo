@@ -12,6 +12,10 @@ export const componentMaturity = {
   Pagination: "beta", Popover: "beta", Progress: "beta", SearchField: "beta", SortableHeader: "beta",
   Select: "beta", Skeleton: "beta", SkipLink: "beta", Spinner: "beta", Switch: "beta",
   Tabs: "beta", Tooltip: "beta", TrendIndicator: "beta", VisuallyHidden: "beta",
+  ActiveStagePanel: "beta", DeliverySummary: "beta", FailureInterruptedNotice: "beta",
+  ForgeRiskBadge: "beta", ForgeStageRail: "beta", PatternInset: "beta", RetryLoop: "beta",
+  ReviewFinding: "beta", RunLifecycleStatus: "beta", StageActivity: "beta",
+  TaskMetadata: "beta", VerificationSummary: "beta",
 } as const satisfies Record<string, ComponentMaturity>;
 
 export * from "./a11y";
@@ -22,6 +26,7 @@ export * from "./data";
 export * from "./feedback";
 export * from "./fields";
 export * from "./formatters";
+export * from "./forge";
 export * from "./navigation";
 export * from "./overlays";
 export * from "./tabs";
