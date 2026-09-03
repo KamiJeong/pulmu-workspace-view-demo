@@ -21,13 +21,22 @@ const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*
 describe("core UI public contract", () => {
   it("publishes every public component at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(51);
+    expect(Object.keys(componentMaturity)).toHaveLength(61);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "charts", "content", "data", "feedback", "fields", "forge", "formatters", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "charts", "content", "data", "feedback", "fields", "forge", "formatters", "layout", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
+    }
+  });
+
+  it("publishes the DS09 semantic layout primitives at beta maturity", () => {
+    for (const component of [
+      "AppShell", "CollapsibleSidebar", "PageHeader", "MetricGrid", "MasterDetail",
+      "ContentWithRail", "FilterDataRegion", "OverflowRegion", "StateLayout", "EmbeddedView",
+    ]) {
+      expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
     }
   });
 
@@ -35,6 +44,14 @@ describe("core UI public contract", () => {
     for (const component of ["BarChart", "ChartSummary", "DataState", "DataTable", "DonutChart", "FilterSummary", "Legend", "LineChart", "MetricCard", "SortableHeader", "TrendIndicator"]) {
       expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
     }
+  });
+
+  it("keeps responsive layouts in logical DOM order with local overflow only", () => {
+    expect(css).toContain("@media (min-width: 48rem)");
+    expect(css).toContain("@media (min-width: 90rem)");
+    expect(rule(".pulmu-overflow-region")).toContain("overflow: auto");
+    expect(css).not.toMatch(/\.pulmu-app-shell[^{]*\{[^}]*overflow(?:-[xy])?\s*:/);
+    expect(css).not.toMatch(/(?:^|[;{])\s*(?:order|flex-direction:\s*(?:row|column)-reverse)\s*:/m);
   });
 
   it("renders exactly seven canonical stages with Pattern nested inside Shape", () => {

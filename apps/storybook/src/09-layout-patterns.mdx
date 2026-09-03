@@ -4,8 +4,39 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # 09 Layout Patterns
 
-**Status: planned**
+**Status: beta**
 
 <p lang="ko">
-  App shell, navigation, dashboard grid 및 responsive information hierarchy를 정의할 예정입니다.
+  App Shell, 접을 수 있는 내비게이션, 대시보드 그리드 및 반응형 정보 계층을 제공합니다.
+  `Responsive workspace`의 1440px, 768px, 390px, 320px 스토리는 고정 데이터와 명시적인 dark theme을 사용하는 시각 회귀 기준입니다.
+  canonical `bun run test`가 저장소의 로컬 PNG baseline과 브라우저 screenshot을 비교합니다.
 </p>
+
+## Semantic and keyboard contract
+
+- `AppShell`과 `EmbeddedView`는 첫 번째 포커스 요소로 Skip Link를 렌더링하고, 대상 `main`은 `tabIndex={-1}`을 가집니다.
+- 48rem 이상에서 `CollapsibleSidebar`는 네이티브 버튼으로 완전히 접히며 숨겨진 링크는 탭 순서에서 빠집니다. 48rem 미만에서는 전체 텍스트 트리거와 네이티브 modal `Dialog`를 사용합니다. 열 때 내부로 포커스가 이동하고 Escape 또는 닫기 후 트리거로 돌아옵니다.
+- 사이드바 링크는 Tab과 Enter의 네이티브 링크 동작 및 `aria-current="page"`를 사용합니다. 메뉴 역할이나 화살표 키 roving focus를 적용하지 않습니다.
+- `PageHeader`가 페이지의 단일 `h1`을 소유합니다. 액션은 공간이 줄면 줄바꿈되고 30rem 미만에서는 세로로 쌓입니다.
+
+## Responsive reading order
+
+`ContentWithRail`, `MasterDetail`, `FilterDataRegion`은 주요 콘텐츠를 DOM에 먼저 두고 보조 rail/detail/filter를 뒤에 둡니다. 90rem 이상에서만 열로 배치하므로 768px 이하의 시각 순서와 스크린 리더 읽기 순서가 동일합니다. CSS `order`나 reverse 방향은 사용하지 않습니다.
+
+긴 한국어 작업 프롬프트, 줄바꿈 없는 저장소·브랜치 이름은 `overflow-wrap: anywhere`와 `min-inline-size: 0`으로 감쌉니다. 페이지 자체에는 가로 스크롤을 만들지 않습니다. 넓은 표나 차트만 이름이 있는 `OverflowRegion` 안에서 키보드 포커스를 받고 로컬로 스크롤합니다.
+
+## State layouts
+
+- loading: `aria-busy="true"`와 status로 진행 상태를 알립니다.
+- empty: 사실에 맞는 다음 행동 하나만 제공합니다.
+- failure: alert와 복구 행동을 제공합니다.
+- interrupted: failure와 다른 warning 표면 및 status로 안전한 중단을 표현합니다.
+
+## Manual accessibility checks
+
+자동화된 Storybook 접근성 및 interaction 검사에 더해 아래 항목을 릴리스 전에 확인합니다.
+
+1. 브라우저 텍스트 크기 200%와 페이지 확대 400%에서 핵심 탐색·본문·상태 복구 기능이 유지되고 320 CSS px 상당 폭으로 재배치되는지 확인합니다.
+2. forced-colors에서 현재 링크, 상태 경계, 버튼, 포커스 링이 식별되는지 확인합니다.
+3. 스크린 리더에서 Skip Link → 제품 헤더 → 탐색 → 단일 `h1` → 주요 콘텐츠 → rail/detail 순서가 화면 순서와 같은지 확인합니다.
+4. 표에 키보드 포커스를 둔 경우에만 가로 스크롤되고 문서 전체에는 가로 스크롤이 없는지 확인합니다.
