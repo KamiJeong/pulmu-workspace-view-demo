@@ -93,12 +93,55 @@ export const PULMU_AGENTS = [
   { name: "pulmu_design_reviewer", stage: "hone", access: "read-only", role: "design review" },
 ] as const;
 export type PulmuAgentName = (typeof PULMU_AGENTS)[number]["name"];
+export type PulmuAgentDefinition = (typeof PULMU_AGENTS)[number];
+export type PulmuAgentAccess = PulmuAgentDefinition["access"];
+export type PulmuAgentStage = PulmuAgentDefinition["stage"];
+export type PulmuReviewerName = Extract<PulmuAgentDefinition, { stage: "hone" }>["name"];
 
 export const PULMU_ORCHESTRATOR = {
   name: "orchestrator",
   access: "workflow-control",
   role: "stage transitions, routing, consolidation, retries, and delivery",
 } as const;
+export type PulmuActorName = PulmuAgentName | typeof PULMU_ORCHESTRATOR.name;
+
+export const PULMU_AGENT_BY_NAME = Object.fromEntries(
+  PULMU_AGENTS.map((agent) => [agent.name, agent]),
+) as { readonly [Name in PulmuAgentName]: Extract<PulmuAgentDefinition, { name: Name }> };
+
+export function getPulmuAgent<Name extends PulmuAgentName>(name: Name) {
+  return PULMU_AGENT_BY_NAME[name];
+}
+
+export function getPulmuActor(name: PulmuActorName) {
+  return name === PULMU_ORCHESTRATOR.name ? PULMU_ORCHESTRATOR : getPulmuAgent(name);
+}
+
+export const PULMU_AGENT_ROUTING_CONDITIONS = [
+  "always",
+  "pattern",
+  "failure",
+  "security",
+  "compatibility",
+  "design",
+] as const;
+export type PulmuAgentRoutingCondition = (typeof PULMU_AGENT_ROUTING_CONDITIONS)[number];
+
+export type PulmuAgentRoutingGroup = {
+  readonly activity: string;
+  readonly agents: readonly PulmuAgentName[];
+  readonly condition: PulmuAgentRoutingCondition;
+  readonly id: string;
+  readonly parallel: boolean;
+  readonly parentPass?: typeof PULMU_PATTERN_PASS.id;
+  readonly stageId: PulmuStageId;
+};
+
+export type PulmuAgentRoutingFixture = {
+  readonly forge: PulmuForgeMode;
+  readonly groups: readonly PulmuAgentRoutingGroup[];
+  readonly label: (typeof PULMU_FORGE_MODES)[PulmuForgeMode]["label"];
+};
 
 export const PULMU_RETRY_POLICIES = {
   quench: {

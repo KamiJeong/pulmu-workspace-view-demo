@@ -3,11 +3,20 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { adaptPulmuRunContext, RUNNING_RUN_CONTEXT_FIXTURE } from "@pulmu/model";
 import {
+  adaptPulmuRunContext,
+  FULL_AGENT_ROUTING_FIXTURE,
+  RUNNING_RUN_CONTEXT_FIXTURE,
+} from "@pulmu/model";
+import {
+  AgentGroup,
+  AgentIdentity,
   FailureInterruptedNotice,
   ForgeStageRail,
+  OrchestrationFlow,
+  ParallelReadOnlyGroup,
   PULMU_UI_MATURITY,
+  ReviewerFindingSummary,
   RetryLoop,
   RunLifecycleStatus,
   componentMaturity,
@@ -21,12 +30,12 @@ const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*
 describe("core UI public contract", () => {
   it("publishes every public component at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(61);
+    expect(Object.keys(componentMaturity)).toHaveLength(73);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "charts", "content", "data", "feedback", "fields", "forge", "formatters", "layout", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "agents", "charts", "content", "data", "feedback", "fields", "forge", "formatters", "layout", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
     }
   });
@@ -38,6 +47,71 @@ describe("core UI public contract", () => {
     ]) {
       expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
     }
+  });
+
+  it("publishes the issue #10 agent observation surfaces", () => {
+    for (const component of [
+      "ActiveAgentGroup", "AgentActivityRow", "AgentAuthorityIndicator", "AgentCard", "AgentGroup",
+      "AgentIdentity", "AgentRoleBadge", "AgentStageRelationship", "AgentStatus", "OrchestrationFlow",
+      "ParallelReadOnlyGroup", "ReviewerFindingSummary",
+    ]) {
+      expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
+    }
+  });
+
+  it("derives visible agent authority and status without adding controls", () => {
+    const orchestrator = renderToStaticMarkup(createElement(AgentIdentity, { active: true, name: "orchestrator" }));
+    const smith = renderToStaticMarkup(createElement(AgentIdentity, { active: true, name: "pulmu_smith" }));
+    const reviewer = renderToStaticMarkup(createElement(AgentIdentity, { active: false, name: "pulmu_reviewer" }));
+
+    expect(orchestrator).toContain("Workflow control");
+    expect(smith).toContain("Sole writer");
+    expect(reviewer).toContain("Read-only");
+    expect(orchestrator).toContain("Active");
+    expect(reviewer).toContain("Not active");
+    expect(`${orchestrator}${smith}${reviewer}`).not.toMatch(/<(?:button|a|input|select|textarea)\b|tabindex=/);
+  });
+
+  it("supports an empty active group and rejects a writer in a parallel read-only group", () => {
+    const empty = renderToStaticMarkup(createElement(AgentGroup, { agentNames: [], label: "Current stage agents" }));
+    expect(empty).toContain("No active agents");
+    expect(empty).toContain("valid idle state");
+    expect(() => renderToStaticMarkup(createElement(ParallelReadOnlyGroup, { agentNames: ["pulmu_smith"] })))
+      .toThrow("read-only Pulmu agents only");
+    expect(() => renderToStaticMarkup(createElement(AgentGroup, { agentNames: ["pulmu_smith"], parallel: true })))
+      .toThrow("read-only Pulmu agents only");
+  });
+
+  it("keeps Orchestrator, stage, activity, agents, and result in DOM reading order", () => {
+    const flow = renderToStaticMarkup(createElement(OrchestrationFlow, {
+      activeAgents: ["pulmu_designer", "pulmu_reviewer"],
+      enabledConditions: ["pattern", "design"],
+      fixture: FULL_AGENT_ROUTING_FIXTURE,
+    }));
+    const finding = renderToStaticMarkup(createElement(ReviewerFindingSummary, {
+      reviewer: "pulmu_test_reviewer",
+      result: { status: "finding", title: "Coverage gap", severity: "medium", description: "Add the missing state." },
+    }));
+
+    expect(flow.indexOf('data-agent-name="orchestrator"')).toBeLessThan(flow.indexOf('data-agent-stage-id="inspect"'));
+    const firstStage = flow.slice(flow.indexOf('data-agent-stage-id="inspect"'));
+    expect(firstStage.indexOf("Stage")).toBeLessThan(firstStage.indexOf("Activity"));
+    expect(firstStage.indexOf("Activity")).toBeLessThan(firstStage.indexOf("pulmu_explorer"));
+    expect(flow).toContain("Conditional pass inside Shape");
+    expect(flow).not.toContain('data-agent-stage-id="pattern"');
+    expect([...flow.matchAll(/data-orchestration-stage-id="([^"]+)"/g)].map((match) => match[1])).toEqual([
+      "inspect", "shape", "hammer", "hone",
+    ]);
+    const shapeMarkup = flow.slice(
+      flow.indexOf('data-orchestration-stage-id="shape"'),
+      flow.indexOf('data-orchestration-stage-id="hammer"'),
+    );
+    const honeMarkup = flow.slice(flow.indexOf('data-orchestration-stage-id="hone"'));
+    expect(shapeMarkup).toContain("pulmu_designer");
+    expect(honeMarkup).toContain("pulmu_design_reviewer");
+    expect(flow.match(/Sole writer/g)).toHaveLength(1);
+    expect(finding.indexOf("pulmu_test_reviewer")).toBeLessThan(finding.indexOf("Coverage gap"));
+    expect(finding).toContain("medium severity · Blocking");
   });
 
   it("publishes the issue #8 data and visualization surface", () => {

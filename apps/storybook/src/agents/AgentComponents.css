@@ -1,0 +1,24 @@
+.agent-demo {
+  display: grid;
+  gap: var(--pulmu-space-6);
+  margin-inline: auto;
+  max-inline-size: var(--pulmu-size-content-max);
+  min-inline-size: 0;
+}
+
+.agent-demo__grid {
+  display: grid;
+  gap: var(--pulmu-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  min-inline-size: 0;
+}
+
+.agent-demo > h1 {
+  font-size: var(--pulmu-font-size-xl);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 30rem) {
+  .agent-demo__grid { grid-template-columns: minmax(0, 1fr); }
+}

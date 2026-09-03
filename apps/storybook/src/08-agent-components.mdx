@@ -4,8 +4,29 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # 08 Agent Components
 
-**Status: planned**
+**Status: beta**
 
 <p lang="ko">
-  Orchestrator, 단일 Smith writer 및 read-only specialist agent의 역할과 상태를 표현할 예정입니다.
+  Orchestrator, 단일 Smith writer 및 read-only specialist agent의 역할과 상태를 stage 하위 활동으로 표현합니다.
 </p>
+
+Agent components are static observation surfaces. They do not execute agents, select models, create arbitrary
+agents, or add workflow controls.
+
+## Reading order and authority
+
+1. `OrchestrationFlow` identifies the Orchestrator and its **Workflow control** authority.
+2. Each `AgentStageRelationship` identifies the canonical stage before its activity and agent group.
+3. `AgentIdentity` derives role and access from the `@pulmu/model` registry. Callers cannot relabel
+   `pulmu_smith`: it is always the **Sole writer**; every specialist is **Read-only**.
+4. `AgentStatus` always says **Active** or **Not active**. Status and authority never depend on color alone.
+5. `ReviewerFindingSummary` attributes an existing review result to its reviewer while preserving the Forge
+   component's blocking meaning.
+
+`AgentGroup` supports a valid **No active agents** state. `ParallelReadOnlyGroup` accepts only canonical
+read-only specialists and never the Smith. Quick, Standard, and Full Forge routing fixtures document one Smith
+assignment per flow and the mode-specific read-only groups. Pattern routing remains `Shape → Pattern →
+pulmu_designer`; Pattern is not a top-level stage.
+
+All components preserve DOM order, add no controls or tab stops, wrap canonical names and long roles, and collapse
+multi-agent grids to one column at 390px and 320px.

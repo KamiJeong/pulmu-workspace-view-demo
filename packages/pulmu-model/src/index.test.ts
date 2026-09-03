@@ -4,6 +4,8 @@ import {
   adaptPulmuRunContext,
   COMPLETED_RUN_CONTEXT_FIXTURE,
   FAILED_RUN_CONTEXT_FIXTURE,
+  getPulmuActor,
+  PULMU_AGENT_ROUTING_FIXTURES,
   PULMU_AGENTS,
   PULMU_FORGE_MODES,
   PULMU_PATTERN_PASS,
@@ -14,6 +16,7 @@ import {
   RETRY_RUN_CONTEXT_FIXTURE,
   RUNNING_RUN_CONTEXT_FIXTURE,
 } from ".";
+import type { PulmuAgentRoutingFixture, PulmuAgentRoutingGroup } from ".";
 
 describe("Pulmu product contract", () => {
   it("keeps the canonical seven stages in exact order", () => {
@@ -54,6 +57,42 @@ describe("Pulmu product contract", () => {
     expect(PULMU_AGENTS.filter(({ access }) => access === "write").map(({ name }) => name)).toEqual([
       "pulmu_smith",
     ]);
+  });
+
+  it("derives authority and roles from the canonical actor registry", () => {
+    expect(getPulmuActor("orchestrator")).toMatchObject({ access: "workflow-control" });
+    expect(getPulmuActor("pulmu_smith")).toMatchObject({ access: "write", stage: "hammer" });
+    expect(getPulmuActor("pulmu_designer")).toMatchObject({ access: "read-only", stage: "pattern" });
+  });
+
+  it.each(Object.entries(PULMU_AGENT_ROUTING_FIXTURES))(
+    "keeps the %s routing fixture to one Smith writer and read-only parallel groups",
+    (_mode, fixture) => {
+      expect(fixture.forge).toBe(_mode);
+      expect(fixture.groups.flatMap(({ agents }) => agents).filter((name) => name === "pulmu_smith")).toHaveLength(1);
+      for (const group of fixture.groups.filter(({ parallel }) => parallel)) {
+        expect(group.agents.every((name) => getPulmuActor(name).access === "read-only")).toBe(true);
+      }
+    },
+  );
+
+  it("keeps Pattern nested in Shape and conditional reviewer routing explicit", () => {
+    const patternGroups: PulmuAgentRoutingGroup[] = [];
+    for (const [mode, fixture] of Object.entries(PULMU_AGENT_ROUTING_FIXTURES) as [string, PulmuAgentRoutingFixture][]) {
+      const modePatternGroups = fixture.groups.filter(({ condition }) => condition === "pattern");
+      expect(modePatternGroups, `${mode} Pattern assignments`).toHaveLength(1);
+      patternGroups.push(...modePatternGroups);
+    }
+    expect(patternGroups).toHaveLength(3);
+    expect(patternGroups.every(({ parentPass, stageId }) => parentPass === "pattern" && stageId === "shape")).toBe(true);
+    expect(patternGroups.flatMap(({ agents }) => agents)).toEqual([
+      "pulmu_designer", "pulmu_designer", "pulmu_designer",
+    ]);
+
+    const fullConditions = PULMU_AGENT_ROUTING_FIXTURES.full.groups.map(({ condition }) => condition);
+    expect(fullConditions).toEqual(expect.arrayContaining(["failure", "security", "compatibility", "design"]));
+    expect(PULMU_AGENT_ROUTING_FIXTURES.standard.groups.find(({ id }) => id === "standard-hone")?.agents)
+      .toEqual(["pulmu_reviewer", "pulmu_test_reviewer"]);
   });
 
   it("defines bounded Quench and Hone retry paths", () => {
