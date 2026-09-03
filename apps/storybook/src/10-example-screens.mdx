@@ -14,5 +14,8 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 - **Before:** example screens were planned only; product hierarchy, canonical forge progress, responsive behavior, and data states could not be reviewed together.
 - **After:** `Workspace Overview` provides identical light/dark content and APIs, one primary action, all seven canonical forge stages with Pattern nested under Shape, and responsive desktop/tablet/mobile/narrow stories.
+- **Visual QA:** Light and Dark are captured at 1440px, 768px, 390px, and 320px as canonical Chromium/Linux baselines. The aggregate test gate also runs Storybook accessibility checks as errors.
 - **States:** loading, empty, and error replace the recent-runs data region. Stale keeps the last successful semantic table below a warning, so users can still inspect known data while deciding whether to refresh.
 - **Scope:** the slice is fixture-driven and intentionally excludes billing, invitations, authentication, enterprise administration, live GitHub data, and backend integration.
+
+The QA report and manual/browser limitations are recorded in `docs/iron-and-ember-qa.md`. Remaining #12 screens are Active Forge Run, Quench Retry, Hone Review Finding, Completed Local Delivery, Completed GitHub Delivery, Failed Run, Interrupted Run, Run History, and Empty Workspace.

@@ -25,7 +25,7 @@ and `storybook-static` are intentionally ignored by Git.
 
 The preview toolbar provides shared settings for every section and story:
 
-- theme: default `dark` tokens or the compatibility-only `light` preview
+- theme: `system`, `light`, or `dark`, with the saved preference resolved before rendering
 - language: `ko` or `en`
 - motion: `system` or `reduced`
 - viewport: narrow 320px, mobile 390px, tablet 768px, or desktop 1440px
@@ -35,8 +35,8 @@ that its current settings follow toolbar changes, it reflows without horizontal
 page scrolling at 320px, and its button can be focused and toggled with Enter or
 Space. The Token Catalog is the executable source for the primitive, semantic,
 and component layers, including lifecycle/stage colors, focus, chart, and motion
-contracts. The light toolbar option remains a compatibility preview rather than
-a completed theme.
+contracts. Light and Dark share the same semantic contract and are both
+acceptance themes.
 
 ## Token consumption rules
 
@@ -77,6 +77,13 @@ bun run build
 accessibility checks. The global Storybook policy is `a11y.test = "error"`.
 Automated checks do not replace keyboard, zoom/reflow, contrast, screen-reader,
 forced-colors, and reduced-motion review.
+
+Stable acceptance stories also use checked-in Chromium/Linux screenshots. Run
+the visual subset with `bun run test:visual`. Update intentional baselines with
+`bun run test:visual:update` only in the canonical Linux environment and review
+the image diff before committing. The aggregate `bun run test` remains the CI
+gate. See [Iron & Ember visual QA](./iron-and-ember-qa.md) for the evidence
+matrix, color governance, and explicit browser/OS limitations.
 
 The existing Pulmu runtime validation remains separate. Shell changes must also
 pass:

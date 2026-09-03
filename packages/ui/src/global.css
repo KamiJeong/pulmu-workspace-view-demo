@@ -366,14 +366,14 @@
 
 @media (forced-colors: active) {
   .pulmu-button[data-loading="true"] { border-style: dashed; opacity: 1; }
-  .pulmu-tabs__tab[aria-selected="true"], .pulmu-alert { border-color: Highlight; }
+  .pulmu-tabs__tab[aria-selected="true"], .pulmu-alert { border-color: var(--pulmu-color-brand-default); }
   .pulmu-check:checked + .pulmu-check__visual { forced-color-adjust: none; }
   .pulmu-collapsible-sidebar__content :where(a[aria-current="page"]), .pulmu-state-layout { border-color: CanvasText; }
   .pulmu-donut__slice, .pulmu-bar__bar, .pulmu-line__path, .pulmu-chart-marker { fill: Canvas; stroke: CanvasText; }
   .pulmu-chart-marker text { fill: CanvasText; }
-  .pulmu-chart-hit-target:focus-visible { stroke: Highlight; }
-  .pulmu-forge-stage--current, .pulmu-active-stage { border-inline-start-color: Highlight; }
-  .pulmu-review-finding--blocking, .pulmu-terminal-notice--failed { border-inline-start-color: Mark; }
+  .pulmu-chart-hit-target:focus-visible { stroke: var(--pulmu-color-focus-ring); }
+  .pulmu-forge-stage--current, .pulmu-active-stage { border-inline-start-color: var(--pulmu-color-brand-default); }
+  .pulmu-review-finding--blocking, .pulmu-terminal-notice--failed { border-inline-start-color: var(--pulmu-color-status-danger-foreground); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -85,5 +85,10 @@ jobs:
       - name: Test stories
         run: bun run test
 
+      - name: Check canonical visual baselines
+        run: |
+          git diff --exit-code -- ':(glob)apps/storybook/src/**/__screenshots__/**'
+          test -z "$(git ls-files --others --exclude-standard -- ':(glob)apps/storybook/src/**/__screenshots__/**')"
+
       - name: Build Storybook
         run: bun run build
