@@ -7,7 +7,7 @@ import {
   componentAuditGaps,
   componentMapGroups,
 } from "./ComponentMap";
-import { screenGlobals, type ScreenViewport } from "./screenTestUtils";
+import { screenGlobals, stabilizeScreenVisual, type ScreenViewport } from "./screenTestUtils";
 
 const meta = {
   title: "10 Example Screens/Component Map",
@@ -21,8 +21,9 @@ type Story = StoryObj<typeof meta>;
 async function matchComponentMapScreenshot(target: HTMLElement, name: string) {
   if (!("__vitest_worker__" in window)) return;
 
-  const document = target.ownerDocument;
-  await document.fonts.ready;
+  if (!target.isConnected) throw new Error(`Cannot capture detached Component Map target: ${name}`);
+  await stabilizeScreenVisual(target);
+  if (!target.isConnected) throw new Error(`Component Map target detached while settling: ${name}`);
   const { expect: browserExpect } = await import("vitest");
   await browserExpect.element(target).toMatchScreenshot(name);
 }
