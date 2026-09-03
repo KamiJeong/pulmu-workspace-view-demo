@@ -1,0 +1,105 @@
+.pulmu-screen__product {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pulmu-space-2) var(--pulmu-space-4);
+  justify-content: space-between;
+  margin-inline: auto;
+  max-inline-size: var(--pulmu-size-content-max);
+  min-inline-size: 0;
+}
+
+.pulmu-screen__brand {
+  color: var(--pulmu-color-brand-default);
+  font-size: var(--pulmu-font-size-lg);
+  font-weight: var(--pulmu-font-weight-bold);
+}
+
+.pulmu-screen__workspace {
+  color: var(--pulmu-color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.pulmu-screen .pulmu-collapsible-sidebar > .pulmu-icon-button {
+  inline-size: var(--pulmu-target-size-min);
+  justify-self: start;
+}
+
+.pulmu-screen .pulmu-collapsible-sidebar[data-collapsed="true"] > .pulmu-icon-button {
+  justify-self: center;
+}
+
+.pulmu-screen__metadata {
+  display: grid;
+  gap: var(--pulmu-space-3);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-inline-size: 0;
+}
+
+.pulmu-screen__forge .pulmu-content-with-rail__content,
+.pulmu-screen__forge .pulmu-content-with-rail__rail {
+  align-self: start;
+}
+
+.pulmu-screen__forge .pulmu-forge-rail__list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pulmu-screen__forge .pulmu-forge-stage__summary {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.pulmu-screen__forge .pulmu-forge-stage__status {
+  grid-column: auto;
+}
+
+.pulmu-screen__section,
+.pulmu-screen__stack {
+  display: grid;
+  gap: var(--pulmu-space-4);
+  min-inline-size: 0;
+}
+
+.pulmu-screen__section > h2 {
+  font-size: var(--pulmu-font-size-xl);
+  margin: 0;
+}
+
+.pulmu-screen__agent-grid {
+  align-items: start;
+  display: grid;
+  gap: var(--pulmu-space-4);
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+}
+
+.pulmu-screen__stack:focus-visible,
+.pulmu-screen__section:focus-visible,
+.pulmu-screen section[id="empty-state"]:focus-visible {
+  outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color);
+  outline-offset: var(--pulmu-focus-ring-offset);
+}
+
+.pulmu-screen__section:last-child {
+  padding-block-end: var(--pulmu-space-8);
+}
+
+@media (max-width: 63.999rem) {
+  .pulmu-screen__metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 47.999rem) {
+  .pulmu-screen__metadata,
+  .pulmu-screen__agent-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 30rem) {
+  .pulmu-screen__product {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

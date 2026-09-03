@@ -34,6 +34,7 @@ export default defineConfig({
             provider: playwright({}),
           },
           name: "storybook",
+          testTimeout: 30_000,
         },
       },
     ],

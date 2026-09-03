@@ -141,12 +141,9 @@ export function CollapsibleSidebar({
       const destination = pendingCompactDestinationRef.current;
       if (!mobileOpen && destination) {
         pendingCompactDestinationRef.current = null;
-        const view = destination.ownerDocument.defaultView;
-        view?.requestAnimationFrame(() => {
-          view.requestAnimationFrame(() => {
-            destination.focus();
-            destination.scrollIntoView({ block: "start" });
-          });
+        queueMicrotask(() => {
+          destination.focus();
+          destination.scrollIntoView({ block: "start" });
         });
       }
       return;
@@ -160,7 +157,14 @@ export function CollapsibleSidebar({
     return (
       <div {...props} className={classes("pulmu-collapsible-sidebar-mobile", className)}>
         <Button aria-haspopup="dialog" onClick={() => setMobileOpen(true)} ref={mobileTriggerRef} variant="secondary">{mobileTriggerLabel}</Button>
-        <Dialog className="pulmu-collapsible-sidebar__dialog" closeLabel={mobileCloseLabel} onOpenChange={setMobileOpen} open={mobileOpen} title={label}>
+        <Dialog
+          className="pulmu-collapsible-sidebar__dialog"
+          closeLabel={mobileCloseLabel}
+          onOpenChange={setMobileOpen}
+          open={mobileOpen}
+          restoreFocus={pendingCompactDestinationRef.current === null}
+          title={label}
+        >
           <div className="pulmu-collapsible-sidebar__content" onClick={navigateFromCompactSidebar}>{children}</div>
         </Dialog>
       </div>
