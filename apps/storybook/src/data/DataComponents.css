@@ -1,0 +1,10 @@
+.data-stack { display: grid; gap: var(--pulmu-space-4); inline-size: min(100%, 72rem); min-inline-size: 0; }
+.data-metrics { display: grid; gap: var(--pulmu-space-3); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.data-chart-grid { display: grid; gap: var(--pulmu-space-4); grid-template-columns: repeat(2, minmax(0, 1fr)); inline-size: min(100%, 76rem); }
+.data-chart-grid > :last-child { grid-column: 1 / -1; }
+.data-state-grid { display: grid; gap: var(--pulmu-space-3); grid-template-columns: repeat(2, minmax(0, 1fr)); inline-size: min(100%, 64rem); }
+
+@media (max-width: 48rem) {
+  .data-metrics, .data-chart-grid, .data-state-grid { grid-template-columns: minmax(0, 1fr); }
+  .data-chart-grid > :last-child { grid-column: auto; }
+}

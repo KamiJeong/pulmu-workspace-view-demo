@@ -19,15 +19,21 @@ const tokenCss = readFileSync(new URL("../../tokens/src/global.css", import.meta
 const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{([^}]+)\\}`))?.[1] ?? "";
 
 describe("core UI public contract", () => {
-  it("publishes every issue #7 primitive at beta maturity", () => {
+  it("publishes every public component at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(40);
+    expect(Object.keys(componentMaturity)).toHaveLength(51);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "content", "feedback", "fields", "forge", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "charts", "content", "data", "feedback", "fields", "forge", "formatters", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
+    }
+  });
+
+  it("publishes the issue #8 data and visualization surface", () => {
+    for (const component of ["BarChart", "ChartSummary", "DataState", "DataTable", "DonutChart", "FilterSummary", "Legend", "LineChart", "MetricCard", "SortableHeader", "TrendIndicator"]) {
+      expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
     }
   });
 
