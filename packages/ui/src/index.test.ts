@@ -11,14 +11,31 @@ const rule = (selector: string) => css.match(new RegExp(`${selector.replace(/[.*
 describe("core UI public contract", () => {
   it("publishes every issue #7 primitive at beta maturity", () => {
     expect(PULMU_UI_MATURITY).toBe("beta");
-    expect(Object.keys(componentMaturity)).toHaveLength(28);
+    expect(Object.keys(componentMaturity)).toHaveLength(38);
     expect(new Set(Object.values(componentMaturity))).toEqual(new Set(["beta"]));
   });
 
   it("exports every coherent component module", () => {
-    for (const module of ["a11y", "actions", "content", "feedback", "fields", "navigation", "overlays", "tabs"]) {
+    for (const module of ["a11y", "actions", "content", "feedback", "fields", "layout", "navigation", "overlays", "tabs"]) {
       expect(source).toContain(`export * from "./${module}"`);
     }
+  });
+
+  it("publishes the DS09 semantic layout primitives at beta maturity", () => {
+    for (const component of [
+      "AppShell", "CollapsibleSidebar", "PageHeader", "MetricGrid", "MasterDetail",
+      "ContentWithRail", "FilterDataRegion", "OverflowRegion", "StateLayout", "EmbeddedView",
+    ]) {
+      expect(componentMaturity[component as keyof typeof componentMaturity]).toBe("beta");
+    }
+  });
+
+  it("keeps responsive layouts in logical DOM order with local overflow only", () => {
+    expect(css).toContain("@media (min-width: 48rem)");
+    expect(css).toContain("@media (min-width: 90rem)");
+    expect(rule(".pulmu-overflow-region")).toContain("overflow: auto");
+    expect(css).not.toMatch(/\.pulmu-app-shell[^{]*\{[^}]*overflow(?:-[xy])?\s*:/);
+    expect(css).not.toMatch(/(?:^|[;{])\s*(?:order|flex-direction:\s*(?:row|column)-reverse)\s*:/m);
   });
 
   it("keeps target, focus, narrow-content, and reduced-motion contracts token driven", () => {
