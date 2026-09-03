@@ -12,6 +12,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config apps/storybook/vitest.config.ts",
+    "test:visual": "vitest run --config apps/storybook/vitest.config.ts --project storybook",
+    "test:visual:update": "vitest run --config apps/storybook/vitest.config.ts --project storybook --update",
     "build": "bun run --filter @pulmu/storybook build-storybook"
   },
   "devDependencies": {

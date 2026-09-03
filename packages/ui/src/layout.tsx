@@ -97,6 +97,7 @@ export function CollapsibleSidebar({
   const desktopToggleRef = useRef<HTMLButtonElement>(null);
   const desktopToggleFocusedRef = useRef(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const pendingCompactDestinationRef = useRef<HTMLElement | null>(null);
   const isCollapsed = collapsed ?? internalCollapsed;
   const setCollapsed = (next: boolean) => {
     if (collapsed === undefined) setInternalCollapsed(next);
@@ -129,16 +130,24 @@ export function CollapsibleSidebar({
     const view = anchor.ownerDocument.defaultView;
     if (!view) return;
     view.location.hash = href;
-    view.requestAnimationFrame(() => {
-      destination.focus();
-      destination.scrollIntoView({ block: "start" });
-    });
+    pendingCompactDestinationRef.current = destination;
   };
   useEffect(() => {
     if (compact) {
       if (desktopToggleFocusedRef.current) {
         desktopToggleFocusedRef.current = false;
         queueMicrotask(() => mobileTriggerRef.current?.focus());
+      }
+      const destination = pendingCompactDestinationRef.current;
+      if (!mobileOpen && destination) {
+        pendingCompactDestinationRef.current = null;
+        const view = destination.ownerDocument.defaultView;
+        view?.requestAnimationFrame(() => {
+          view.requestAnimationFrame(() => {
+            destination.focus();
+            destination.scrollIntoView({ block: "start" });
+          });
+        });
       }
       return;
     }

@@ -15,6 +15,8 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type OverviewTheme = "light" | "dark";
+type OverviewViewport = "desktop" | "tablet" | "mobile" | "narrow";
 
 const onViewActiveRun = fn();
 const readyArgs = {
@@ -22,6 +24,35 @@ const readyArgs = {
   run: activeOverviewRun,
   status: "ready",
 } as const satisfies OverviewProps;
+
+const visualGlobals = (theme: OverviewTheme, viewport: OverviewViewport) => ({
+  motion: "reduced",
+  theme,
+  viewport: { isRotated: false, value: viewport },
+});
+
+async function matchOverviewScreenshot(canvasElement: HTMLElement, name: string) {
+  if (!("__vitest_worker__" in window)) return;
+
+  const document = canvasElement.ownerDocument;
+  await document.fonts.ready;
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  const view = document.defaultView;
+  if (view) {
+    view.history.replaceState(null, "", `${view.location.pathname}${view.location.search}`);
+    view.scrollTo(0, 0);
+  }
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  await new Promise<void>((resolve) => {
+    view?.requestAnimationFrame(() => {
+      view.requestAnimationFrame(() => resolve());
+    });
+  });
+
+  const { expect: browserExpect } = await import("vitest");
+  await browserExpect.element(document.documentElement).toMatchScreenshot(name);
+}
 
 async function assertReadyOverview(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
@@ -130,8 +161,9 @@ async function assertCompactNavigationActivation(
 }
 
 export const Light: Story = {
+  name: "Light · Desktop · 1440",
   args: readyArgs,
-  globals: { theme: "light", viewport: { isRotated: false, value: "desktop" } },
+  globals: visualGlobals("light", "desktop"),
   play: async ({ canvasElement }) => {
     await assertReadyOverview(canvasElement);
     const canvas = within(canvasElement);
@@ -139,42 +171,89 @@ export const Light: Story = {
     await expect(onViewActiveRun).toHaveBeenCalledOnce();
     await waitFor(() => expect(canvasElement.querySelector("#active-run")).toHaveFocus());
     await assertNavigationKeyboard(canvasElement, false);
+    await matchOverviewScreenshot(canvasElement, "overview-light-desktop-1440.png");
   },
 };
 
 export const Dark: Story = {
+  name: "Dark · Desktop · 1440",
   args: readyArgs,
-  globals: { theme: "dark", viewport: { isRotated: false, value: "desktop" } },
-  play: async ({ canvasElement }) => assertReadyOverview(canvasElement),
-};
-
-export const Tablet768: Story = {
-  args: readyArgs,
-  globals: { theme: "dark", viewport: { isRotated: false, value: "tablet" } },
+  globals: visualGlobals("dark", "desktop"),
   play: async ({ canvasElement }) => {
     await assertReadyOverview(canvasElement);
-    await assertNavigationKeyboard(canvasElement, false);
+    await matchOverviewScreenshot(canvasElement, "overview-dark-desktop-1440.png");
   },
 };
 
-export const Mobile390: Story = {
+export const LightTablet768: Story = {
+  name: "Light · Tablet · 768",
   args: readyArgs,
-  globals: { theme: "dark", viewport: { isRotated: false, value: "mobile" } },
+  globals: visualGlobals("light", "tablet"),
+  play: async ({ canvasElement }) => {
+    await assertReadyOverview(canvasElement);
+    await assertNavigationKeyboard(canvasElement, false);
+    await matchOverviewScreenshot(canvasElement, "overview-light-tablet-768.png");
+  },
+};
+
+export const Tablet768: Story = {
+  name: "Dark · Tablet · 768",
+  args: readyArgs,
+  globals: visualGlobals("dark", "tablet"),
+  play: async ({ canvasElement }) => {
+    await assertReadyOverview(canvasElement);
+    await assertNavigationKeyboard(canvasElement, false);
+    await matchOverviewScreenshot(canvasElement, "overview-dark-tablet-768.png");
+  },
+};
+
+export const LightMobile390: Story = {
+  name: "Light · Mobile · 390",
+  args: readyArgs,
+  globals: visualGlobals("light", "mobile"),
   play: async ({ canvasElement }) => {
     await assertReadyOverview(canvasElement);
     await assertNavigationKeyboard(canvasElement, true);
     await assertCompactNavigationActivation(canvasElement, "Recent runs", "recent-runs-heading");
+    await matchOverviewScreenshot(canvasElement, "overview-light-mobile-390.png");
   },
 };
 
-export const Narrow320: Story = {
+export const Mobile390: Story = {
+  name: "Dark · Mobile · 390",
   args: readyArgs,
-  globals: { theme: "dark", viewport: { isRotated: false, value: "narrow" } },
+  globals: visualGlobals("dark", "mobile"),
+  play: async ({ canvasElement }) => {
+    await assertReadyOverview(canvasElement);
+    await assertNavigationKeyboard(canvasElement, true);
+    await assertCompactNavigationActivation(canvasElement, "Recent runs", "recent-runs-heading");
+    await matchOverviewScreenshot(canvasElement, "overview-dark-mobile-390.png");
+  },
+};
+
+export const LightNarrow320: Story = {
+  name: "Light · Narrow · 320",
+  args: readyArgs,
+  globals: visualGlobals("light", "narrow"),
   play: async ({ canvasElement }) => {
     await assertReadyOverview(canvasElement);
     const table = within(canvasElement).getByRole("table", { name: "Recent Pulmu runs" });
     await expect(table.parentElement!.scrollWidth).toBeGreaterThan(table.parentElement!.clientWidth);
     await assertCompactNavigationActivation(canvasElement, "Active run", "active-run");
+    await matchOverviewScreenshot(canvasElement, "overview-light-narrow-320.png");
+  },
+};
+
+export const Narrow320: Story = {
+  name: "Dark · Narrow · 320",
+  args: readyArgs,
+  globals: visualGlobals("dark", "narrow"),
+  play: async ({ canvasElement }) => {
+    await assertReadyOverview(canvasElement);
+    const table = within(canvasElement).getByRole("table", { name: "Recent Pulmu runs" });
+    await expect(table.parentElement!.scrollWidth).toBeGreaterThan(table.parentElement!.clientWidth);
+    await assertCompactNavigationActivation(canvasElement, "Active run", "active-run");
+    await matchOverviewScreenshot(canvasElement, "overview-dark-narrow-320.png");
   },
 };
 
