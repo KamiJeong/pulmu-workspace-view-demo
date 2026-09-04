@@ -22,29 +22,19 @@ async function matchComponentMapScreenshot(target: HTMLElement, name: string) {
   if (!("__vitest_worker__" in window)) return;
 
   if (!target.isConnected) throw new Error(`Cannot capture detached Component Map target: ${name}`);
-  await stabilizeScreenVisual(target);
-  if (!target.isConnected) throw new Error(`Component Map target detached while settling: ${name}`);
-  const { expect: browserExpect } = await import("vitest");
-  await browserExpect.element(target).toMatchScreenshot(name);
-}
-
-async function matchComponentMapSections(canvasElement: HTMLElement, viewport: ScreenViewport) {
-  if (!("__vitest_worker__" in window)) return;
-  const dark = canvasElement.querySelector<HTMLElement>('[data-testid="dark-theme-pane"]')!;
-  const light = canvasElement.querySelector<HTMLElement>('[data-testid="light-theme-pane"]')!;
-  const targets = [
-    ["dark-header", dark.querySelector<HTMLElement>(".component-map__pane-header")!],
-    ["light-header", light.querySelector<HTMLElement>(".component-map__pane-header")!],
-    ["dark-data", dark.querySelector<HTMLElement>('.component-map__group[aria-label^="Data,"] .pulmu-chart')!],
-    ["light-data", light.querySelector<HTMLElement>('.component-map__group[aria-label^="Data,"] .pulmu-chart')!],
-    ["dark-workflow", dark.querySelector<HTMLElement>('.pulmu-forge-stage[data-stage-id="hammer"]')!],
-    ["light-workflow", light.querySelector<HTMLElement>('.pulmu-forge-stage[data-stage-id="hammer"]')!],
-    ["dark-overlays", dark.querySelector<HTMLElement>(".component-map__gaps")!],
-    ["light-overlays", light.querySelector<HTMLElement>(".component-map__gaps")!],
-  ] as const;
-
-  for (const [section, target] of targets) {
-    await matchComponentMapScreenshot(target, `component-map-${viewport}-${section}.png`);
+  const previewFrame = target.ownerDocument.defaultView?.frameElement?.parentElement;
+  if (!previewFrame) throw new Error(`Cannot find the Component Map preview frame: ${name}`);
+  const originalStyle = previewFrame.getAttribute("style");
+  previewFrame.style.setProperty("height", `${Math.ceil(target.getBoundingClientRect().height)}px`);
+  previewFrame.style.setProperty("transform", "none", "important");
+  try {
+    await stabilizeScreenVisual(target);
+    if (!target.isConnected) throw new Error(`Component Map target detached while settling: ${name}`);
+    const { expect: browserExpect } = await import("vitest");
+    await browserExpect.element(target).toMatchScreenshot(name);
+  } finally {
+    if (originalStyle === null) previewFrame.removeAttribute("style");
+    else previewFrame.setAttribute("style", originalStyle);
   }
 }
 
@@ -149,9 +139,15 @@ async function assertComponentMap(canvasElement: HTMLElement, viewport: ScreenVi
   const expectedWidth = { desktop: 1440, tablet: 768, mobile: 390, narrow: 320 }[viewport];
   await expect(window.innerWidth).toBe(expectedWidth);
   await expect(map.scrollWidth).toBeLessThanOrEqual(map.clientWidth);
+  const mapBounds = map.getBoundingClientRect();
   const finalGap = within(light).getByText("Toast").closest("li")!.getBoundingClientRect();
-  await expect(finalGap.bottom).toBeLessThanOrEqual(map.getBoundingClientRect().bottom);
-  await expect(map.getBoundingClientRect().height).toBeGreaterThan(window.innerHeight);
+  for (const bounds of [darkBounds, lightBounds, finalGap]) {
+    await expect(bounds.left).toBeGreaterThanOrEqual(mapBounds.left);
+    await expect(bounds.top).toBeGreaterThanOrEqual(mapBounds.top);
+    await expect(bounds.right).toBeLessThanOrEqual(mapBounds.right);
+    await expect(bounds.bottom).toBeLessThanOrEqual(mapBounds.bottom);
+  }
+  await expect(mapBounds.height).toBeGreaterThan(window.innerHeight);
   await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
   await expect(document.body.scrollWidth).toBeLessThanOrEqual(document.body.clientWidth);
 }
@@ -161,7 +157,8 @@ const visualStory = (viewport: ScreenViewport): Story => ({
   render: () => <ComponentMap />,
   play: async ({ canvasElement }) => {
     await assertComponentMap(canvasElement, viewport);
-    await matchComponentMapSections(canvasElement, viewport);
+    const map = within(canvasElement).getByRole("main");
+    await matchComponentMapScreenshot(map, `component-map-${viewport}.png`);
   },
 });
 
