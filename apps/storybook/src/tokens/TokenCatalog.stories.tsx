@@ -24,6 +24,7 @@ export const DarkFoundations: Story = {
     await expect(canvas.getByRole("list", { name: "Primitive tokens" })).toHaveAttribute("lang", "en");
     for (const heading of [
       "Light and Dark source palettes",
+      "Soft Forge depth contract",
       "Semantic roles and contrast",
       "Forge lifecycle mapping",
       "Theme-aware charts",
@@ -42,6 +43,25 @@ export const DarkFoundations: Story = {
     const rootStyles = getComputedStyle(document.documentElement);
     await expect(rootStyles.getPropertyValue("--pulmu-color-surface-canvas").trim()).not.toBe("");
     await expect(rootStyles.getPropertyValue("--pulmu-focus-ring-width").trim()).toBe("3px");
+    await expect(rootStyles.getPropertyValue("--pulmu-color-surface-raised").trim()).not.toBe("");
+    await expect(rootStyles.getPropertyValue("--pulmu-shadow-soft-inset").trim()).not.toBe("");
+
+    const depthComparison = canvas.getByRole("group", { name: "Surface depth comparison" });
+    for (const role of ["default", "raised", "inset", "overlay"]) {
+      await expect(depthComparison.querySelector(`[data-depth-role="${role}"]`)).not.toBeNull();
+    }
+    await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="default"]')!).boxShadow).toBe("none");
+    await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="raised"]')!).boxShadow).not.toBe("none");
+    await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="inset"]')!).boxShadow).toContain("inset");
+    await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="overlay"]')!).boxShadow).not.toBe("none");
+    const stateComparison = canvas.getByRole("list", { name: "Depth state comparison" });
+    await expect(within(stateComparison).queryAllByRole("button")).toHaveLength(0);
+    await expect(stateComparison.querySelector('[data-depth-state="selected"]')).toHaveTextContent("✓ Selected");
+    await expect(getComputedStyle(stateComparison.querySelector('[data-depth-state="disabled"]')!).boxShadow).toBe("none");
+    await expect(canvas.getByRole("group", { name: "Dense data and status restraint" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "Known limitations" })).toBeVisible();
+    const depthMatrix = canvas.getByRole("table", { name: "Light and Dark depth token matrix" });
+    await expect(within(depthMatrix).getAllByRole("row")).toHaveLength(4);
 
     const previewKinds = new Set(
       [...canvasElement.querySelectorAll<HTMLElement>("[data-token-preview-kind]")]
@@ -51,6 +71,9 @@ export const DarkFoundations: Story = {
       await expect(previewKinds).toContain(kind);
     }
     const preview = (cssVar: string) => canvasElement.querySelector<HTMLElement>(`[data-token-preview="${cssVar}"]`)!;
+    const defaultState = stateComparison.querySelector<HTMLElement>('[data-depth-state="default"]')!;
+    const interactiveBoundary = getComputedStyle(preview("--pulmu-color-border-interactive")).backgroundColor;
+    await expect(getComputedStyle(defaultState).borderTopColor).toBe(interactiveBoundary);
     await expect(getComputedStyle(preview("--pulmu-button-foreground")).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(getComputedStyle(preview("--pulmu-font-size-xl")).fontSize).toBe("20px");
     const weightPreview = preview("--pulmu-font-weight-regular");
@@ -97,6 +120,11 @@ export const LightFoundations: Story = {
     const rootStyles = getComputedStyle(document.documentElement);
     await expect(rootStyles.getPropertyValue("--pulmu-color-surface-canvas").trim()).toBe("#F7F7F5");
     await expect(rootStyles.getPropertyValue("--pulmu-color-brand-default").trim()).toBe("#D85B26");
+    const raised = canvasElement.querySelector<HTMLElement>('[data-depth-role="raised"]')!;
+    const inset = canvasElement.querySelector<HTMLElement>('[data-depth-role="inset"]')!;
+    await expect(getComputedStyle(raised).backgroundColor).toBe("rgb(255, 255, 255)");
+    await expect(getComputedStyle(raised).boxShadow).not.toBe("none");
+    await expect(getComputedStyle(inset).boxShadow).toContain("inset");
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
   },
 };
@@ -147,6 +175,8 @@ export const NarrowReflow: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "Iron & Ember color tokens" })).toBeVisible();
+    const comparison = canvas.getByRole("group", { name: "Surface depth comparison" });
+    await expect(getComputedStyle(comparison).gridTemplateColumns.split(" ")).toHaveLength(1);
     await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
   },
 };

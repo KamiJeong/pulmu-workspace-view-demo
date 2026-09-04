@@ -197,6 +197,49 @@ describe("token registries", () => {
     });
     expect(primitiveTokens.fontFamily.sans.value).toMatch(/^Inter, .*system-ui.*sans-serif$/);
   });
+
+  it("defines the Soft Forge depth and radius contract without breaking legacy aliases", () => {
+    expect(semanticTokens.color).toMatchObject({
+      canvas: { cssVar: "--pulmu-color-surface-canvas" },
+      surface: { cssVar: "--pulmu-color-surface-default" },
+      surfaceSubtle: { cssVar: "--pulmu-color-surface-subtle" },
+      surfaceRaised: { cssVar: "--pulmu-color-surface-raised" },
+      surfaceInset: { cssVar: "--pulmu-color-surface-inset" },
+      surfaceOverlay: { cssVar: "--pulmu-color-surface-overlay" },
+      surfaceElevated: { value: "var(--pulmu-color-surface-subtle)" },
+    });
+    expect(semanticTokens.shadow).toMatchObject({
+      raised: { cssVar: "--pulmu-shadow-raised", value: "var(--pulmu-shadow-sm)" },
+      overlay: { cssVar: "--pulmu-shadow-overlay", value: "var(--pulmu-shadow-md)" },
+      softRaised: { cssVar: "--pulmu-shadow-soft-raised" },
+      softInset: { cssVar: "--pulmu-shadow-soft-inset" },
+      softOverlay: { cssVar: "--pulmu-shadow-soft-overlay" },
+    });
+    expect(semanticTokens.radius).toMatchObject({
+      control: { value: "var(--pulmu-radius-sm)" },
+      panel: { value: "var(--pulmu-radius-md)" },
+      pill: { value: "var(--pulmu-radius-full)" },
+    });
+    expect(primitiveTokens.shadow.sm.cssVar).toBe("--pulmu-shadow-sm");
+    expect(primitiveTokens.shadow.md.cssVar).toBe("--pulmu-shadow-md");
+  });
+
+  it("keeps semantic depth values governed by primitive references", () => {
+    for (const definition of [
+      semanticTokens.color.surfaceRaised,
+      semanticTokens.color.surfaceInset,
+      semanticTokens.color.surfaceOverlay,
+      semanticTokens.shadow.softRaised,
+      semanticTokens.shadow.softInset,
+      semanticTokens.shadow.softOverlay,
+      semanticTokens.radius.control,
+      semanticTokens.radius.panel,
+      semanticTokens.radius.pill,
+    ]) {
+      expect(definition.value).toMatch(/^var\(--pulmu-[\w-]+\)$/);
+      expect(definition.value).not.toMatch(/#|rgb\(|\d+px/);
+    }
+  });
 });
 
 describe.each([
@@ -210,6 +253,9 @@ describe.each([
     resolve(semanticTokens.color.surface),
     resolve(semanticTokens.color.surfaceSubtle),
     resolve(semanticTokens.color.surfaceHover),
+    resolve(semanticTokens.color.surfaceRaised),
+    resolve(semanticTokens.color.surfaceInset),
+    resolve(semanticTokens.color.surfaceOverlay),
   ];
 
   it("resolves the theme hierarchy and readable text", () => {
@@ -217,6 +263,7 @@ describe.each([
     expect(resolve(semanticTokens.color.surface)).toBe(ironAndEmberPalettes[theme].surface);
     expect(resolve(semanticTokens.color.surfaceSubtle)).toBe(ironAndEmberPalettes[theme].surfaceSubtle);
     expect(resolve(semanticTokens.color.surfaceHover)).toBe(ironAndEmberPalettes[theme].surfaceHover);
+    expect(resolve(semanticTokens.color.surfaceElevated)).toBe(resolve(semanticTokens.color.surfaceSubtle));
     expect(resolve(semanticTokens.color.brand)).toBe(ironAndEmberPalettes[theme].brand);
     expect(resolve(semanticTokens.color.statusSuccess)).toBe(ironAndEmberPalettes[theme].success);
     expect(resolve(semanticTokens.color.statusWarning)).toBe(ironAndEmberPalettes[theme].warning);
@@ -229,6 +276,16 @@ describe.each([
       expect(contrast(resolve(semanticTokens.color.borderInteractive), background)).toBeGreaterThanOrEqual(3);
       expect(contrast(resolve(semanticTokens.color.focus), background)).toBeGreaterThanOrEqual(3);
     }
+  });
+
+  it("resolves each depth shadow from the matching theme source", () => {
+    const sourcePrefix = theme === "light" ? "light" : "dark";
+    for (const role of ["Raised", "Inset", "Overlay"] as const) {
+      const source = primitiveTokens.shadow[`${sourcePrefix}${role}`];
+      const semantic = semanticTokens.shadow[`soft${role}`];
+      expect(resolve(semantic)).toBe(source.value);
+    }
+    expect(resolve(semanticTokens.shadow.softInset)).toContain("inset");
   });
 
   it("keeps primary actions and status badge pairs readable", () => {
@@ -292,6 +349,8 @@ describe("theme fallbacks and accessibility overrides", () => {
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
     expect(css).toContain(':root[data-motion="reduced"]');
     expect(css).toContain("--pulmu-motion-duration-fast: var(--pulmu-duration-instant)");
+    expect(semanticTokens.motion.elevationDuration.value).toBe("var(--pulmu-motion-duration-fast)");
+    expect(semanticTokens.motion.elevationEasing.value).toBe("var(--pulmu-motion-easing-standard)");
   });
 
   it("preserves visible forced-color links and native button colors", () => {
@@ -303,5 +362,11 @@ describe("theme fallbacks and accessibility overrides", () => {
     expect(forcedColors).toContain("--pulmu-color-action-text: Canvas;");
     expect(forcedColors).toContain("--pulmu-color-danger-action-text: Canvas;");
     expect(forcedColors).toContain("--pulmu-color-status-danger-foreground: LinkText;");
+    for (const name of rootDeclarations.keys()) {
+      if (name.includes("shadow")) expect(forcedColors).toContain(`${name}: none;`);
+    }
+    for (const role of ["raised", "inset", "overlay", "elevated"]) {
+      expect(forcedColors).toContain(`--pulmu-color-surface-${role}: Canvas;`);
+    }
   });
 });
