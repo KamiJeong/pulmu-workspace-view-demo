@@ -150,6 +150,135 @@ function Palette({ theme }: { theme: keyof typeof ironAndEmberPalettes }) {
   );
 }
 
+const depthRoles = [
+  { className: "default", description: "Page content, tables, charts, dense lists", label: "Default / flat" },
+  { className: "raised", description: "Bounded cards and secondary interactive surfaces", label: "Raised" },
+  { className: "inset", description: "Pressed controls and input-like wells", label: "Inset" },
+  { className: "overlay", description: "Menus, popovers, and dialogs", label: "Overlay" },
+] as const;
+
+const depthThemeRoles = [
+  {
+    darkShadow: "--pulmu-shadow-dark-raised",
+    darkSurface: "--pulmu-color-dark-surface-raised",
+    lightShadow: "--pulmu-shadow-light-raised",
+    lightSurface: "--pulmu-color-light-surface-raised",
+    role: "raised",
+  },
+  {
+    darkShadow: "--pulmu-shadow-dark-inset",
+    darkSurface: "--pulmu-color-dark-surface-inset",
+    lightShadow: "--pulmu-shadow-light-inset",
+    lightSurface: "--pulmu-color-light-surface-inset",
+    role: "inset",
+  },
+  {
+    darkShadow: "--pulmu-shadow-dark-overlay",
+    darkSurface: "--pulmu-color-dark-surface-overlay",
+    lightShadow: "--pulmu-shadow-light-overlay",
+    lightSurface: "--pulmu-color-light-surface-overlay",
+    role: "overlay",
+  },
+] as const;
+
+function SoftForgeDepthContract() {
+  return (
+    <section aria-labelledby="soft-forge-depth-heading" id="soft-forge-depth">
+      <h2 id="soft-forge-depth-heading" lang="en">Soft Forge depth contract</h2>
+      <p>
+        Neumorphism은 정보 구조를 대신하는 장식이 아니라 제한된 depth cue다. Canvas 위 기본 콘텐츠는 flat으로 두고,
+        raised·inset·overlay는 아래의 명시된 역할에만 적용한다. Shadow가 사라져도 border, label, icon과 layout만으로
+        상태와 경계를 이해할 수 있어야 한다.
+      </p>
+      <p>
+        Control은 <code>radius-control</code>, panel은 <code>radius-panel</code>, badge와 명시적 pill만
+        <code>radius-pill</code>을 사용한다. Default border는 구조를 보조하고, 선택 영역은 <code>border-selected</code>,
+        단독 control 경계는 대비가 검증된 <code>border-interactive</code>를 사용한다.
+      </p>
+
+      <div aria-label="Surface depth comparison" className="depth-comparison" lang="en" role="group">
+        {depthRoles.map(({ className, description, label }) => (
+          <article className={`depth-sample depth-sample--${className}`} data-depth-role={className} key={className}>
+            <strong>{label}</strong>
+            <span>{description}</span>
+          </article>
+        ))}
+      </div>
+
+      <div aria-label="Depth token matrix scroll area" className="token-catalog__table-wrap depth-matrix" role="region" tabIndex={0}>
+        <table>
+          <caption lang="en">Light and Dark depth token matrix</caption>
+          <thead><tr><th scope="col">Role</th><th scope="col">Light / Ivory</th><th scope="col">Dark / Coal</th></tr></thead>
+          <tbody>
+            {depthThemeRoles.map(({ darkShadow, darkSurface, lightShadow, lightSurface, role }) => (
+              <tr key={role}>
+                <th scope="row">{role}</th>
+                <td>
+                  <span aria-hidden="true" className={`depth-theme-sample depth-theme-sample--light-${role}`} />
+                  <code>{lightSurface}</code><code>{lightShadow}</code>
+                </td>
+                <td>
+                  <span aria-hidden="true" className={`depth-theme-sample depth-theme-sample--dark-${role}`} />
+                  <code>{darkSurface}</code><code>{darkShadow}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 lang="en">State precedence</h3>
+      <p>
+        <strong>Disabled → focus-visible → pressed → selected → hover → default</strong> 순으로 충돌을 해결한다. Disabled는
+        elevation feedback을 제거하고, focus outline은 surface와 shadow 위에 독립적으로 유지한다. Selected는
+        brand-soft, 구조적 border, icon 또는 text를 함께 사용하며 pressed 상태에서도 의미가 유지된다.
+      </p>
+      <div aria-label="Depth state comparison" className="depth-states" lang="en">
+        <button className="depth-state" type="button">Default</button>
+        <button className="depth-state depth-state--hover" type="button">Hover</button>
+        <button aria-pressed="true" className="depth-state depth-state--selected" type="button">Selected</button>
+        <button className="depth-state depth-state--pressed" type="button">Pressed</button>
+        <button className="depth-state depth-state--focus" type="button">Focus visible</button>
+        <button className="depth-state" disabled type="button">Disabled</button>
+        <button className="depth-state depth-state--primary" type="button">Primary stays solid</button>
+      </div>
+
+      <div className="depth-guidance">
+        <article className="depth-guidance__do">
+          <h3 lang="en">Do</h3>
+          <ul>
+            <li>Use one raised container for a bounded card or secondary action.</li>
+            <li>Use inset only for a pressed control or an input-like well.</li>
+            <li>Keep status meaning in text, icon, shape, and accessible color.</li>
+          </ul>
+        </article>
+        <article className="depth-guidance__dont">
+          <h3 lang="en">Don’t</h3>
+          <ul>
+            <li>Do not nest raised cards or apply depth to every row.</li>
+            <li>Do not add gradients, glow, glass, colored shadows, or text/icon shadows.</li>
+            <li>Do not replace a boundary, focus ring, or status label with shadow alone.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div className="depth-dense-example" role="group" aria-label="Dense data and status restraint">
+        <span><strong>Forge run #184</strong><small>Dense data remains flat</small></span>
+        <span className="depth-status"><i aria-hidden="true" />Completed</span>
+      </div>
+
+      <aside className="token-catalog__rule" aria-labelledby="depth-limitations-heading">
+        <h3 id="depth-limitations-heading" lang="en">Known limitations</h3>
+        <p>
+          Shadow contrast depends on the surrounding canvas and must not carry meaning. Forced colors removes every shadow and
+          restores system surfaces and boundaries. Reduced motion makes elevation transitions instant. Runtime theme persistence,
+          screen-level migration, and component-specific state adoption remain separate rollout work.
+        </p>
+      </aside>
+    </section>
+  );
+}
+
 const semanticEntries = tokenCatalog.filter(({ layer }) => layer === "semantic");
 const lifecycleEntries = semanticEntries.filter(({ key }) => key.startsWith("semanticTokens.status."));
 const stageEntries = PULMU_STAGES.map((stage) => ({
@@ -186,6 +315,7 @@ export function TokenCatalog() {
         </p>
         <nav aria-label="Token catalog sections" lang="en">
           <a href="#theme-palettes">Palettes</a>
+          <a href="#soft-forge-depth">Depth contract</a>
           <a href="#semantic-foundations">Semantic roles</a>
           <a href="#workflow-colors">Lifecycle</a>
           <a href="#chart-motion">Charts</a>
@@ -204,6 +334,8 @@ export function TokenCatalog() {
           <Palette theme="dark" />
         </div>
       </section>
+
+      <SoftForgeDepthContract />
 
       <section aria-labelledby="semantic-foundations-heading" id="semantic-foundations">
         <h2 id="semantic-foundations-heading" lang="en">Semantic roles and contrast</h2>
@@ -277,8 +409,9 @@ export function TokenCatalog() {
       <section aria-labelledby="component-aliases-heading" id="component-aliases">
         <h2 id="component-aliases-heading" lang="en">Compatibility and consumption</h2>
         <p>
-          기존 public registry와 CSS variable은 유지된다. <code>surfaceElevated</code>는 <code>surfaceSubtle</code> alias로,
-          stage identity color는 neutral alias로 남는다. Component alias는 semantic contract만 참조한다.
+          기존 public registry와 CSS variable은 유지된다. <code>surfaceElevated</code>는 기존 의미를 보존하는
+          <code>surfaceSubtle</code> alias로 남고, 새로운 depth consumer는 <code>surfaceRaised</code>를 사용한다. Stage identity
+          color는 neutral alias로 남는다. Component alias는 semantic contract만 참조한다.
         </p>
         <pre aria-label="Token consumption example" lang="en" tabIndex={0}><code>{`import { ironAndEmberPalettes, semanticTokens } from "@pulmu/tokens";\nimport "@pulmu/tokens/global.css";\n\nconst canvasVariable = semanticTokens.color.canvas.cssVar;\nconst currentStageVariable = semanticTokens.status.stage.in_progress.cssVar;\n// CSS: background: var(--pulmu-color-surface-canvas);`}</code></pre>
         <TokenGrid entries={componentEntries} label="Component alias tokens" />

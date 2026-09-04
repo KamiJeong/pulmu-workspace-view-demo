@@ -23,6 +23,9 @@
   --pulmu-color-light-surface: #FFFFFF;
   --pulmu-color-light-surface-subtle: #F1F1EE;
   --pulmu-color-light-surface-hover: #ECEDEA;
+  --pulmu-color-light-surface-raised: #FFFFFF;
+  --pulmu-color-light-surface-inset: #ECEDEA;
+  --pulmu-color-light-surface-overlay: #FFFFFF;
   --pulmu-color-light-border: #DADCD8;
   --pulmu-color-light-border-strong: #BEC2BE;
   --pulmu-color-light-text-primary: #1B1D1F;
@@ -39,6 +42,9 @@
   --pulmu-color-dark-surface: #171A1D;
   --pulmu-color-dark-surface-subtle: #1D2125;
   --pulmu-color-dark-surface-hover: #24292E;
+  --pulmu-color-dark-surface-raised: #1D2125;
+  --pulmu-color-dark-surface-inset: #111315;
+  --pulmu-color-dark-surface-overlay: #24292E;
   --pulmu-color-dark-border: #2D3338;
   --pulmu-color-dark-border-strong: #3A4147;
   --pulmu-color-dark-text-primary: #F3F4F2;
@@ -119,6 +125,13 @@
   --pulmu-radius-full: 9999px;
   --pulmu-border-width-thin: 1px;
   --pulmu-border-width-strong: 2px;
+  --pulmu-shadow-light-raised: 6px 6px 14px rgb(27 29 31 / 0.12), -6px -6px 14px rgb(255 255 255 / 0.9);
+  --pulmu-shadow-light-inset: inset 3px 3px 7px rgb(27 29 31 / 0.12), inset -3px -3px 7px rgb(255 255 255 / 0.82);
+  --pulmu-shadow-light-overlay: 0 16px 40px rgb(27 29 31 / 0.22);
+  --pulmu-shadow-dark-raised: 6px 6px 14px rgb(0 0 0 / 0.48), -4px -4px 12px rgb(58 65 71 / 0.2);
+  --pulmu-shadow-dark-inset: inset 3px 3px 7px rgb(0 0 0 / 0.48), inset -3px -3px 7px rgb(58 65 71 / 0.16);
+  --pulmu-shadow-dark-overlay: 0 16px 40px rgb(0 0 0 / 0.56);
+  /* Deprecated physical-depth constants. Use semantic shadow roles below. */
   --pulmu-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
   --pulmu-shadow-md: 0 8px 24px rgb(0 0 0 / 0.4);
   --pulmu-opacity-disabled: 0.48;
@@ -144,6 +157,9 @@
   --pulmu-color-surface-default: var(--pulmu-color-dark-surface);
   --pulmu-color-surface-subtle: var(--pulmu-color-dark-surface-subtle);
   --pulmu-color-surface-hover: var(--pulmu-color-dark-surface-hover);
+  --pulmu-color-surface-raised: var(--pulmu-color-dark-surface-raised);
+  --pulmu-color-surface-inset: var(--pulmu-color-dark-surface-inset);
+  --pulmu-color-surface-overlay: var(--pulmu-color-dark-surface-overlay);
   --pulmu-color-surface-elevated: var(--pulmu-color-surface-subtle);
   --pulmu-color-border-default: var(--pulmu-color-dark-border);
   --pulmu-color-border-strong: var(--pulmu-color-dark-border-strong);
@@ -213,10 +229,12 @@
   --pulmu-size-content-max: var(--pulmu-size-content);
   --pulmu-radius-control: var(--pulmu-radius-sm);
   --pulmu-radius-panel: var(--pulmu-radius-md);
+  --pulmu-radius-pill: var(--pulmu-radius-full);
   --pulmu-border-default: var(--pulmu-border-width-thin) solid var(--pulmu-color-border-default);
   --pulmu-border-selected: var(--pulmu-border-width-strong) solid var(--pulmu-color-border-strong);
-  --pulmu-shadow-raised: var(--pulmu-shadow-sm);
-  --pulmu-shadow-overlay: var(--pulmu-shadow-md);
+  --pulmu-shadow-raised: var(--pulmu-shadow-dark-raised);
+  --pulmu-shadow-inset: var(--pulmu-shadow-dark-inset);
+  --pulmu-shadow-overlay: var(--pulmu-shadow-dark-overlay);
   --pulmu-opacity-state-disabled: var(--pulmu-opacity-disabled);
   --pulmu-z-navigation: var(--pulmu-z-sticky);
   --pulmu-z-popover: var(--pulmu-z-overlay);
@@ -234,6 +252,8 @@
   --pulmu-motion-duration-normal: var(--pulmu-duration-normal);
   --pulmu-motion-duration-slow: var(--pulmu-duration-slow);
   --pulmu-motion-easing-standard: var(--pulmu-easing-standard);
+  --pulmu-motion-elevation-duration: var(--pulmu-motion-duration-fast);
+  --pulmu-motion-elevation-easing: var(--pulmu-motion-easing-standard);
   --pulmu-color-status-running: var(--pulmu-color-status-info-foreground);
   --pulmu-color-status-completed: var(--pulmu-color-status-success-foreground);
   --pulmu-color-status-failed: var(--pulmu-color-status-danger-foreground);
@@ -287,6 +307,9 @@
   --pulmu-color-surface-default: var(--pulmu-color-dark-surface);
   --pulmu-color-surface-subtle: var(--pulmu-color-dark-surface-subtle);
   --pulmu-color-surface-hover: var(--pulmu-color-dark-surface-hover);
+  --pulmu-color-surface-raised: var(--pulmu-color-dark-surface-raised);
+  --pulmu-color-surface-inset: var(--pulmu-color-dark-surface-inset);
+  --pulmu-color-surface-overlay: var(--pulmu-color-dark-surface-overlay);
   --pulmu-color-border-default: var(--pulmu-color-dark-border);
   --pulmu-color-border-strong: var(--pulmu-color-dark-border-strong);
   --pulmu-color-border-interactive: var(--pulmu-color-dark-boundary-accessible);
@@ -320,6 +343,9 @@
   --pulmu-color-sidebar-text: var(--pulmu-color-dark-sidebar-text);
   --pulmu-color-sidebar-text-muted: var(--pulmu-color-dark-sidebar-text-muted);
   --pulmu-color-sidebar-accent: var(--pulmu-color-dark-sidebar-accent);
+  --pulmu-shadow-raised: var(--pulmu-shadow-dark-raised);
+  --pulmu-shadow-inset: var(--pulmu-shadow-dark-inset);
+  --pulmu-shadow-overlay: var(--pulmu-shadow-dark-overlay);
   --pulmu-chart-series-1: var(--pulmu-color-dark-brand);
   --pulmu-chart-series-2: var(--pulmu-color-dark-info);
   --pulmu-chart-series-3: var(--pulmu-color-dark-success);
@@ -335,6 +361,9 @@
   --pulmu-color-surface-default: var(--pulmu-color-light-surface);
   --pulmu-color-surface-subtle: var(--pulmu-color-light-surface-subtle);
   --pulmu-color-surface-hover: var(--pulmu-color-light-surface-hover);
+  --pulmu-color-surface-raised: var(--pulmu-color-light-surface-raised);
+  --pulmu-color-surface-inset: var(--pulmu-color-light-surface-inset);
+  --pulmu-color-surface-overlay: var(--pulmu-color-light-surface-overlay);
   --pulmu-color-border-default: var(--pulmu-color-light-border);
   --pulmu-color-border-strong: var(--pulmu-color-light-border-strong);
   --pulmu-color-border-interactive: var(--pulmu-color-light-boundary-accessible);
@@ -368,6 +397,9 @@
   --pulmu-color-sidebar-text: var(--pulmu-color-light-sidebar-text);
   --pulmu-color-sidebar-text-muted: var(--pulmu-color-light-sidebar-text-muted);
   --pulmu-color-sidebar-accent: var(--pulmu-color-light-sidebar-accent);
+  --pulmu-shadow-raised: var(--pulmu-shadow-light-raised);
+  --pulmu-shadow-inset: var(--pulmu-shadow-light-inset);
+  --pulmu-shadow-overlay: var(--pulmu-shadow-light-overlay);
   --pulmu-chart-series-1: var(--pulmu-color-light-brand);
   --pulmu-chart-series-2: var(--pulmu-color-light-info);
   --pulmu-chart-series-3: var(--pulmu-color-light-success);
@@ -429,6 +461,10 @@ button, input, select, textarea { font: inherit; }
     --pulmu-color-surface-default: Canvas;
     --pulmu-color-surface-subtle: Canvas;
     --pulmu-color-surface-hover: Canvas;
+    --pulmu-color-surface-raised: Canvas;
+    --pulmu-color-surface-inset: Canvas;
+    --pulmu-color-surface-overlay: Canvas;
+    --pulmu-color-surface-elevated: Canvas;
     --pulmu-color-border-default: CanvasText;
     --pulmu-color-border-strong: CanvasText;
     --pulmu-color-border-interactive: CanvasText;
@@ -460,5 +496,16 @@ button, input, select, textarea { font: inherit; }
     --pulmu-chart-series-7: CanvasText;
     --pulmu-button-background: ButtonFace;
     --pulmu-button-foreground: ButtonText;
+    --pulmu-shadow-light-raised: none;
+    --pulmu-shadow-light-inset: none;
+    --pulmu-shadow-light-overlay: none;
+    --pulmu-shadow-dark-raised: none;
+    --pulmu-shadow-dark-inset: none;
+    --pulmu-shadow-dark-overlay: none;
+    --pulmu-shadow-sm: none;
+    --pulmu-shadow-md: none;
+    --pulmu-shadow-raised: none;
+    --pulmu-shadow-inset: none;
+    --pulmu-shadow-overlay: none;
   }
 }
