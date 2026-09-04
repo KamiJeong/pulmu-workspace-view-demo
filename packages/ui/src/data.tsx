@@ -152,13 +152,16 @@ export type ActiveFilter = {
 
 export type FilterSummaryProps = HTMLAttributes<HTMLElement> & {
   readonly filters: readonly ActiveFilter[];
+  /** Distinguishes multiple filter summaries on comparison or dashboard surfaces. */
+  readonly label?: string;
   readonly onClear?: (id: string) => void;
   readonly onClearAll?: () => void;
 };
 
-export function FilterSummary({ className, filters, onClear, onClearAll, ...props }: FilterSummaryProps) {
+export function FilterSummary({ "aria-label": ariaLabel, className, filters, label, onClear, onClearAll, ...props }: FilterSummaryProps) {
+  const accessibleLabel = label ?? ariaLabel ?? "Active filters";
   return (
-    <section {...props} aria-label="Active filters" className={classes("pulmu-filter-summary", className)}>
+    <section {...props} aria-label={accessibleLabel} className={classes("pulmu-filter-summary", className)}>
       <strong>{filters.length === 0 ? "No filters applied" : `${filters.length} active ${filters.length === 1 ? "filter" : "filters"}`}</strong>
       {filters.length > 0 ? <ul>{filters.map((filter) => (
         <li key={filter.id}>
@@ -217,20 +220,22 @@ export type DataStateProps = HTMLAttributes<HTMLDivElement> & {
   readonly action?: ReactNode;
   readonly children?: ReactNode;
   readonly description?: ReactNode;
+  /** Heading level forwarded to empty and error states; defaults to h2. */
+  readonly headingLevel?: 2 | 3 | 4 | 5 | 6;
   readonly status: "ready" | "loading" | "empty" | "filtered-empty" | "error" | "stale";
   readonly title?: ReactNode;
   readonly updatedAt?: ReactNode;
 };
 
-export function DataState({ action, children, className, description, status, title, updatedAt, ...props }: DataStateProps) {
+export function DataState({ action, children, className, description, headingLevel, status, title, updatedAt, ...props }: DataStateProps) {
   if (status === "loading") {
     return <div {...props} aria-busy="true" className={classes("pulmu-data-state", className)}><Skeleton label={typeof title === "string" ? title : "Loading data"} /></div>;
   }
   if (status === "empty" || status === "filtered-empty") {
-    return <EmptyState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? (status === "filtered-empty" ? "Adjust or clear filters to see results." : "There is no data to display yet.")} title={title ?? (status === "filtered-empty" ? "No matching results" : "No data yet")} />;
+    return <EmptyState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? (status === "filtered-empty" ? "Adjust or clear filters to see results." : "There is no data to display yet.")} headingLevel={headingLevel} title={title ?? (status === "filtered-empty" ? "No matching results" : "No data yet")} />;
   }
   if (status === "error") {
-    return <ErrorState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? "Try again or contact support if the problem continues."} title={title ?? "Data could not be loaded"} />;
+    return <ErrorState {...props} action={action} className={classes("pulmu-data-state", className)} description={description ?? "Try again or contact support if the problem continues."} headingLevel={headingLevel} title={title ?? "Data could not be loaded"} />;
   }
   if (status === "stale") {
     return <div {...props} className={classes("pulmu-data-state", className)}>

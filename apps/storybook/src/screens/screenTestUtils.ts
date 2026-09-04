@@ -9,9 +9,7 @@ export const screenGlobals = (theme: ScreenTheme, viewport: ScreenViewport) => (
   viewport: { isRotated: false, value: viewport },
 });
 
-export async function matchScreenScreenshot(canvasElement: HTMLElement, name: string) {
-  if (!("__vitest_worker__" in window)) return;
-
+export async function stabilizeScreenVisual(canvasElement: HTMLElement) {
   const document = canvasElement.ownerDocument;
   await document.fonts.ready;
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
@@ -25,6 +23,13 @@ export async function matchScreenScreenshot(canvasElement: HTMLElement, name: st
   await new Promise<void>((resolve) => {
     view?.requestAnimationFrame(() => view.requestAnimationFrame(() => resolve()));
   });
+}
+
+export async function matchScreenScreenshot(canvasElement: HTMLElement, name: string) {
+  if (!("__vitest_worker__" in window)) return;
+
+  const document = canvasElement.ownerDocument;
+  await stabilizeScreenVisual(canvasElement);
 
   const { expect: browserExpect } = await import("vitest");
   await browserExpect.element(document.documentElement).toMatchScreenshot(name);

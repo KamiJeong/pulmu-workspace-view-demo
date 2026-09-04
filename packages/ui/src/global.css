@@ -104,7 +104,7 @@
 @keyframes pulmu-pulse { 50% { opacity: 0.55; } }
 .pulmu-alert { align-items: flex-start; border: var(--pulmu-border-default); border-inline-start: var(--pulmu-focus-ring-width) solid currentColor; border-radius: var(--pulmu-radius-control); display: flex; gap: var(--pulmu-space-3); padding: var(--pulmu-space-3); }
 .pulmu-empty-state { align-items: center; border: var(--pulmu-border-default); border-radius: var(--pulmu-radius-panel); display: flex; flex-direction: column; padding: var(--pulmu-space-6); text-align: center; }
-.pulmu-empty-state h2, .pulmu-empty-state p { margin-block: 0 var(--pulmu-space-2); }
+.pulmu-empty-state :where(h2, h3, h4, h5, h6), .pulmu-empty-state p { margin-block: 0 var(--pulmu-space-2); }
 .pulmu-error-state { background: var(--pulmu-color-status-danger-subtle); border-color: var(--pulmu-color-status-danger-foreground); }
 
 .pulmu-data-table-region { border: var(--pulmu-border-default); border-radius: var(--pulmu-radius-panel); max-inline-size: 100%; overflow-x: auto; }
