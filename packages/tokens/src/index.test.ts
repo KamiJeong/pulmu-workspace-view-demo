@@ -188,9 +188,11 @@ describe("token registries", () => {
       surfaceElevated: { value: "var(--pulmu-color-surface-subtle)" },
     });
     expect(semanticTokens.shadow).toMatchObject({
-      raised: { cssVar: "--pulmu-shadow-raised" },
-      inset: { cssVar: "--pulmu-shadow-inset" },
-      overlay: { cssVar: "--pulmu-shadow-overlay" },
+      raised: { cssVar: "--pulmu-shadow-raised", value: "var(--pulmu-shadow-sm)" },
+      overlay: { cssVar: "--pulmu-shadow-overlay", value: "var(--pulmu-shadow-md)" },
+      softRaised: { cssVar: "--pulmu-shadow-soft-raised" },
+      softInset: { cssVar: "--pulmu-shadow-soft-inset" },
+      softOverlay: { cssVar: "--pulmu-shadow-soft-overlay" },
     });
     expect(semanticTokens.radius).toMatchObject({
       control: { value: "var(--pulmu-radius-sm)" },
@@ -206,9 +208,9 @@ describe("token registries", () => {
       semanticTokens.color.surfaceRaised,
       semanticTokens.color.surfaceInset,
       semanticTokens.color.surfaceOverlay,
-      semanticTokens.shadow.raised,
-      semanticTokens.shadow.inset,
-      semanticTokens.shadow.overlay,
+      semanticTokens.shadow.softRaised,
+      semanticTokens.shadow.softInset,
+      semanticTokens.shadow.softOverlay,
       semanticTokens.radius.control,
       semanticTokens.radius.panel,
       semanticTokens.radius.pill,
@@ -259,10 +261,10 @@ describe.each([
     const sourcePrefix = theme === "light" ? "light" : "dark";
     for (const role of ["Raised", "Inset", "Overlay"] as const) {
       const source = primitiveTokens.shadow[`${sourcePrefix}${role}`];
-      const semantic = semanticTokens.shadow[role.toLowerCase() as "raised" | "inset" | "overlay"];
+      const semantic = semanticTokens.shadow[`soft${role}`];
       expect(resolve(semantic)).toBe(source.value);
     }
-    expect(resolve(semanticTokens.shadow.inset)).toContain("inset");
+    expect(resolve(semanticTokens.shadow.softInset)).toContain("inset");
   });
 
   it("keeps primary actions and status badge pairs readable", () => {

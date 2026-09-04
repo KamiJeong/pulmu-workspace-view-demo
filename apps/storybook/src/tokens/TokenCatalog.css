@@ -125,17 +125,17 @@
 .depth-sample--default { background: var(--pulmu-color-surface-default); }
 .depth-sample--raised {
   background: var(--pulmu-color-surface-raised);
-  box-shadow: var(--pulmu-shadow-raised);
+  box-shadow: var(--pulmu-shadow-soft-raised);
 }
 .depth-sample--inset {
   background: var(--pulmu-color-surface-inset);
-  box-shadow: var(--pulmu-shadow-inset);
+  box-shadow: var(--pulmu-shadow-soft-inset);
 }
 .depth-sample--overlay {
   position: relative;
   z-index: var(--pulmu-z-popover);
   background: var(--pulmu-color-surface-overlay);
-  box-shadow: var(--pulmu-shadow-overlay);
+  box-shadow: var(--pulmu-shadow-soft-overlay);
 }
 
 .depth-matrix { margin-block: var(--pulmu-space-6); }
@@ -182,12 +182,16 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--pulmu-size-control) * 4)), 1fr));
   gap: var(--pulmu-space-4);
   margin-block: var(--pulmu-space-4) var(--pulmu-space-6);
+  padding: 0;
+  list-style: none;
 }
 
 .depth-state {
+  display: grid;
+  place-items: center;
   min-height: var(--pulmu-target-size-min);
   padding-inline: var(--pulmu-spacing-control);
-  border: var(--pulmu-border-default);
+  border: var(--pulmu-border-width-thin) solid var(--pulmu-color-border-interactive);
   border-radius: var(--pulmu-radius-control);
   background: var(--pulmu-color-surface-default);
   color: var(--pulmu-color-text-primary);
@@ -198,7 +202,7 @@
 
 .depth-state--hover {
   background: var(--pulmu-color-surface-raised);
-  box-shadow: var(--pulmu-shadow-raised);
+  box-shadow: var(--pulmu-shadow-soft-raised);
 }
 .depth-state--selected {
   border: var(--pulmu-border-selected);
@@ -207,15 +211,15 @@
 }
 .depth-state--pressed {
   background: var(--pulmu-color-surface-inset);
-  box-shadow: var(--pulmu-shadow-inset);
+  box-shadow: var(--pulmu-shadow-soft-inset);
 }
 .depth-state--focus {
   outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color);
   outline-offset: var(--pulmu-focus-ring-offset);
 }
-.depth-state:disabled {
+.depth-state--disabled {
   box-shadow: none;
-  opacity: var(--pulmu-opacity-state-disabled);
+  color: var(--pulmu-color-text-muted);
 }
 .depth-state--primary {
   border-color: var(--pulmu-color-action-default);

@@ -408,9 +408,11 @@ export const semanticTokens = {
     selected: token("--pulmu-border-selected", "var(--pulmu-border-width-strong) solid var(--pulmu-color-border-strong)", "Selected border", "Selected regions"),
   },
   shadow: {
-    raised: token("--pulmu-shadow-raised", "var(--pulmu-shadow-dark-raised)", "Raised shadow", "Bounded cards and secondary interactive surfaces"),
-    inset: token("--pulmu-shadow-inset", "var(--pulmu-shadow-dark-inset)", "Inset shadow", "Pressed controls and input-like wells"),
-    overlay: token("--pulmu-shadow-overlay", "var(--pulmu-shadow-dark-overlay)", "Overlay shadow", "Directional depth for floating layers"),
+    raised: token("--pulmu-shadow-raised", "var(--pulmu-shadow-sm)", "Legacy raised shadow", "Compatibility for existing raised controls and cards"),
+    overlay: token("--pulmu-shadow-overlay", "var(--pulmu-shadow-md)", "Legacy overlay shadow", "Compatibility for existing floating layers"),
+    softRaised: token("--pulmu-shadow-soft-raised", "var(--pulmu-shadow-dark-raised)", "Soft raised shadow", "Bounded cards and secondary interactive surfaces adopting Soft Forge"),
+    softInset: token("--pulmu-shadow-soft-inset", "var(--pulmu-shadow-dark-inset)", "Soft inset shadow", "Pressed controls and input-like wells adopting Soft Forge"),
+    softOverlay: token("--pulmu-shadow-soft-overlay", "var(--pulmu-shadow-dark-overlay)", "Soft overlay shadow", "Directional depth for floating layers adopting Soft Forge"),
   },
   opacity: {
     disabled: token("--pulmu-opacity-state-disabled", "var(--pulmu-opacity-disabled)", "Disabled state opacity", "Unavailable controls"),

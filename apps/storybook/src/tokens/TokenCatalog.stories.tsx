@@ -44,7 +44,7 @@ export const DarkFoundations: Story = {
     await expect(rootStyles.getPropertyValue("--pulmu-color-surface-canvas").trim()).not.toBe("");
     await expect(rootStyles.getPropertyValue("--pulmu-focus-ring-width").trim()).toBe("3px");
     await expect(rootStyles.getPropertyValue("--pulmu-color-surface-raised").trim()).not.toBe("");
-    await expect(rootStyles.getPropertyValue("--pulmu-shadow-inset").trim()).not.toBe("");
+    await expect(rootStyles.getPropertyValue("--pulmu-shadow-soft-inset").trim()).not.toBe("");
 
     const depthComparison = canvas.getByRole("group", { name: "Surface depth comparison" });
     for (const role of ["default", "raised", "inset", "overlay"]) {
@@ -54,8 +54,10 @@ export const DarkFoundations: Story = {
     await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="raised"]')!).boxShadow).not.toBe("none");
     await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="inset"]')!).boxShadow).toContain("inset");
     await expect(getComputedStyle(depthComparison.querySelector('[data-depth-role="overlay"]')!).boxShadow).not.toBe("none");
-    await expect(canvas.getByRole("button", { name: "Selected" })).toHaveAttribute("aria-pressed", "true");
-    await expect(getComputedStyle(canvas.getByRole("button", { name: "Disabled" })).boxShadow).toBe("none");
+    const stateComparison = canvas.getByRole("list", { name: "Depth state comparison" });
+    await expect(within(stateComparison).queryAllByRole("button")).toHaveLength(0);
+    await expect(stateComparison.querySelector('[data-depth-state="selected"]')).toHaveTextContent("✓ Selected");
+    await expect(getComputedStyle(stateComparison.querySelector('[data-depth-state="disabled"]')!).boxShadow).toBe("none");
     await expect(canvas.getByRole("group", { name: "Dense data and status restraint" })).toBeVisible();
     await expect(canvas.getByRole("heading", { name: "Known limitations" })).toBeVisible();
     const depthMatrix = canvas.getByRole("table", { name: "Light and Dark depth token matrix" });
@@ -69,6 +71,9 @@ export const DarkFoundations: Story = {
       await expect(previewKinds).toContain(kind);
     }
     const preview = (cssVar: string) => canvasElement.querySelector<HTMLElement>(`[data-token-preview="${cssVar}"]`)!;
+    const defaultState = stateComparison.querySelector<HTMLElement>('[data-depth-state="default"]')!;
+    const interactiveBoundary = getComputedStyle(preview("--pulmu-color-border-interactive")).backgroundColor;
+    await expect(getComputedStyle(defaultState).borderTopColor).toBe(interactiveBoundary);
     await expect(getComputedStyle(preview("--pulmu-button-foreground")).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     await expect(getComputedStyle(preview("--pulmu-font-size-xl")).fontSize).toBe("20px");
     const weightPreview = preview("--pulmu-font-weight-regular");

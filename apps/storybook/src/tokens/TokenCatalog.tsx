@@ -233,15 +233,15 @@ function SoftForgeDepthContract() {
         elevation feedback을 제거하고, focus outline은 surface와 shadow 위에 독립적으로 유지한다. Selected는
         brand-soft, 구조적 border, icon 또는 text를 함께 사용하며 pressed 상태에서도 의미가 유지된다.
       </p>
-      <div aria-label="Depth state comparison" className="depth-states" lang="en">
-        <button className="depth-state" type="button">Default</button>
-        <button className="depth-state depth-state--hover" type="button">Hover</button>
-        <button aria-pressed="true" className="depth-state depth-state--selected" type="button">Selected</button>
-        <button className="depth-state depth-state--pressed" type="button">Pressed</button>
-        <button className="depth-state depth-state--focus" type="button">Focus visible</button>
-        <button className="depth-state" disabled type="button">Disabled</button>
-        <button className="depth-state depth-state--primary" type="button">Primary stays solid</button>
-      </div>
+      <ul aria-label="Depth state comparison" className="depth-states" lang="en">
+        <li className="depth-state" data-depth-state="default">Default</li>
+        <li className="depth-state depth-state--hover" data-depth-state="hover">Hover</li>
+        <li className="depth-state depth-state--selected" data-depth-state="selected">✓ Selected</li>
+        <li className="depth-state depth-state--pressed" data-depth-state="pressed">Pressed</li>
+        <li className="depth-state depth-state--focus" data-depth-state="focus-visible">Focus visible</li>
+        <li className="depth-state depth-state--disabled" data-depth-state="disabled">Disabled</li>
+        <li className="depth-state depth-state--primary" data-depth-state="primary">Primary stays solid</li>
+      </ul>
 
       <div className="depth-guidance">
         <article className="depth-guidance__do">
@@ -411,7 +411,9 @@ export function TokenCatalog() {
         <p>
           기존 public registry와 CSS variable은 유지된다. <code>surfaceElevated</code>는 기존 의미를 보존하는
           <code>surfaceSubtle</code> alias로 남고, 새로운 depth consumer는 <code>surfaceRaised</code>를 사용한다. Stage identity
-          color는 neutral alias로 남는다. Component alias는 semantic contract만 참조한다.
+          color는 neutral alias로 남는다. 기존 <code>shadow.raised</code>/<code>shadow.overlay</code>도 이전 값을 유지하며,
+          Soft Forge를 채택하는 consumer만 <code>shadow.softRaised</code>, <code>shadow.softInset</code>,
+          <code>shadow.softOverlay</code>를 사용한다. Component alias는 semantic contract만 참조한다.
         </p>
         <pre aria-label="Token consumption example" lang="en" tabIndex={0}><code>{`import { ironAndEmberPalettes, semanticTokens } from "@pulmu/tokens";\nimport "@pulmu/tokens/global.css";\n\nconst canvasVariable = semanticTokens.color.canvas.cssVar;\nconst currentStageVariable = semanticTokens.status.stage.in_progress.cssVar;\n// CSS: background: var(--pulmu-color-surface-canvas);`}</code></pre>
         <TokenGrid entries={componentEntries} label="Component alias tokens" />

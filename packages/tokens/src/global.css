@@ -232,9 +232,11 @@
   --pulmu-radius-pill: var(--pulmu-radius-full);
   --pulmu-border-default: var(--pulmu-border-width-thin) solid var(--pulmu-color-border-default);
   --pulmu-border-selected: var(--pulmu-border-width-strong) solid var(--pulmu-color-border-strong);
-  --pulmu-shadow-raised: var(--pulmu-shadow-dark-raised);
-  --pulmu-shadow-inset: var(--pulmu-shadow-dark-inset);
-  --pulmu-shadow-overlay: var(--pulmu-shadow-dark-overlay);
+  --pulmu-shadow-raised: var(--pulmu-shadow-sm);
+  --pulmu-shadow-overlay: var(--pulmu-shadow-md);
+  --pulmu-shadow-soft-raised: var(--pulmu-shadow-dark-raised);
+  --pulmu-shadow-soft-inset: var(--pulmu-shadow-dark-inset);
+  --pulmu-shadow-soft-overlay: var(--pulmu-shadow-dark-overlay);
   --pulmu-opacity-state-disabled: var(--pulmu-opacity-disabled);
   --pulmu-z-navigation: var(--pulmu-z-sticky);
   --pulmu-z-popover: var(--pulmu-z-overlay);
@@ -343,9 +345,9 @@
   --pulmu-color-sidebar-text: var(--pulmu-color-dark-sidebar-text);
   --pulmu-color-sidebar-text-muted: var(--pulmu-color-dark-sidebar-text-muted);
   --pulmu-color-sidebar-accent: var(--pulmu-color-dark-sidebar-accent);
-  --pulmu-shadow-raised: var(--pulmu-shadow-dark-raised);
-  --pulmu-shadow-inset: var(--pulmu-shadow-dark-inset);
-  --pulmu-shadow-overlay: var(--pulmu-shadow-dark-overlay);
+  --pulmu-shadow-soft-raised: var(--pulmu-shadow-dark-raised);
+  --pulmu-shadow-soft-inset: var(--pulmu-shadow-dark-inset);
+  --pulmu-shadow-soft-overlay: var(--pulmu-shadow-dark-overlay);
   --pulmu-chart-series-1: var(--pulmu-color-dark-brand);
   --pulmu-chart-series-2: var(--pulmu-color-dark-info);
   --pulmu-chart-series-3: var(--pulmu-color-dark-success);
@@ -397,9 +399,9 @@
   --pulmu-color-sidebar-text: var(--pulmu-color-light-sidebar-text);
   --pulmu-color-sidebar-text-muted: var(--pulmu-color-light-sidebar-text-muted);
   --pulmu-color-sidebar-accent: var(--pulmu-color-light-sidebar-accent);
-  --pulmu-shadow-raised: var(--pulmu-shadow-light-raised);
-  --pulmu-shadow-inset: var(--pulmu-shadow-light-inset);
-  --pulmu-shadow-overlay: var(--pulmu-shadow-light-overlay);
+  --pulmu-shadow-soft-raised: var(--pulmu-shadow-light-raised);
+  --pulmu-shadow-soft-inset: var(--pulmu-shadow-light-inset);
+  --pulmu-shadow-soft-overlay: var(--pulmu-shadow-light-overlay);
   --pulmu-chart-series-1: var(--pulmu-color-light-brand);
   --pulmu-chart-series-2: var(--pulmu-color-light-info);
   --pulmu-chart-series-3: var(--pulmu-color-light-success);
@@ -505,7 +507,9 @@ button, input, select, textarea { font: inherit; }
     --pulmu-shadow-sm: none;
     --pulmu-shadow-md: none;
     --pulmu-shadow-raised: none;
-    --pulmu-shadow-inset: none;
     --pulmu-shadow-overlay: none;
+    --pulmu-shadow-soft-raised: none;
+    --pulmu-shadow-soft-inset: none;
+    --pulmu-shadow-soft-overlay: none;
   }
 }
