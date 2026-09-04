@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { UI_ICONS } from "@pulmu/icons";
@@ -23,6 +23,7 @@ const options = [{ label: "Quick Forge", value: "quick" }, { label: "Standard Fo
 const menuSelect = fn();
 const tooltipKeyDown = fn();
 const loadingAction = fn();
+const matrixSearch = fn();
 const maturityGroups = Object.entries(componentMaturity).reduce<Record<string, string[]>>((groups, [name, maturity]) => {
   (groups[maturity] ??= []).push(name);
   return groups;
@@ -67,69 +68,131 @@ const expectTokenStyle = async (element: HTMLElement, property: string, token: s
   await expect(getComputedStyle(element).getPropertyValue(property)).toBe(resolveTokenStyle(property, token));
 };
 
+type StateCellProps = { readonly children: ReactNode; readonly label: string; readonly state?: "hover" | "focus" | "active" };
+const StateCell = ({ children, label, state }: StateCellProps) => (
+  <div className={`core-state${state ? ` core-state--${state}` : ""}`}>
+    <strong>{label}</strong>
+    {children}
+  </div>
+);
+
 const SemanticStateMatrix = () => <div className="core-matrix" data-testid="semantic-matrix">
   <section>
-    <h2>Actions</h2>
-    <div className="core-row">
-      <Button data-testid="matrix-primary">Start forge</Button>
-      <Button data-testid="matrix-secondary" variant="secondary">Review</Button>
-      <Button data-testid="matrix-quiet" variant="quiet">Dismiss</Button>
-      <Button data-testid="matrix-danger" variant="danger">Delete</Button>
-      <Button disabled variant="secondary">Unavailable</Button>
-      <IconButton icon={UI_ICONS.settings} label="Matrix settings" variant="secondary" />
+    <h2>Button</h2>
+    <div className="core-state-grid">
+      <StateCell label="Default"><Button data-testid="matrix-primary">Start forge</Button></StateCell>
+      <StateCell label="Hover" state="hover"><Button>Start forge</Button></StateCell>
+      <StateCell label="Focus visible" state="focus"><Button>Start forge</Button></StateCell>
+      <StateCell label="Active" state="active"><Button>Start forge</Button></StateCell>
+      <StateCell label="Disabled"><Button data-testid="matrix-disabled-button" disabled>Unavailable</Button></StateCell>
+      <StateCell label="ARIA disabled"><Button aria-disabled="true" data-testid="matrix-aria-disabled" variant="secondary">Unavailable</Button></StateCell>
+      <StateCell label="Loading"><Button data-testid="matrix-loading" loading loadingLabel="Starting forge">Start forge</Button></StateCell>
+    </div>
+    <div className="core-state-grid">
+      <StateCell label="Secondary"><Button data-testid="matrix-secondary" variant="secondary">Review</Button></StateCell>
+      <StateCell label="Quiet (flat)"><Button data-testid="matrix-quiet" variant="quiet">Dismiss</Button></StateCell>
+      <StateCell label="Danger"><Button data-testid="matrix-danger" variant="danger">Delete</Button></StateCell>
     </div>
   </section>
   <section>
-    <h2>Fields</h2>
-    <div className="core-stack">
-      <Input data-testid="matrix-input" description="Uses the default field surface." label="Workspace" defaultValue="Pulmu" />
-      <Input data-testid="matrix-invalid" error="Enter a repository URL." label="Repository" aria-required="true" />
-      <Input data-testid="matrix-disabled-input" disabled label="Disabled field" defaultValue="Unavailable" />
-      <Select label="Forge depth" options={options} defaultValue="standard" />
-      <Checkbox data-testid="matrix-checkbox" defaultChecked label="Selected check" />
-      <Switch data-testid="matrix-switch" defaultChecked label="Selected switch" />
+    <h2>IconButton, CopyButton, and inline Link</h2>
+    <div className="core-state-grid core-state-grid--compact">
+      <StateCell label="Icon default"><IconButton icon={UI_ICONS.settings} label="Settings default" variant="secondary" /></StateCell>
+      <StateCell label="Icon hover" state="hover"><IconButton icon={UI_ICONS.settings} label="Settings hover" variant="secondary" /></StateCell>
+      <StateCell label="Icon focus" state="focus"><IconButton icon={UI_ICONS.settings} label="Settings focus" variant="secondary" /></StateCell>
+      <StateCell label="Icon active" state="active"><IconButton icon={UI_ICONS.settings} label="Settings active" variant="secondary" /></StateCell>
+      <StateCell label="Icon disabled"><IconButton disabled icon={UI_ICONS.settings} label="Settings disabled" variant="secondary" /></StateCell>
+      <StateCell label="Copy default"><CopyButton text="pulmu/feat/soft-forge-primitives" /></StateCell>
+      <StateCell label="Copy hover" state="hover"><CopyButton text="pulmu/feat/soft-forge-primitives" /></StateCell>
+      <StateCell label="Copy focus" state="focus"><CopyButton text="pulmu/feat/soft-forge-primitives" /></StateCell>
+      <StateCell label="Copy active" state="active"><CopyButton text="pulmu/feat/soft-forge-primitives" /></StateCell>
+      <StateCell label="Copy disabled"><CopyButton disabled text="pulmu/feat/soft-forge-primitives" /></StateCell>
+    </div>
+    <div className="core-prose-links">
+      <StateCell label="Inline default"><Link data-testid="matrix-link" href="#details">Read details</Link></StateCell>
+      <StateCell label="Inline hover" state="hover"><Link href="#details">Read details</Link></StateCell>
+      <StateCell label="Inline focus" state="focus"><Link href="#details">Read details</Link></StateCell>
+      <StateCell label="Inline active" state="active"><Link href="#details">Read details</Link></StateCell>
     </div>
   </section>
   <section>
-    <h2>Status</h2>
-    <div className="core-row">
-      <Badge data-testid="matrix-neutral">Pending</Badge><Badge data-testid="matrix-info" tone="info">Running</Badge><Badge data-testid="matrix-success" tone="success">Passed</Badge><Badge data-testid="matrix-warning" tone="warning">Interrupted</Badge><Badge data-testid="matrix-danger-tone" tone="danger">Failed</Badge>
-    </div>
-    <div className="core-stack">
-      <Alert title="Verification passed" tone="success">The exact diff is ready.</Alert>
-      <Alert title="Verification failed" tone="danger">Review the failing check.</Alert>
-      <Progress label="Forge progress" value={64} />
+    <h2>Input and SearchField</h2>
+    <div className="core-state-grid">
+      <StateCell label="Default"><Input data-testid="matrix-input" label="Workspace" defaultValue="Pulmu" /></StateCell>
+      <StateCell label="Hover" state="hover"><Input label="Workspace hover" defaultValue="Pulmu" /></StateCell>
+      <StateCell label="Focus visible" state="focus"><Input label="Workspace focus" defaultValue="Pulmu" /></StateCell>
+      <StateCell label="Read-only"><Input data-testid="matrix-readonly" label="Workspace read-only" readOnly value="Pulmu" /></StateCell>
+      <StateCell label="Disabled"><Input data-testid="matrix-disabled-input" disabled label="Workspace disabled" defaultValue="Unavailable" /></StateCell>
+      <StateCell label="Error"><Input data-testid="matrix-invalid" error="Enter a repository URL." label="Repository" aria-required="true" /></StateCell>
+      <StateCell label="Search default"><SearchField data-testid="matrix-search" label="Search" onSearch={matrixSearch} defaultValue="Button" /></StateCell>
+      <StateCell label="Search focus" state="focus"><SearchField label="Search focus" defaultValue="Button" /></StateCell>
+      <StateCell label="Search read-only"><SearchField label="Search read-only" readOnly value="Button" /></StateCell>
+      <StateCell label="Search error"><SearchField error="No component found." label="Search error" /></StateCell>
     </div>
   </section>
   <section>
-    <h2>Navigation</h2>
-    <div className="core-stack">
-      <Tabs label="Matrix tabs" items={[{ id: "summary", label: "Summary", content: "Ready." }, { id: "checks", label: "Checks", content: "All checks passed." }]} />
-      <Pagination currentPage={2} getHref={(page) => `?matrix-page=${page}`} totalPages={3} />
-      <Breadcrumb items={[{ href: "#workspaces", label: "Workspaces" }, { href: "#pulmu", label: "Pulmu" }, { label: "Run #22" }]} />
+    <h2>Select, Checkbox, and Switch</h2>
+    <div className="core-state-grid">
+      <StateCell label="Select default"><Select data-testid="matrix-select" label="Forge depth" options={options} defaultValue="standard" /></StateCell>
+      <StateCell label="Select hover" state="hover"><Select label="Forge depth hover" options={options} defaultValue="standard" /></StateCell>
+      <StateCell label="Select focus" state="focus"><Select label="Forge depth focus" options={options} defaultValue="standard" /></StateCell>
+      <StateCell label="Select disabled"><Select disabled label="Forge depth disabled" options={options} defaultValue="standard" /></StateCell>
+      <StateCell label="Select error"><Select error="Choose a forge depth." label="Forge depth error" options={options} /></StateCell>
+      <StateCell label="Checkbox default"><Checkbox data-testid="matrix-toggle-checkbox" label="Run verification" /></StateCell>
+      <StateCell label="Checkbox hover" state="hover"><Checkbox label="Run verification hover" /></StateCell>
+      <StateCell label="Checkbox focus" state="focus"><Checkbox label="Run verification focus" /></StateCell>
+      <StateCell label="Checkbox checked"><Checkbox data-testid="matrix-checkbox" defaultChecked label="Run verification checked" /></StateCell>
+      <StateCell label="Checkbox disabled"><Checkbox defaultChecked disabled label="Run verification disabled" /></StateCell>
+      <StateCell label="Checkbox error"><Checkbox error="Verification is required." label="Run verification error" /></StateCell>
+      <StateCell label="Switch default"><Switch label="Reduce motion" /></StateCell>
+      <StateCell label="Switch hover" state="hover"><Switch label="Reduce motion hover" /></StateCell>
+      <StateCell label="Switch focus" state="focus"><Switch label="Reduce motion focus" /></StateCell>
+      <StateCell label="Switch checked"><Switch data-testid="matrix-switch" defaultChecked label="Reduce motion checked" /></StateCell>
+      <StateCell label="Switch disabled"><Switch defaultChecked disabled label="Reduce motion disabled" /></StateCell>
+      <StateCell label="Switch error"><Switch error="Choose a motion preference." label="Reduce motion error" /></StateCell>
     </div>
   </section>
   <section className="core-matrix__surface">
-    <h2>Surfaces</h2>
-    <Card data-testid="matrix-card" actions={<Button variant="secondary">Review details</Button>} heading="Core UI surface">Default surfaces use a restrained border and raised shadow.</Card>
+    <h2>Card, Badge, Avatar, and CodeReference</h2>
+    <Card data-testid="matrix-card" heading="Raised standalone card">
+      <div className="core-row">
+        <Badge data-testid="matrix-neutral">Beta</Badge>
+        <Badge data-testid="matrix-info" tone="info">Running</Badge>
+        <Badge data-testid="matrix-success" tone="success">Passed</Badge>
+        <Badge data-testid="matrix-warning" tone="warning">Interrupted</Badge>
+        <Badge data-testid="matrix-danger-tone" tone="danger">Failed</Badge>
+        <Avatar alt="Jin, workspace owner" fallback="JH" />
+      </div>
+      <p><CodeReference data-testid="matrix-code">pulmu/feat/exceptionally-long-soft-forge-primitives-reference</CodeReference></p>
+      <Card data-testid="matrix-nested-card" heading="Nested card">Nested surfaces stay flat.</Card>
+    </Card>
   </section>
 </div>;
 
-const verifySemanticMatrix = async (canvasElement: HTMLElement, theme: "light" | "dark") => {
+const verifySemanticMatrix = async (canvasElement: HTMLElement, theme: "light" | "dark", width: number, reducedMotion = false) => {
   const canvas = within(canvasElement);
   const primary = canvas.getByTestId("matrix-primary");
   const secondary = canvas.getByTestId("matrix-secondary");
   const disabledInput = canvas.getByTestId("matrix-disabled-input");
   const matrix = canvas.getByTestId("semantic-matrix");
   await expect(document.documentElement).toHaveAttribute("data-theme", theme);
+  await expect(window.innerWidth).toBe(width);
   await expectTokenStyle(primary, "background-color", "--pulmu-color-action-default");
-  await expectTokenStyle(secondary, "background-color", "--pulmu-color-surface-default");
+  await expectTokenStyle(primary, "box-shadow", "--pulmu-shadow-soft-raised");
+  await expectTokenStyle(secondary, "background-color", "--pulmu-color-surface-raised");
+  await expectTokenStyle(secondary, "box-shadow", "--pulmu-shadow-soft-raised");
   await expect(getComputedStyle(canvas.getByTestId("matrix-quiet")).backgroundColor).toBe("rgba(0, 0, 0, 0)");
   await expectTokenStyle(canvas.getByTestId("matrix-quiet"), "color", "--pulmu-color-text-primary");
   await expectTokenStyle(canvas.getByTestId("matrix-danger"), "background-color", "--pulmu-color-status-danger-foreground");
   await expectTokenStyle(canvas.getByTestId("matrix-danger"), "color", "--pulmu-color-danger-action-text");
-  await expectTokenStyle(canvas.getByTestId("matrix-input"), "background-color", "--pulmu-color-surface-default");
+  const ariaDisabled = canvas.getByTestId("matrix-aria-disabled");
+  await expect(getComputedStyle(ariaDisabled).boxShadow).toBe("none");
+  await expect(getComputedStyle(ariaDisabled).opacity).toBe(resolveTokenStyle("opacity", "--pulmu-opacity-state-disabled"));
+  await expectTokenStyle(canvas.getByTestId("matrix-input"), "background-color", "--pulmu-color-surface-inset");
+  await expectTokenStyle(canvas.getByTestId("matrix-input"), "box-shadow", "--pulmu-shadow-soft-inset");
   await expectTokenStyle(canvas.getByTestId("matrix-invalid"), "border-color", "--pulmu-color-status-danger-foreground");
+  await expect(canvas.getByTestId("matrix-invalid")).toHaveAttribute("aria-invalid", "true");
+  await expect(canvas.getByTestId("matrix-readonly")).toHaveAttribute("readonly");
   await expectTokenStyle(disabledInput, "background-color", "--pulmu-color-surface-subtle");
   await expect(getComputedStyle(disabledInput).opacity).toBe(resolveTokenStyle("opacity", "--pulmu-opacity-state-disabled"));
   for (const control of ["checkbox", "switch"]) {
@@ -144,9 +207,15 @@ const verifySemanticMatrix = async (canvasElement: HTMLElement, theme: "light" |
     await expectTokenStyle(badge, "background-color", `--pulmu-color-status-${tone}-subtle`);
     await expectTokenStyle(badge, "color", `--pulmu-color-status-${tone}-foreground`);
   }
-  await expectTokenStyle(canvas.getByRole("tab", { name: "Summary" }), "background-color", "--pulmu-color-brand-soft");
-  await expectTokenStyle(canvas.getByTestId("matrix-card"), "background-color", "--pulmu-panel-background");
-  await expectTokenStyle(canvas.getByTestId("matrix-card"), "box-shadow", "--pulmu-shadow-raised");
+  await expectTokenStyle(canvas.getByTestId("matrix-card"), "background-color", "--pulmu-color-surface-raised");
+  await expectTokenStyle(canvas.getByTestId("matrix-card"), "box-shadow", "--pulmu-shadow-soft-raised");
+  await expect(getComputedStyle(canvas.getByTestId("matrix-nested-card")).boxShadow).toBe("none");
+  await expectTokenStyle(canvas.getByTestId("matrix-code"), "background-color", "--pulmu-color-surface-inset");
+  await expectTokenStyle(canvas.getByTestId("matrix-code"), "box-shadow", "--pulmu-shadow-soft-inset");
+  if (reducedMotion) {
+    await expect(document.documentElement).toHaveAttribute("data-motion", "reduced");
+    await expect(Number.parseFloat(getComputedStyle(primary).transitionDuration)).toBeLessThanOrEqual(0.001);
+  }
 
   await userEvent.click(matrix);
   await userEvent.tab();
@@ -154,8 +223,26 @@ const verifySemanticMatrix = async (canvasElement: HTMLElement, theme: "light" |
   await expectTokenStyle(primary, "outline-color", "--pulmu-focus-ring-color");
   await expect(getComputedStyle(primary).outlineWidth).toBe(resolveTokenStyle("outline-width", "--pulmu-focus-ring-width"));
   await expect(getComputedStyle(primary).outlineOffset).toBe(resolveTokenStyle("outline-offset", "--pulmu-focus-ring-offset"));
+  ariaDisabled.focus();
+  await expect(ariaDisabled).toHaveFocus();
+  await expectTokenStyle(ariaDisabled, "outline-color", "--pulmu-focus-ring-color");
+  matrixSearch.mockClear();
+  const search = canvas.getByTestId("matrix-search");
+  search.focus();
+  await userEvent.keyboard("{Enter}");
+  await expect(matrixSearch).toHaveBeenCalledWith("Button");
+  const checkbox = canvas.getByTestId("matrix-toggle-checkbox");
+  await userEvent.click(checkbox);
+  await expect(checkbox).toBeChecked();
+  for (const control of canvas.getAllByRole("button")) {
+    await expect(control.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+    await expect(control.getBoundingClientRect().width).toBeGreaterThanOrEqual(44);
+  }
+  await expect(canvas.getByTestId("matrix-link").getBoundingClientRect().height).toBeLessThan(44);
   await expect(canvasElement.scrollWidth).toBeLessThanOrEqual(canvasElement.clientWidth);
   await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
+  (document.activeElement as HTMLElement | null)?.blur();
+  window.scrollTo(0, 0);
 };
 
 const DemoDialog = () => {
@@ -201,12 +288,16 @@ export const ButtonLightStates: Story = {
 export const LightSemanticStateMatrix: Story = {
   globals: { theme: "light", viewport: { isRotated: false, value: "mobile" } },
   render: () => <SemanticStateMatrix />,
-  play: async ({ canvasElement }) => verifySemanticMatrix(canvasElement, "light"),
+  play: async ({ canvasElement }) => {
+    await verifySemanticMatrix(canvasElement, "light", 390);
+  },
 };
 export const DarkSemanticStateMatrix: Story = {
-  globals: { theme: "dark", viewport: { isRotated: false, value: "narrow" } },
+  globals: { motion: "reduced", theme: "dark", viewport: { isRotated: false, value: "narrow" } },
   render: () => <SemanticStateMatrix />,
-  play: async ({ canvasElement }) => verifySemanticMatrix(canvasElement, "dark"),
+  play: async ({ canvasElement }) => {
+    await verifySemanticMatrix(canvasElement, "dark", 320, true);
+  },
 };
 export const IconButtonStory: Story = { name: "IconButton", render: () => <IconButton icon={UI_ICONS.settings} label="Open settings" variant="secondary" /> };
 export const LinkStory: Story = { name: "Link", render: () => <Link href="https://example.com" target="_blank">Read external documentation</Link> };
