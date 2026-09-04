@@ -10,10 +10,31 @@
 .core-maturity li .pulmu-code-reference { inline-size: 100%; text-align: center; }
 .core-edge-overlays { align-items: flex-end; block-size: calc(100dvh - var(--pulmu-space-8)); display: flex; gap: var(--pulmu-space-2); justify-content: flex-end; }
 .core-matrix { display: grid; gap: var(--pulmu-space-4); grid-template-columns: repeat(2, minmax(0, 1fr)); inline-size: min(100%, 64rem); }
-.core-matrix > section { background: var(--pulmu-color-surface-subtle); border: var(--pulmu-border-default); border-radius: var(--pulmu-radius-panel); display: grid; gap: var(--pulmu-space-3); min-inline-size: 0; padding: var(--pulmu-space-4); }
+.core-matrix > section { background: var(--pulmu-color-surface-default); border: var(--pulmu-border-default); border-radius: var(--pulmu-radius-panel); display: grid; gap: var(--pulmu-space-3); min-inline-size: 0; padding: var(--pulmu-space-4); }
 .core-matrix > section > h2 { font-size: var(--pulmu-font-size-lg); margin: 0; }
 .core-matrix .core-stack { max-inline-size: none; }
 .core-matrix__surface { grid-column: 1 / -1; }
+.core-state-grid { display: grid; gap: var(--pulmu-space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); min-inline-size: 0; }
+.core-state-grid + .core-state-grid { border-block-start: var(--pulmu-border-default); margin-block-start: var(--pulmu-space-3); padding-block-start: var(--pulmu-space-3); }
+.core-state-grid--compact { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); }
+.core-state { align-content: start; display: grid; gap: var(--pulmu-space-2); min-inline-size: 0; overflow-wrap: anywhere; }
+.core-state > strong { color: var(--pulmu-color-text-muted); font-size: var(--pulmu-font-size-xs); }
+.core-state :where(.pulmu-field, .pulmu-check-field, .pulmu-search-field) { min-inline-size: 0; }
+.core-matrix .pulmu-spinner > svg { animation: none; }
+.core-prose-links { display: flex; flex-wrap: wrap; gap: var(--pulmu-space-4); margin-block-start: var(--pulmu-space-4); }
+
+/* Story-only persistent state cues mirror the production pseudo-class contract. */
+.core-state--focus :where(.pulmu-button, .pulmu-link, .pulmu-input, .pulmu-select) { outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color); outline-offset: var(--pulmu-focus-ring-offset); }
+.core-state--focus .pulmu-check__visual { outline: var(--pulmu-focus-ring-width) solid var(--pulmu-focus-ring-color); outline-offset: var(--pulmu-focus-ring-offset); }
+.core-state--focus :where(.pulmu-input, .pulmu-select) { border-color: var(--pulmu-color-border-interactive); }
+.core-state--hover .pulmu-button--primary { background: var(--pulmu-color-action-hover); }
+.core-state--hover .pulmu-button--secondary { background: var(--pulmu-color-surface-hover); border-color: var(--pulmu-color-border-strong); }
+.core-state--hover .pulmu-link { color: var(--pulmu-color-action-hover); text-decoration-thickness: 0.12em; }
+.core-state--hover :where(.pulmu-input, .pulmu-select, .pulmu-check__visual) { border-color: var(--pulmu-color-border-strong); }
+.core-state--hover .pulmu-check__visual { background: var(--pulmu-color-surface-hover); }
+.core-state--active .pulmu-button--primary { background: var(--pulmu-color-action-pressed); box-shadow: var(--pulmu-shadow-soft-inset); }
+.core-state--active .pulmu-button--secondary { background: var(--pulmu-color-surface-inset); box-shadow: var(--pulmu-shadow-soft-inset); }
+.core-state--active .pulmu-link { color: var(--pulmu-color-text-primary); text-decoration-thickness: 0.16em; }
 
 @media (max-width: 30rem) {
   .core-matrix { grid-template-columns: minmax(0, 1fr); }
@@ -21,6 +42,8 @@
   .core-matrix .core-row { align-items: stretch; flex-direction: column; }
   .core-matrix .core-row > .pulmu-button:not(.pulmu-icon-button) { inline-size: 100%; }
   .core-matrix .pulmu-icon-button { align-self: flex-start; }
+  .core-state-grid, .core-state-grid--compact { grid-template-columns: minmax(0, 1fr); }
+  .core-state > .pulmu-button:not(.pulmu-icon-button), .core-state > .pulmu-copy-control > .pulmu-button { inline-size: 100%; }
 }
 
 @media (max-width: 20rem) { .core-row > .pulmu-button:not(.pulmu-icon-button) { inline-size: 100%; } }
