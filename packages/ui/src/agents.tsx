@@ -302,7 +302,7 @@ export function OrchestrationFlow({ activeAgents = [], className, enabledConditi
         <h2 id={headingId}>{fixture.label} Forge</h2>
       </header>
       <AgentCard active activity="Owns stage transitions, routing, consolidation, retries, and delivery" name="orchestrator" />
-      <ol className="pulmu-orchestration-flow__stages">
+      <ol className="pulmu-orchestration-flow__stages" role="list">
         {representedStages.map((stage) => (
           <li data-orchestration-stage-id={stage.id} key={stage.id}>
             <AgentStageAssignments activeAgents={activeAgents} groups={groupsByStage.get(stage.id)!} stageId={stage.id} />

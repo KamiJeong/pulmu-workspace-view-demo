@@ -71,10 +71,17 @@ bun run typecheck
 bunx playwright install chromium
 bun run test
 bun run build
+bun run audit:components
 ```
 
 `bun run test` runs stories in headless Chromium, including play functions and
 accessibility checks. The global Storybook policy is `a11y.test = "error"`.
+After the static build, `bun run audit:components` validates the exact committed
+story inventory and renders every story in the Light/Dark × 1440/768/390/320
+matrix on its own local server. It also compares visible content, accessibility
+structure, and meaningful control state between themes at every viewport. Its
+report and two focused 320px orchestration
+captures are written under ignored `test-results/component-audit/`.
 Automated checks do not replace keyboard, zoom/reflow, contrast, screen-reader,
 forced-colors, and reduced-motion review.
 

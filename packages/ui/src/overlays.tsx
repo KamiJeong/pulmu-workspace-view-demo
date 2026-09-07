@@ -239,6 +239,27 @@ export type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "open" |
   readonly title: ReactNode;
 };
 
+const dialogFocusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
+
+function getDialogFocusableElements(dialog: HTMLDialogElement) {
+  return [...dialog.querySelectorAll<HTMLElement>(dialogFocusableSelector)].filter((element) => {
+    const style = getComputedStyle(element);
+    return element.tabIndex >= 0
+      && !element.matches(":disabled")
+      && !element.closest("[inert], [aria-hidden='true']")
+      && element.getClientRects().length > 0
+      && style.display !== "none"
+      && !["hidden", "collapse"].includes(style.visibility);
+  });
+}
+
 export function Dialog({ actions, children, className, closeLabel = "Close dialog", description, onOpenChange, open, restoreFocus = true, title, ...props }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -250,7 +271,7 @@ export function Dialog({ actions, children, className, closeLabel = "Close dialo
     if (open && !dialog.open) {
       returnFocusRef.current = document.activeElement as HTMLElement | null;
       dialog.showModal();
-      queueMicrotask(() => dialog.querySelector<HTMLElement>("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])")?.focus());
+      queueMicrotask(() => getDialogFocusableElements(dialog)[0]?.focus());
     } else if (!open && dialog.open) {
       dialog.close();
     }
@@ -269,9 +290,21 @@ export function Dialog({ actions, children, className, closeLabel = "Close dialo
       }}
       onKeyDown={(event) => {
         props.onKeyDown?.(event);
-        if (event.key === "Escape" && !event.defaultPrevented) {
+        if (event.defaultPrevented) return;
+        if (event.key === "Escape") {
           event.preventDefault();
           close();
+        } else if (event.key === "Tab") {
+          const focusable = getDialogFocusableElements(event.currentTarget);
+          const first = focusable[0];
+          const last = focusable.at(-1);
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
         }
       }}
       ref={ref}

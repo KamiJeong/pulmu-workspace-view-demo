@@ -448,7 +448,14 @@ export const AlertStory: Story = { name: "Alert", render: () => <div className="
 export const EmptyStateStory: Story = { name: "EmptyState", render: () => <EmptyState action={<Button>Create run</Button>} description="Start Pulmu to see its forge stages here." title="No runs yet" /> };
 export const ErrorStateStory: Story = { name: "ErrorState", render: () => <ErrorState action={<Button variant="secondary">Try again</Button>} description="The run could not be loaded." title="Something went wrong" /> };
 export const PaginationStory: Story = { name: "Pagination", render: () => <Pagination currentPage={2} getHref={(page) => `?page=${page}`} totalPages={4} /> };
-export const BreadcrumbStory: Story = { name: "Breadcrumb", render: () => <Breadcrumb items={[{ href: "#workspaces", label: "Workspaces" }, { href: "#pulmu", label: "아주 긴 Pulmu 작업 공간 이름" }, { label: "Run #42" }]} /> };
+export const BreadcrumbStory: Story = {
+  name: "Breadcrumb",
+  render: () => <Breadcrumb items={[{ href: "#workspaces", label: "Workspaces" }, { href: "#pulmu", label: "아주 긴 Pulmu 작업 공간 이름" }, { label: "Run #42" }]} />,
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole("link", { name: "Workspaces" });
+    await expectTokenStyle(link, "color", "--pulmu-color-action-default");
+  },
+};
 export const CopyButtonStory: Story = {
   name: "CopyButton",
   render: () => <CopyButton errorLabel="복사하지 못했습니다" text="pulmu/feat/core-ui-components" />,
