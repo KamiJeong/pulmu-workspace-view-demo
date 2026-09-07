@@ -24,4 +24,16 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 Controls meet the 44 × 44 px target contract and use the shared 3 px focus ring. Tab lists scroll internally on narrow viewports, overlays stay viewport-bound, dialog actions stack when space is limited, and long Korean or English references wrap without creating page overflow.
 
+Inline `Link` is the deliberate target-size exception: it remains flat and follows the surrounding prose line box instead of forcing a 44 px block into a paragraph. Use a `Button` when the action needs a standalone touch target.
+
+## Surface and state contract
+
+- Primary, secondary, and danger actions use restrained raised depth. Pressed and loading actions use the semantic inset cue; disabled actions remove depth. Quiet buttons and inline links stay flat.
+- Input, SearchField, and Select use the semantic inset surface, visible structural borders, and a soft inset shadow. Read-only, disabled, error, and focus-visible states remain independently distinguishable.
+- Checkbox and Switch retain native inputs. Their checkmark, track, and knob communicate selection in addition to color, including when shadows are unavailable.
+- Standalone Card is raised, while a Card nested inside another Card is flat. Badge is flat, Avatar has a restrained raised cue, and CodeReference uses a restrained inset surface.
+- Hover styling only runs on hover-capable fine pointers. Focus retains the independent 3 px outline, forced-colors retains boundaries and selection cues, and reduced-motion preferences govern existing state transitions.
+
+The Light Semantic State Matrix and Dark Semantic State Matrix stories provide visual and interaction evidence for each supported default, hover, focus-visible, active, checked, disabled, loading, read-only, and error state. The dark matrix runs at 320 px to guard wrapping, target size, clipping, and page overflow.
+
 Progress values are clamped consistently for visuals and accessibility; invalid maximums use `100`. CopyButton announces both success and localized failure feedback without leaking clipboard errors.
