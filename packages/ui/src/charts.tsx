@@ -151,7 +151,7 @@ function EquivalentDataTable({
   const multiple = groups.length > 1;
   return <details className="pulmu-chart-data">
     <summary>View chart data</summary>
-    <div className="pulmu-data-table-region" role="region" tabIndex={0}>
+    <div aria-label="Equivalent chart data" className="pulmu-data-table-region" role="region" tabIndex={0}>
       <table className="pulmu-data-table">
         <caption>Equivalent chart data</caption>
         <thead><tr>{multiple ? <th scope="col">Series</th> : null}<th scope="col">Label</th><th data-align="end" scope="col">Value</th></tr></thead>

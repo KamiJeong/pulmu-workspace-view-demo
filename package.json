@@ -14,7 +14,8 @@
     "test": "vitest run --config apps/storybook/vitest.config.ts",
     "test:visual": "vitest run --config apps/storybook/vitest.config.ts --project storybook",
     "test:visual:update": "vitest run --config apps/storybook/vitest.config.ts --project storybook --update",
-    "build": "bun run --filter @pulmu/storybook build-storybook"
+    "build": "bun run --filter @pulmu/storybook build-storybook",
+    "audit:components": "node apps/storybook/scripts/audit-components.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -28,6 +29,7 @@
     "@types/react-dom": "19.1.9",
     "@vitejs/plugin-react": "6.0.1",
     "@vitest/browser-playwright": "4.1.6",
+    "axe-core": "4.13.0",
     "eslint": "10.0.1",
     "eslint-plugin-storybook": "10.5.10",
     "globals": "17.11.0",

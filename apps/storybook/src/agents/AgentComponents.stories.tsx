@@ -15,6 +15,7 @@ import {
   ReviewerFindingSummary,
 } from "@pulmu/ui";
 import "@pulmu/ui/global.css";
+import { matchScreenScreenshot, screenGlobals } from "../screens/screenTestUtils";
 import "./AgentComponents.css";
 
 const meta = {
@@ -213,3 +214,19 @@ export const NarrowLongAgentNames: Story = {
     await assertStaticSurface(canvasElement);
   },
 };
+
+const narrowThemeStory = (theme: "light" | "dark"): Story => ({
+  globals: screenGlobals(theme, "narrow"),
+  render: NarrowFlow,
+  play: async ({ canvasElement }) => {
+    await expect(document.documentElement).toHaveAttribute("data-theme", theme);
+    await expect(getComputedStyle(document.documentElement).colorScheme).toBe(theme);
+    await expect(window.innerWidth).toBe(320);
+    await assertNoPageOverflow(canvasElement);
+    await assertStaticSurface(canvasElement);
+    await matchScreenScreenshot(canvasElement, `orchestration-flow-${theme}-narrow-320.png`);
+  },
+});
+
+export const NarrowLightTheme = narrowThemeStory("light");
+export const NarrowDarkTheme = narrowThemeStory("dark");
