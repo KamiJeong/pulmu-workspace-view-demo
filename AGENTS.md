@@ -25,4 +25,4 @@ Do not turn the seven stages into seven required user commands.
 
 ## Validation
 
-Run `bash -n install.sh uninstall.sh .agents/skills/pulmu/scripts/*.sh` after changing Pulmu shell scripts.
+Run `for script in .agents/skills/pulmu/scripts/*.sh; do /bin/bash -n "$script" || exit 1; done` after changing Pulmu shell scripts.

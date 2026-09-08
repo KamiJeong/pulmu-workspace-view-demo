@@ -38,7 +38,10 @@ jobs:
         run: /bin/bash --version
 
       - name: Validate shell syntax
-        run: /bin/bash -n install.sh uninstall.sh .agents/skills/pulmu/scripts/*.sh
+        run: |
+          for script in .agents/skills/pulmu/scripts/*.sh; do
+            /bin/bash -n "$script" || exit 1
+          done
 
       - name: Validate Python syntax
         run: python3 -c 'import ast, pathlib; ast.parse(pathlib.Path(".agents/skills/pulmu/scripts/run-context.py").read_text())'
