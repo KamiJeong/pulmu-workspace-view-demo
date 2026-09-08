@@ -16,7 +16,7 @@
 
 ## Checklist
 
-- [ ] I ran `bash -n install.sh uninstall.sh .agents/skills/pulmu/scripts/*.sh` for shell changes.
+- [ ] I ran `for script in .agents/skills/pulmu/scripts/*.sh; do /bin/bash -n "$script" || exit 1; done` for shell changes.
 - [ ] I validated Python and TOML syntax when those files changed.
 - [ ] I updated the skill references and README when behavior changed.
 - [ ] I preserved the seven-stage and one-writer contracts.
